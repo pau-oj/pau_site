@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Paula Ojeda | Research & Interaction</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+  <style>
+    /* ESTILO "LAB" MINIMALISTA */
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden; /* Sin barras de scroll, inmersivo */
+      background-color: #111;
+      font-family: 'Courier New', Courier, monospace; /* Tipografía Monospaced (Estética MIT) */
+      color: #f0f0f0;
+    }
+
+    /* CAPA DE TEXTO FLOTANTE */
+    #overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      pointer-events: none; /* Permite que el mouse interactúe con el fondo a través del texto */
+      z-index: 10;
+      mix-blend-mode: exclusion; /* Efecto visual interesante sobre las partículas */
+    }
+
+    h1 {
+      font-size: 3rem;
+      font-weight: lighter;
+      letter-spacing: 0.5rem;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      font-size: 1rem;
+      font-weight: normal;
+      color: #aaa;
+      margin-bottom: 2rem;
+    }
+
+    /* MENÚ DE NAVEGACIÓN */
+    nav {
+      position: absolute;
+      bottom: 50px;
+      width: 100%;
+      text-align: center;
+      z-index: 20;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      margin: 0 20px;
+      font-size: 1.2rem;
+      border-bottom: 1px solid transparent;
+      transition: border-bottom 0.3s;
+      pointer-events: auto; /* Habilita clicks en los enlaces */
+      text-transform: uppercase;
+    }
+
+    nav a:hover {
+      border-bottom: 1px solid #fff;
+    }
+    
+    /* ESTILO PARA MÓVILES */
+    @media (max-width: 600px) {
+      h1 { font-size: 2rem; }
+      nav a { display: block; margin: 15px 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="overlay">
+    <h1>PAULA OJEDA</h1>
+    <h2>Critical Matter / Future Sketches / Tangible Media</h2>
+  </div>
+
+  <nav>
+    <a href="https://behance.net/tu-enlace-huesped" target="_blank">Huésped</a>
+    <a href="https://behance.net/tu-enlace-ladrilludo" target="_blank">Ladrilludo</a>
+    <a href="mailto:tu-email@uniandes.edu.co">Contacto</a>
+  </nav>
+
+  <script>
+    let particles = [];
+    const numParticles = 800; // Cantidad de partículas (pigmento)
+
+    function setup() {
+      createCanvas(windowWidth, windowHeight);
+      noStroke();
+      
+      // Inicializar partículas como una "materia" dispersa
+      for (let i = 0; i < numParticles; i++) {
+        particles.push(new Particle());
+      }
+    }
+
+    function draw() {
+      background(17, 17, 17, 50); // El último número (50) deja una estela suave (trail)
+
+      // Actualizar y dibujar cada partícula
+      for (let p of particles) {
+        p.update();
+        p.display();
+      }
+    }
+
+    // Si cambian el tamaño de la ventana
+    function windowResized() {
+      resizeCanvas(windowWidth, windowHeight);
+    }
+
+    // CLASE PARTÍCULA (Simula el pigmento de "HUÉSPED")
+    class Particle {
+      constructor() {
+        this.pos = createVector(random(width), random(height));
+        this.vel = createVector(0, 0);
+        this.acc = createVector(0, 0);
+        this.maxSpeed = 4;
+        this.baseColor = 100; // Gris oscuro
+        this.activeColor = 255; // Blanco (cuando se calienta)
+        this.size = random(2, 4);
+      }
+
+      update() {
+        // El mouse actúa como FUENTE DE CALOR / VIRUS
+        let mouse = createVector(mouseX, mouseY);
+        let dir = p5.Vector.sub(mouse, this.pos);
+        let distance = dir.mag();
+
+        // Comportamiento: Si el mouse (calor) está cerca, agitarse y huir
+        if (distance < 150) {
+          let force = dir.normalize().mult(-0.5); // Fuerza de repulsión
+          this.acc.add(force);
+          
+          // Cambio de color por "temperatura" (gris -> blanco)
+          this.currentColor = lerp(this.currentColor, this.activeColor, 0.1);
+        } else {
+          // Volver a la calma lentamente
+          this.currentColor = lerp(this.currentColor, this.baseColor, 0.02);
+          
+          // Movimiento orgánico suave (noise)
+          this.acc.add(p5.Vector.random2D().mult(0.05));
+        }
+
+        this.vel.add(this.acc);
+        this.vel.limit(this.maxSpeed);
+        this.pos.add(this.vel);
+        this.acc.mult(0); // Reiniciar aceleración
+
+        // Bordes (reaparecer al otro lado)
+        if (this.pos.x > width) this.pos.x = 0;
+        if (this.pos.x < 0) this.pos.x = width;
+        if (this.pos.y > height) this.pos.y = 0;
+        if (this.pos.y < 0) this.pos.y = height;
+        
+        // Fricción para que no se vuelvan locas
+        this.vel.mult(0.95);
+      }
+
+      display() {
+        fill(this.currentColor || this.baseColor);
+        ellipse(this.pos.x, this.pos.y, this.size);
+      }
+    }
+  </script>
+</body>
+</html>
