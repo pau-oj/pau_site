@@ -2,171 +2,294 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Paula Ojeda | Research & Interaction</title>
+  <title>Paula Ojeda | Ecologías Digitales</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
   <style>
-    /* ESTILO "LAB" MINIMALISTA */
-    body {
-      margin: 0;
-      padding: 0;
-      overflow: hidden; /* Sin barras de scroll, inmersivo */
-      background-color: #111;
-      font-family: 'Courier New', Courier, monospace; /* Tipografía Monospaced (Estética MIT) */
-      color: #f0f0f0;
+    /* --- FUENTES --- */
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,600&family=Space+Mono:wght@400&display=swap');
+
+    /* --- PALETA DE COLORES COLOMBIANA --- */
+    :root {
+      --bg-color: #1a0510; /* Tierra oscura/Berenjena (No negro puro) */
+      --folder-bg: #E3CFA0; /* Color Carpeta Manila */
+      --folder-text: #5c3a21;
+      --accent-pink: #FF0055;
+      --accent-orange: #FF5500;
     }
 
-    /* CAPA DE TEXTO FLOTANTE */
-    #overlay {
+    body {
+      margin: 0;
+      overflow: hidden;
+      background-color: var(--bg-color);
+      font-family: 'Cormorant Garamond', serif; /* Toque orgánico/botánico */
+    }
+
+    /* --- TÍTULO FLOTANTE --- */
+    #hero-text {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-      pointer-events: none; /* Permite que el mouse interactúe con el fondo a través del texto */
-      z-index: 10;
-      mix-blend-mode: exclusion; /* Efecto visual interesante sobre las partículas */
+      top: 10%;
+      left: 5%;
+      pointer-events: none;
+      z-index: 5;
+      color: #F8E7D4; /* Crema suave */
+      mix-blend-mode: screen;
     }
 
     h1 {
-      font-size: 3rem;
-      font-weight: lighter;
-      letter-spacing: 0.5rem;
-      margin-bottom: 0.5rem;
-      text-transform: uppercase;
+      font-size: 5rem;
+      font-weight: 300;
+      line-height: 0.9;
+      margin: 0;
+      font-style: italic;
     }
 
     h2 {
-      font-size: 1rem;
-      font-weight: normal;
-      color: #aaa;
-      margin-bottom: 2rem;
-    }
-
-    /* MENÚ DE NAVEGACIÓN */
-    nav {
-      position: absolute;
-      bottom: 50px;
-      width: 100%;
-      text-align: center;
-      z-index: 20;
-    }
-
-    nav a {
-      color: #fff;
-      text-decoration: none;
-      margin: 0 20px;
-      font-size: 1.2rem;
-      border-bottom: 1px solid transparent;
-      transition: border-bottom 0.3s;
-      pointer-events: auto; /* Habilita clicks en los enlaces */
+      font-family: 'Space Mono', monospace; /* Toque tecnológico */
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+      color: #FF99AA;
+      margin-top: 10px;
       text-transform: uppercase;
     }
 
-    nav a:hover {
-      border-bottom: 1px solid #fff;
+    /* --- EL MENÚ DE CARPETA (DRAWER) --- */
+    /* La pestaña visible siempre */
+    #folder-tab {
+      position: fixed;
+      right: 0;
+      top: 15%;
+      width: 50px;
+      height: 140px;
+      background-color: var(--folder-bg);
+      border-radius: 10px 0 0 10px;
+      cursor: pointer;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: -5px 5px 15px rgba(0,0,0,0.3);
+      transition: right 0.4s ease;
     }
-    
-    /* ESTILO PARA MÓVILES */
-    @media (max-width: 600px) {
-      h1 { font-size: 2rem; }
-      nav a { display: block; margin: 15px 0; }
+
+    #folder-tab span {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+      font-family: 'Space Mono', monospace;
+      font-weight: bold;
+      color: var(--folder-text);
+      font-size: 14px;
+      letter-spacing: 2px;
     }
+
+    /* El cajón escondido */
+    #drawer {
+      position: fixed;
+      right: -320px; /* Escondido */
+      top: 0;
+      width: 300px;
+      height: 100vh;
+      background-color: #F2E6D0; /* Papel antiguo */
+      z-index: 99;
+      transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1); /* Movimiento suave */
+      box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+      padding: 40px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* Cuando el cajón está abierto */
+    body.menu-open #drawer { right: 0; }
+    body.menu-open #folder-tab { right: 300px; }
+
+    /* Estilo de los links como carpetas internas */
+    .folder-link {
+      display: block;
+      background-color: var(--folder-bg);
+      margin: 15px 0;
+      padding: 20px;
+      color: var(--folder-text);
+      text-decoration: none;
+      font-family: 'Space Mono', monospace;
+      font-weight: bold;
+      border-radius: 5px 20px 5px 5px; /* Forma de carpeta */
+      box-shadow: 2px 4px 10px rgba(0,0,0,0.1);
+      transition: transform 0.2s, background-color 0.2s;
+      position: relative;
+      border-top: 2px solid rgba(255,255,255,0.3);
+    }
+
+    .folder-link:hover {
+      transform: translateX(-10px) scale(1.05);
+      background-color: #fff;
+      color: var(--accent-pink);
+    }
+
+    .folder-link small {
+      display: block;
+      font-size: 0.7em;
+      opacity: 0.6;
+      margin-top: 5px;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+    }
+
+    /* Instrucción flotante */
+    .hint {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      color: rgba(255, 255, 255, 0.5);
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      pointer-events: none;
+    }
+
   </style>
 </head>
 <body>
 
-  <div id="overlay">
-    <h1>PAULA OJEDA</h1>
-    <h2>Critical Matter / Future Sketches / Tangible Media</h2>
+  <div id="hero-text">
+    <h1>PAULA<br>OJEDA</h1>
+    <h2>South / Matter / Code</h2>
   </div>
 
-  <nav>
-    <a href="https://behance.net/tu-enlace-huesped" target="_blank">Huésped</a>
-    <a href="https://behance.net/tu-enlace-ladrilludo" target="_blank">Ladrilludo</a>
-    <a href="mailto:tu-email@uniandes.edu.co">Contacto</a>
-  </nav>
+  <div id="folder-tab" onclick="toggleMenu()">
+    <span>+ ARCHIVO</span>
+  </div>
+
+  <div id="drawer">
+    <h3 style="font-family:'Space Mono'; color:var(--folder-text); margin-bottom: 30px;">// DIRECTORIO</h3>
+    
+    <a href="#" class="folder-link">
+      HOME
+      <small>Jardín Principal</small>
+    </a>
+    
+    <a href="https://behance.net/tu-perfil" target="_blank" class="folder-link">
+      WORK
+      <small>Huésped, Ladrilludo, Doll House...</small>
+    </a>
+    
+    <a href="mailto:tu-email@uniandes.edu.co" class="folder-link">
+      ABOUT ME
+      <small>Bio, CV & Contacto</small>
+    </a>
+  </div>
+
+  <div class="hint">Move to pollinate • Click to wind</div>
 
   <script>
-    let particles = [];
-    const numParticles = 800; // Cantidad de partículas (pigmento)
+    let flowers = [];
+    let palette;
 
     function setup() {
       createCanvas(windowWidth, windowHeight);
+      // Colores inspirados en Orquídeas y Selva Colombiana (Con transparencia)
+      palette = [
+        color(255, 0, 85, 150),   // Magenta Orquídea
+        color(255, 100, 0, 150),  // Naranja Heliconia
+        color(100, 255, 100, 100),// Verde Neón Selva
+        color(150, 50, 255, 150), // Violeta Profundo
+        color(255, 200, 50, 150)  // Amarillo Polen
+      ];
       noStroke();
-      
-      // Inicializar partículas como una "materia" dispersa
-      for (let i = 0; i < numParticles; i++) {
-        particles.push(new Particle());
-      }
     }
 
     function draw() {
-      background(17, 17, 17, 50); // El último número (50) deja una estela suave (trail)
+      // Fondo con trazo (para dejar estela suave) -> "Tierra de Noche"
+      background(26, 5, 16, 40); 
 
-      // Actualizar y dibujar cada partícula
-      for (let p of particles) {
-        p.update();
-        p.display();
+      // Crear nuevas partículas donde está el mouse (Polinización)
+      if (movedX != 0 || movedY != 0) {
+        let p = new Petal(mouseX, mouseY);
+        flowers.push(p);
+      }
+
+      // Ciclo automático para que siempre haya algo de vida
+      if (frameCount % 20 == 0) {
+        flowers.push(new Petal(random(width), height + 20));
+      }
+
+      // Actualizar y dibujar
+      for (let i = flowers.length - 1; i >= 0; i--) {
+        flowers[i].update();
+        flowers[i].display();
+        
+        // Eliminar si son muy pequeñas o salen de pantalla
+        if (flowers[i].finished()) {
+          flowers.splice(i, 1);
+        }
       }
     }
 
-    // Si cambian el tamaño de la ventana
+    function mousePressed() {
+      // Explosión de viento al hacer clic
+      for(let f of flowers) {
+        let force = createVector(f.pos.x - mouseX, f.pos.y - mouseY);
+        force.normalize();
+        force.mult(10);
+        f.applyForce(force);
+      }
+    }
+
     function windowResized() {
       resizeCanvas(windowWidth, windowHeight);
     }
 
-    // CLASE PARTÍCULA (Simula el pigmento de "HUÉSPED")
-    class Particle {
-      constructor() {
-        this.pos = createVector(random(width), random(height));
-        this.vel = createVector(0, 0);
+    // --- CLASE PÉTALO / SEMILLA ---
+    class Petal {
+      constructor(x, y) {
+        this.pos = createVector(x, y);
+        this.vel = p5.Vector.random2D().mult(random(0.5, 2)); // Movimiento errático orgánico
         this.acc = createVector(0, 0);
-        this.maxSpeed = 4;
-        this.baseColor = 100; // Gris oscuro
-        this.activeColor = 255; // Blanco (cuando se calienta)
-        this.size = random(2, 4);
+        this.size = random(10, 35);
+        this.col = random(palette);
+        this.life = 255;
+        // Movimiento hacia arriba (como esporas flotando)
+        this.vel.y -= random(1, 3); 
+      }
+
+      applyForce(force) {
+        this.acc.add(force);
       }
 
       update() {
-        // El mouse actúa como FUENTE DE CALOR / VIRUS
-        let mouse = createVector(mouseX, mouseY);
-        let dir = p5.Vector.sub(mouse, this.pos);
-        let distance = dir.mag();
-
-        // Comportamiento: Si el mouse (calor) está cerca, agitarse y huir
-        if (distance < 150) {
-          let force = dir.normalize().mult(-0.5); // Fuerza de repulsión
-          this.acc.add(force);
-          
-          // Cambio de color por "temperatura" (gris -> blanco)
-          this.currentColor = lerp(this.currentColor, this.activeColor, 0.1);
-        } else {
-          // Volver a la calma lentamente
-          this.currentColor = lerp(this.currentColor, this.baseColor, 0.02);
-          
-          // Movimiento orgánico suave (noise)
-          this.acc.add(p5.Vector.random2D().mult(0.05));
-        }
-
         this.vel.add(this.acc);
-        this.vel.limit(this.maxSpeed);
         this.pos.add(this.vel);
-        this.acc.mult(0); // Reiniciar aceleración
-
-        // Bordes (reaparecer al otro lado)
-        if (this.pos.x > width) this.pos.x = 0;
-        if (this.pos.x < 0) this.pos.x = width;
-        if (this.pos.y > height) this.pos.y = 0;
-        if (this.pos.y < 0) this.pos.y = height;
+        this.acc.mult(0);
         
-        // Fricción para que no se vuelvan locas
-        this.vel.mult(0.95);
+        // Reducir tamaño y vida lentamente
+        this.life -= 1.5;
+        this.size *= 0.98; // Se marchitan/encogen
+        
+        // Fricción del aire
+        this.vel.mult(0.96);
+        
+        // Ruido orgánico (viento suave)
+        this.pos.x += map(noise(frameCount * 0.01), 0, 1, -1, 1);
       }
 
       display() {
-        fill(this.currentColor || this.baseColor);
-        ellipse(this.pos.x, this.pos.y, this.size);
+        fill(this.col);
+        // Dibujamos formas no perfectas (elipses deformadas)
+        push();
+        translate(this.pos.x, this.pos.y);
+        rotate(frameCount * 0.05);
+        ellipse(0, 0, this.size, this.size * 0.6); // Forma de pétalo
+        pop();
       }
+
+      finished() {
+        return (this.life < 0 || this.size < 1);
+      }
+    }
+
+    // --- FUNCIÓN DEL MENÚ JS ---
+    function toggleMenu() {
+      document.body.classList.toggle('menu-open');
     }
   </script>
 </body>
