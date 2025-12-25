@@ -1,296 +1,390 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Paula Ojeda | Ecologías Digitales</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-  <style>
-    /* --- FUENTES --- */
-    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,600&family=Space+Mono:wght@400&display=swap');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maria Paula Ojeda | Critical Technologist</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
-    /* --- PALETA DE COLORES COLOMBIANA --- */
-    :root {
-      --bg-color: #1a0510; /* Tierra oscura/Berenjena (No negro puro) */
-      --folder-bg: #E3CFA0; /* Color Carpeta Manila */
-      --folder-text: #5c3a21;
-      --accent-pink: #FF0055;
-      --accent-orange: #FF5500;
-    }
+    <style>
+        /* --- VARIABLES DE COLOR (EL TRANSECTO) --- */
+        :root {
+            --bg-paramo: #f3f4f6;   /* Blanco niebla */
+            --bg-bogota: #8c92ac;   /* Gris concreto húmedo */
+            --bg-barranca: #e65c40; /* Rojo tierra caliente */
+            --text-color: #1a1a1a;
+            --accent-color: #ff3300;
+        }
 
-    body {
-      margin: 0;
-      overflow: hidden;
-      background-color: var(--bg-color);
-      font-family: 'Cormorant Garamond', serif; /* Toque orgánico/botánico */
-    }
+        /* --- RESET BÁSICO --- */
+        * {
+            box-sizing: border-box;
+            cursor: none; /* Ocultamos el cursor normal para usar el personalizado */
+        }
 
-    /* --- TÍTULO FLOTANTE --- */
-    #hero-text {
-      position: absolute;
-      top: 10%;
-      left: 5%;
-      pointer-events: none;
-      z-index: 5;
-      color: #F8E7D4; /* Crema suave */
-      mix-blend-mode: screen;
-    }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Cormorant Garamond', serif;
+            color: var(--text-color);
+            background-color: var(--bg-paramo);
+            transition: background-color 1.5s cubic-bezier(0.25, 1, 0.5, 1); /* Transición suave */
+            overflow-x: hidden;
+        }
 
-    h1 {
-      font-size: 5rem;
-      font-weight: 300;
-      line-height: 0.9;
-      margin: 0;
-      font-style: italic;
-    }
+        /* --- CURSOR PERSONALIZADO (DATA VIZ) --- */
+        #custom-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 20px;
+            height: 20px;
+            border: 1px solid var(--text-color);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            transform: translate(-50%, -50%);
+            mix-blend-mode: difference;
+            transition: width 0.2s, height 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-    h2 {
-      font-family: 'Space Mono', monospace; /* Toque tecnológico */
-      font-size: 0.9rem;
-      letter-spacing: 2px;
-      color: #FF99AA;
-      margin-top: 10px;
-      text-transform: uppercase;
-    }
+        #cursor-text {
+            position: absolute;
+            left: 25px;
+            top: -5px;
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            white-space: nowrap;
+            color: white;
+            background: black;
+            padding: 2px 5px;
+            opacity: 0; /* Solo aparece al moverse */
+            transition: opacity 0.3s;
+        }
 
-    /* --- EL MENÚ DE CARPETA (DRAWER) --- */
-    /* La pestaña visible siempre */
-    #folder-tab {
-      position: fixed;
-      right: 0;
-      top: 15%;
-      width: 50px;
-      height: 140px;
-      background-color: var(--folder-bg);
-      border-radius: 10px 0 0 10px;
-      cursor: pointer;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: -5px 5px 15px rgba(0,0,0,0.3);
-      transition: right 0.4s ease;
-    }
+        /* --- TEXTURA DE RUIDO (FRICCIÓN) --- */
+        .noise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+            opacity: 0.07;
+            /* SVG Data URI para generar ruido sin cargar imágenes pesadas */
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
 
-    #folder-tab span {
-      writing-mode: vertical-rl;
-      text-orientation: mixed;
-      transform: rotate(180deg);
-      font-family: 'Space Mono', monospace;
-      font-weight: bold;
-      color: var(--folder-text);
-      font-size: 14px;
-      letter-spacing: 2px;
-    }
+        /* --- ALTIMETRO LATERAL (FIXED UI) --- */
+        .altimeter {
+            position: fixed;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            line-height: 1.8;
+            z-index: 100;
+            border-left: 1px solid currentColor;
+            padding-left: 15px;
+            mix-blend-mode: difference; /* Se invierte según el fondo */
+            color: white;
+        }
 
-    /* El cajón escondido */
-    #drawer {
-      position: fixed;
-      right: -320px; /* Escondido */
-      top: 0;
-      width: 300px;
-      height: 100vh;
-      background-color: #F2E6D0; /* Papel antiguo */
-      z-index: 99;
-      transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1); /* Movimiento suave */
-      box-shadow: -10px 0 30px rgba(0,0,0,0.5);
-      padding: 40px;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
+        .data-point { display: block; margin-bottom: 8px; }
+        .data-label { opacity: 0.6; margin-right: 5px; }
+        .data-value { font-weight: 700; }
 
-    /* Cuando el cajón está abierto */
-    body.menu-open #drawer { right: 0; }
-    body.menu-open #folder-tab { right: 300px; }
+        /* --- LAYOUT DE SECCIONES --- */
+        section {
+            min-height: 100vh;
+            padding: 10% 15%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
 
-    /* Estilo de los links como carpetas internas */
-    .folder-link {
-      display: block;
-      background-color: var(--folder-bg);
-      margin: 15px 0;
-      padding: 20px;
-      color: var(--folder-text);
-      text-decoration: none;
-      font-family: 'Space Mono', monospace;
-      font-weight: bold;
-      border-radius: 5px 20px 5px 5px; /* Forma de carpeta */
-      box-shadow: 2px 4px 10px rgba(0,0,0,0.1);
-      transition: transform 0.2s, background-color 0.2s;
-      position: relative;
-      border-top: 2px solid rgba(255,255,255,0.3);
-    }
+        /* Estilos de Texto */
+        h1 {
+            font-size: 5vw;
+            font-weight: 300;
+            line-height: 0.9;
+            margin: 0 0 30px 0;
+            letter-spacing: -0.02em;
+        }
 
-    .folder-link:hover {
-      transform: translateX(-10px) scale(1.05);
-      background-color: #fff;
-      color: var(--accent-pink);
-    }
+        .subtitle-tech {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
 
-    .folder-link small {
-      display: block;
-      font-size: 0.7em;
-      opacity: 0.6;
-      margin-top: 5px;
-      font-family: 'Cormorant Garamond', serif;
-      font-style: italic;
-    }
+        .subtitle-tech span {
+            border: 1px solid currentColor;
+            padding: 5px 12px;
+            border-radius: 50px;
+        }
 
-    /* Instrucción flotante */
-    .hint {
-      position: absolute;
-      bottom: 20px;
-      left: 20px;
-      color: rgba(255, 255, 255, 0.5);
-      font-family: 'Space Mono', monospace;
-      font-size: 10px;
-      pointer-events: none;
-    }
+        p.intro-text {
+            font-size: 1.5rem;
+            max-width: 600px;
+            line-height: 1.4;
+        }
 
-  </style>
+        /* --- TARJETAS DE PROYECTO (MEDIA LAB STYLE) --- */
+        .project-section-title {
+            font-size: 2.5rem;
+            font-style: italic;
+            margin-bottom: 60px;
+            border-left: 3px solid currentColor;
+            padding-left: 30px;
+            opacity: 0.9;
+        }
+
+        .project-card {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 40px;
+            margin-bottom: 100px;
+            align-items: start;
+        }
+
+        .visual-placeholder {
+            width: 100%;
+            height: 400px; /* Aquí iría tu video/foto */
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.2);
+        }
+
+        /* Patrones CSS para simular tus proyectos */
+        .pattern-ladrilludo {
+            background: repeating-linear-gradient(45deg, #444, #444 10px, #333 10px, #333 20px);
+        }
+        .pattern-huesped {
+            background: radial-gradient(circle at 50% 50%, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            filter: blur(20px);
+            animation: pulse 4s infinite;
+        }
+
+        @keyframes pulse { 0% { opacity: 0.8; } 50% { opacity: 1; transform: scale(1.05); } 100% { opacity: 0.8; } }
+
+        .project-info h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3rem;
+            margin: 0 0 15px 0;
+            font-weight: 400;
+        }
+
+        .tech-spec-box {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            background: rgba(255,255,255,0.2);
+            padding: 20px;
+            margin-top: 30px;
+            border: 1px solid currentColor;
+            backdrop-filter: blur(4px);
+        }
+
+        .spec-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            border-bottom: 1px dotted rgba(0,0,0,0.3);
+            padding-bottom: 2px;
+        }
+
+        /* --- FOOTER --- */
+        .footer {
+            min-height: 40vh;
+            background: #111;
+            color: #888;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            padding: 10% 15%;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .project-card { grid-template-columns: 1fr; }
+            h1 { font-size: 3rem; }
+            .altimeter { display: none; } /* En móvil ocultamos el sensor lateral */
+            section { padding: 10% 5%; }
+        }
+    </style>
 </head>
 <body>
 
-  <div id="hero-text">
-    <h1>PAULA<br>OJEDA</h1>
-    <h2>South / Matter / Code</h2>
-  </div>
+    <div class="noise-overlay"></div>
 
-  <div id="folder-tab" onclick="toggleMenu()">
-    <span>+ ARCHIVO</span>
-  </div>
+    <div id="custom-cursor"><div id="cursor-text">VISTA</div></div>
 
-  <div id="drawer">
-    <h3 style="font-family:'Space Mono'; color:var(--folder-text); margin-bottom: 30px;">// DIRECTORIO</h3>
-    
-    <a href="#" class="folder-link">
-      HOME
-      <small>Jardín Principal</small>
-    </a>
-    
-    <a href="https://behance.net/tu-perfil" target="_blank" class="folder-link">
-      WORK
-      <small>Huésped, Ladrilludo, Doll House...</small>
-    </a>
-    
-    <a href="mailto:tu-email@uniandes.edu.co" class="folder-link">
-      ABOUT ME
-      <small>Bio, CV & Contacto</small>
-    </a>
-  </div>
+    <div class="altimeter">
+        <div class="data-point"><span class="data-label">LOC:</span><span class="data-value" id="loc-val">PÁRAMO DE SUMAPAZ</span></div>
+        <div class="data-point"><span class="data-label">ALT:</span><span class="data-value" id="alt-val">3200</span> M</div>
+        <div class="data-point"><span class="data-label">TEMP:</span><span class="data-value" id="temp-val">8</span>°C</div>
+        <div class="data-point"><span class="data-label">SYSTEM:</span><span class="data-value" id="sys-val">STABLE</span></div>
+    </div>
 
-  <div class="hint">Move to pollinate • Click to wind</div>
+    <section id="hero">
+        <div class="subtitle-tech">
+            <span>Critical Matter</span>
+            <span>Recursividad</span>
+        </div>
+        <h1>Maria Paula<br>Ojeda Gómez</h1>
+        <p class="intro-text">
+            Investigando el <i>silencio</i> del campo y la <i>fricción</i> de la ciudad para materializar la disonancia social.
+        </p>
+    </section>
 
-  <script>
-    let flowers = [];
-    let palette;
+    <section id="bogota">
+        <div class="project-section-title">
+            "¿Puede un ladrillo registrar el peso invisible de la desigualdad?"
+        </div>
 
-    function setup() {
-      createCanvas(windowWidth, windowHeight);
-      // Colores inspirados en Orquídeas y Selva Colombiana (Con transparencia)
-      palette = [
-        color(255, 0, 85, 150),   // Magenta Orquídea
-        color(255, 100, 0, 150),  // Naranja Heliconia
-        color(100, 255, 100, 100),// Verde Neón Selva
-        color(150, 50, 255, 150), // Violeta Profundo
-        color(255, 200, 50, 150)  // Amarillo Polen
-      ];
-      noStroke();
-    }
+        <div class="project-card">
+            <div class="visual-placeholder pattern-ladrilludo" data-hover="REPRODUCIR SONIDO">
+                [VISUALIZACIÓN DE ONDA SONORA]
+            </div>
+            <div class="project-info">
+                <h2>Ladrilludo: Sensing Brick</h2>
+                <p>Un dispositivo de escucha urbana camuflado en material de construcción común. El ladrillo captura el paisaje sonoro de la estratificación social en Bogotá.</p>
+                
+                <div class="tech-spec-box">
+                    <div class="spec-row"><span>ROLE</span> <span>CO-RESEARCHER & FABRICATION</span></div>
+                    <div class="spec-row"><span>SENSORS</span> <span>PIEZO CONTACT MIC, ARDUINO NANO</span></div>
+                    <div class="spec-row"><span>MATERIAL</span> <span>CONCRETE, RECYCLED BRICK DUST</span></div>
+                    <div class="spec-row"><span>OUTPUT</span> <span>SPECTROGRAM DATA VISUALIZATION</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    function draw() {
-      // Fondo con trazo (para dejar estela suave) -> "Tierra de Noche"
-      background(26, 5, 16, 40); 
+    <section id="barranca">
+        <div class="project-section-title">
+            "¿Cómo diseñamos interfaces que suden, sientan y muten como un cuerpo vivo?"
+        </div>
 
-      // Crear nuevas partículas donde está el mouse (Polinización)
-      if (movedX != 0 || movedY != 0) {
-        let p = new Petal(mouseX, mouseY);
-        flowers.push(p);
-      }
+        <div class="project-card">
+            <div class="visual-placeholder pattern-huesped" data-hover="VER REACCIÓN TÉRMICA">
+                [MUTACIÓN PIGMENTO TÉRMICO]
+            </div>
+            <div class="project-info">
+                <h2>Huésped Errante</h2>
+                <p>Escultura viva que reacciona a los cambios térmicos del entorno, simulando la fiebre y la adaptación biológica en climas extremos.</p>
+                
+                <div class="tech-spec-box">
+                    <div class="spec-row"><span>ROLE</span> <span>LEAD PROTOTYPER</span></div>
+                    <div class="spec-row"><span>CODE</span> <span>TOUCHDESIGNER (PYTHON), GLSL</span></div>
+                    <div class="spec-row"><span>MATERIAL</span> <span>THERMOCHROMIC PIGMENTS, NICHROME</span></div>
+                    <div class="spec-row"><span>INTERACTION</span> <span>REAL-TIME THERMAL FEEDBACK</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-      // Ciclo automático para que siempre haya algo de vida
-      if (frameCount % 20 == 0) {
-        flowers.push(new Petal(random(width), height + 20));
-      }
+    <section class="footer">
+        <h3>PROCESS & FAILED PROTOTYPES</h3>
+        <p>La recursividad no se trata de perfección, sino de la capacidad de reparar y adaptar.</p>
+        <br>
+        <p>→ <a href="#" style="color:white;">GITHUB REPOSITORY</a></p>
+        <p>→ <a href="#" style="color:white;">DOWNLOAD FULL PORTFOLIO (PDF)</a></p>
+        <br><br>
+        <small>MIT MEDIA LAB APPLICATION 2025 | BOGOTÁ, COLOMBIA</small>
+    </section>
 
-      // Actualizar y dibujar
-      for (let i = flowers.length - 1; i >= 0; i--) {
-        flowers[i].update();
-        flowers[i].display();
+    <script>
+        // Elementos del DOM
+        const body = document.body;
+        const altLabel = document.getElementById('alt-val');
+        const tempLabel = document.getElementById('temp-val');
+        const locLabel = document.getElementById('loc-val');
+        const sysLabel = document.getElementById('sys-val');
         
-        // Eliminar si son muy pequeñas o salen de pantalla
-        if (flowers[i].finished()) {
-          flowers.splice(i, 1);
-        }
-      }
-    }
+        const cursor = document.getElementById('custom-cursor');
+        const cursorText = document.getElementById('cursor-text');
 
-    function mousePressed() {
-      // Explosión de viento al hacer clic
-      for(let f of flowers) {
-        let force = createVector(f.pos.x - mouseX, f.pos.y - mouseY);
-        force.normalize();
-        force.mult(10);
-        f.applyForce(force);
-      }
-    }
+        // Lógica del Mouse (Cursor Personalizado)
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            
+            // Hacer que el texto del cursor aparezca sutilmente
+            cursorText.style.opacity = 1;
+        });
 
-    function windowResized() {
-      resizeCanvas(windowWidth, windowHeight);
-    }
+        // Hover en Proyectos
+        const visuals = document.querySelectorAll('.visual-placeholder');
+        visuals.forEach(vis => {
+            vis.addEventListener('mouseenter', () => {
+                cursor.style.transform = "translate(-50%, -50%) scale(2.5)";
+                cursorText.innerText = vis.getAttribute('data-hover');
+                cursor.style.borderColor = "#fff";
+            });
+            vis.addEventListener('mouseleave', () => {
+                cursor.style.transform = "translate(-50%, -50%) scale(1)";
+                cursorText.innerText = "VISTA";
+                cursor.style.borderColor = "var(--text-color)";
+            });
+        });
 
-    // --- CLASE PÉTALO / SEMILLA ---
-    class Petal {
-      constructor(x, y) {
-        this.pos = createVector(x, y);
-        this.vel = p5.Vector.random2D().mult(random(0.5, 2)); // Movimiento errático orgánico
-        this.acc = createVector(0, 0);
-        this.size = random(10, 35);
-        this.col = random(palette);
-        this.life = 255;
-        // Movimiento hacia arriba (como esporas flotando)
-        this.vel.y -= random(1, 3); 
-      }
+        // Lógica del Scroll (El Transecto)
+        window.addEventListener('scroll', () => {
+            // Calculamos qué porcentaje de la página hemos bajado
+            const totalHeight = document.body.scrollHeight - window.innerHeight;
+            const scrollPercent = window.scrollY / totalHeight;
 
-      applyForce(force) {
-        this.acc.add(force);
-      }
+            // 1. Interpolación de Altitud (3200m -> 75m)
+            const startAlt = 3200; 
+            const endAlt = 75;
+            const currentAlt = Math.round(startAlt - (scrollPercent * (startAlt - endAlt)));
+            altLabel.innerText = currentAlt;
 
-      update() {
-        this.vel.add(this.acc);
-        this.pos.add(this.vel);
-        this.acc.mult(0);
-        
-        // Reducir tamaño y vida lentamente
-        this.life -= 1.5;
-        this.size *= 0.98; // Se marchitan/encogen
-        
-        // Fricción del aire
-        this.vel.mult(0.96);
-        
-        // Ruido orgánico (viento suave)
-        this.pos.x += map(noise(frameCount * 0.01), 0, 1, -1, 1);
-      }
+            // 2. Lógica de Zonas (Cambio de Colores y Datos)
+            if (scrollPercent < 0.35) {
+                // ZONA 1: PÁRAMO (Intro)
+                body.style.backgroundColor = "var(--bg-paramo)";
+                locLabel.innerText = "PÁRAMO";
+                tempLabel.innerText = "8";
+                sysLabel.innerText = "SILENT";
+                body.style.setProperty('--text-color', '#1a1a1a');
+                
+            } else if (scrollPercent >= 0.35 && scrollPercent < 0.75) {
+                // ZONA 2: BOGOTÁ (Fricción)
+                body.style.backgroundColor = "var(--bg-bogota)";
+                locLabel.innerText = "BOGOTÁ";
+                tempLabel.innerText = "19";
+                sysLabel.innerText = "FRICTION";
+                body.style.setProperty('--text-color', '#000000');
 
-      display() {
-        fill(this.col);
-        // Dibujamos formas no perfectas (elipses deformadas)
-        push();
-        translate(this.pos.x, this.pos.y);
-        rotate(frameCount * 0.05);
-        ellipse(0, 0, this.size, this.size * 0.6); // Forma de pétalo
-        pop();
-      }
-
-      finished() {
-        return (this.life < 0 || this.size < 1);
-      }
-    }
-
-    // --- FUNCIÓN DEL MENÚ JS ---
-    function toggleMenu() {
-      document.body.classList.toggle('menu-open');
-    }
-  </script>
+            } else {
+                // ZONA 3: BARRANCA (Calor)
+                body.style.backgroundColor = "var(--bg-barranca)";
+                locLabel.innerText = "MAGDALENA";
+                tempLabel.innerText = "36";
+                sysLabel.innerText = "MELTING";
+                body.style.setProperty('--text-color', '#ffffff'); /* Texto blanco por contraste */
+            }
+        });
+    </script>
 </body>
 </html>
