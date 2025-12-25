@@ -3,335 +3,269 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maria Paula Ojeda | Critical Technologist</title>
+    <title>Maria Paula Ojeda | Critical Matter</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,500;1,400&family=Space+Mono:ital,wght@0,400;0,700&display=swap" rel="stylesheet">
 
     <style>
-        /* --- VARIABLES --- */
         :root {
-            --bg-paramo: #f4f5f7;
-            --bg-bogota: #8d949e;
-            --bg-barranca: #d6492c;
-            --text-main: #111;
-            --accent: #ff3300;
+            --bg-color: #0a0a0a; /* Dark lab aesthetic */
+            --text-color: #e0e0e0;
+            --accent-bio: #ffffff; /* Paramo */
+            --accent-city: #ff4d4d; /* Friction */
+            --accent-body: #ff9f43; /* Heat */
         }
 
-        * { box-sizing: border-box; cursor: none; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: var(--bg-color); color: var(--text-color); font-family: 'Space Mono', monospace; cursor: none; }
 
-        body {
-            margin: 0; padding: 0;
-            font-family: 'Cormorant Garamond', serif;
-            color: var(--text-main);
-            background-color: var(--bg-paramo);
-            overflow-x: hidden;
-            transition: background-color 1.2s ease, color 1.2s ease;
+        /* --- UI LAYER --- */
+        .ui-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 10;
+            display: flex; flex-direction: column; justify-content: space-between;
+            padding: 40px; box-sizing: border-box;
         }
 
-        /* --- UI ELEMENTS --- */
+        .header { display: flex; justify-content: space-between; align-items: flex-start; mix-blend-mode: difference; }
+        .logo { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; line-height: 1; }
+        .logo span { font-family: 'Space Mono'; font-size: 0.7rem; display: block; margin-top: 5px; opacity: 0.7; letter-spacing: 2px; }
+
+        .nav a { color: white; text-decoration: none; margin-left: 30px; font-size: 0.8rem; position: relative; pointer-events: auto; cursor: none; }
+        .nav a::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 1px; background: white; transition: width 0.3s; }
+        .nav a:hover::after { width: 100%; }
+
+        /* --- CANVAS CONTAINER --- */
+        #canvas-container {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
+            /* Subtle texture overlay */
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+        }
+
+        /* --- INTERACTIVE TEXTS (HIDDEN INITIALLY) --- */
+        .node-text {
+            position: absolute; transform: translate(-50%, -50%);
+            text-align: center; pointer-events: auto; z-index: 20;
+            transition: all 0.5s ease; opacity: 0.3;
+            width: 300px;
+        }
+        
+        .node-text:hover { opacity: 1; z-index: 30; }
+        .node-text:hover h2 { letter-spacing: 3px; }
+        
+        .node-text h2 {
+            font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; font-weight: 300; margin: 0;
+            text-shadow: 0 0 20px rgba(0,0,0,0.8);
+        }
+        .node-text p {
+            font-size: 0.75rem; margin-top: 10px; opacity: 0; transform: translateY(10px); transition: all 0.3s;
+            background: rgba(0,0,0,0.8); padding: 10px; border: 1px solid rgba(255,255,255,0.2);
+        }
+        .node-text:hover p { opacity: 1; transform: translateY(0); }
+        .node-text span.tag {
+            display: inline-block; font-size: 0.6rem; border: 1px solid currentColor; padding: 2px 6px; margin-bottom: 5px;
+            border-radius: 20px; text-transform: uppercase;
+        }
+
+        /* Positions for the 3 Concepts */
+        #node-1 { bottom: 20%; left: 20%; color: var(--accent-city); } /* Friction */
+        #node-2 { bottom: 20%; right: 20%; color: var(--accent-body); } /* Tangible */
+        #node-3 { top: 30%; left: 50%; color: var(--accent-bio); } /* Silence */
+
+        /* --- CURSOR --- */
         #cursor {
-            position: fixed; top: 0; left: 0; width: 12px; height: 12px;
-            border: 1px solid currentColor; border-radius: 50%;
-            pointer-events: none; z-index: 9999;
-            transform: translate(-50%, -50%); mix-blend-mode: difference;
-            transition: transform 0.1s; display: flex; align-items: center; justify-content: center;
+            position: fixed; top: 0; left: 0; width: 40px; height: 40px;
+            border: 1px solid white; border-radius: 50%;
+            transform: translate(-50%, -50%); pointer-events: none; z-index: 100;
+            mix-blend-mode: difference; transition: transform 0.2s;
         }
-        #cursor.hovered { transform: translate(-50%, -50%) scale(4); background: #fff; mix-blend-mode: normal; color: black; border: none; }
-        
-        .noise {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 50; opacity: 0.08;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        #cursor.active { transform: translate(-50%, -50%) scale(0.5); background: white; }
+
+        .hint {
+            position: absolute; bottom: 40px; width: 100%; text-align: center;
+            font-size: 0.7rem; opacity: 0.5; animation: pulse 2s infinite;
         }
-
-        /* --- NAVIGATION & HEADER --- */
-        .top-bar {
-            position: fixed; top: 30px; left: 40px; right: 40px;
-            display: flex; justify-content: space-between; align-items: flex-start;
-            font-family: 'Space Mono', monospace; font-size: 0.75rem;
-            z-index: 100; mix-blend-mode: difference; color: white;
-            text-transform: uppercase; letter-spacing: 1px;
-        }
-
-        .researcher-id { text-align: left; line-height: 1.4; }
-        .nav-links { display: flex; gap: 30px; }
-        .nav-links a { text-decoration: none; color: inherit; position: relative; }
-        .nav-links a::after { content: ''; display: block; width: 0; height: 1px; background: currentColor; transition: width 0.3s; }
-        .nav-links a:hover::after { width: 100%; }
-
-        /* --- ALTIMETER (LEFT SIDE) --- */
-        .altimeter {
-            position: fixed; left: 40px; top: 50%; transform: translateY(-50%);
-            font-family: 'Space Mono', monospace; font-size: 10px;
-            z-index: 100; mix-blend-mode: difference; color: white;
-            border-left: 1px solid currentColor; padding-left: 15px;
-            display: none; 
-        }
-        .show-altimeter .altimeter { display: block; }
-        .data-row { margin-bottom: 8px; }
-        .data-label { opacity: 0.6; margin-right: 5px; }
-
-        /* --- HOME (CONCEPTUAL SCROLL) --- */
-        .page { display: none; padding-top: 0; min-height: 100vh; opacity: 0; transition: opacity 0.5s; }
-        .page.active { display: block; opacity: 1; }
-
-        .concept-section {
-            min-height: 100vh;
-            display: flex; flex-direction: column; justify-content: center;
-            padding: 0 15vw;
-            position: relative;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-        }
-
-        .research-statement {
-            font-size: 5.5vw; /* Massive text */
-            font-weight: 300;
-            line-height: 0.95;
-            margin: 0 0 40px 0;
-            letter-spacing: -0.02em;
-        }
-
-        .concept-meta {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.85rem;
-            max-width: 450px;
-            line-height: 1.6;
-            border-top: 1px solid currentColor;
-            padding-top: 20px;
-            display: flex; gap: 20px;
-        }
-
-        .concept-number { font-weight: 700; margin-right: 10px; }
-
-        /* --- PROJECTS GRID --- */
-        #projects-page { padding: 150px 5vw; background: #f4f5f7; color: #111; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 40px; margin-top: 50px; }
-        .card { cursor: none; }
-        .card-img { height: 280px; background: #ccc; margin-bottom: 15px; position: relative; overflow: hidden; }
-        .card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s; }
-        .card:hover img { transform: scale(1.05); }
-        .card-meta { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: #666; margin-bottom: 5px; }
-        .card h3 { margin: 0; font-size: 1.8rem; font-weight: 400; }
-
-        /* --- ABOUT --- */
-        #about-page { padding: 150px 20vw; background: #e0e0e0; color: #111; }
-        .bio-text { font-size: 1.5rem; line-height: 1.5; margin-bottom: 40px; }
-        
-        /* --- MODAL --- */
-        #modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #fff; z-index: 200; overflow-y: auto;
-            transform: translateY(100%); transition: transform 0.6s cubic-bezier(0.7,0,0.3,1);
-        }
-        #modal.open { transform: translateY(0); }
-        .close-btn { position: fixed; top: 30px; right: 40px; z-index: 201; font-family: 'Space Mono', monospace; cursor: pointer; mix-blend-mode: difference; color: white; }
-        .modal-hero { height: 50vh; background: #000; display: flex; align-items: flex-end; padding: 5vw; color: white; }
-        .modal-content { padding: 5vw 20vw; }
+        @keyframes pulse { 0% {opacity:0.3;} 50% {opacity:0.7;} 100% {opacity:0.3;} }
 
     </style>
 </head>
-<body class="show-altimeter">
+<body>
 
-    <div class="noise"></div>
     <div id="cursor"></div>
 
-    <div class="top-bar">
-        <div class="researcher-id">
-            Maria Paula Ojeda<br>
-            <span style="opacity:0.6;">M.D.A. Candidate 2025</span>
+    <div class="ui-layer">
+        <div class="header">
+            <div class="logo">
+                MARIA PAULA OJEDA
+                <span>Critical Technologist | MIT Media Lab Applicant</span>
+            </div>
+            <div class="nav">
+                <a href="#">Research</a>
+                <a href="#">Projects</a>
+                <a href="#">About</a>
+            </div>
         </div>
-        <div class="nav-links">
-            <a href="#" onclick="nav('home')">Research</a>
-            <a href="#" onclick="nav('projects')">Works</a>
-            <a href="#" onclick="nav('about')">About</a>
-        </div>
+        <div class="hint">[ HOVER TO ILLUMINATE RESEARCH AREAS ]</div>
     </div>
 
-    <div class="altimeter">
-        <div class="data-row"><span class="data-label">ZONE:</span><span id="zone-val">PÁRAMO</span></div>
-        <div class="data-row"><span class="data-label">ALT:</span><span id="alt-val">3200</span> M</div>
-        <div class="data-row"><span class="data-label">STATUS:</span><span id="stat-val">OBSERVING</span></div>
+    <div class="node-text" id="node-1">
+        <span class="tag">01. Critical Design</span>
+        <h2>Systemic<br>Friction</h2>
+        <p>"Questioning the invisible codes of class and gender through materialized dissonance."</p>
     </div>
 
-    <div id="home-page" class="page active">
-        
-        <section class="concept-section" id="c1">
-            <h1 class="research-statement">
-                Materializing<br>
-                <i>Dissonance</i>.
-            </h1>
-            <div class="concept-meta">
-                <span class="concept-number">00</span>
-                <div>
-                    INVESTIGATION STATEMENT<br><br>
-                    Researching the intersection of critical design, tangible interfaces, and body-space narratives in the Global South.
-                </div>
-            </div>
-        </section>
-
-        <section class="concept-section" id="c2">
-            <h1 class="research-statement">
-                The Silent<br>Archive.
-            </h1>
-            <div class="concept-meta">
-                <span class="concept-number">01</span>
-                <div>
-                    ORIGIN: PÁRAMO<br><br>
-                    How can code preserve the "small data" of biological decay? Extracting signals from the silence of the Andes.
-                    <br><br>
-                    <a href="#" onclick="nav('projects')" style="color:inherit;">→ SEE: GENERATIVE FLORA</a>
-                </div>
-            </div>
-        </section>
-
-        <section class="concept-section" id="c3">
-            <h1 class="research-statement">
-                The Physics of<br>Inequality.
-            </h1>
-            <div class="concept-meta">
-                <span class="concept-number">02</span>
-                <div>
-                    CONTEXT: BOGOTÁ<br><br>
-                    Dragging sensors through the city to record the invisible weight of social stratification.
-                    <br><br>
-                    <a href="#" onclick="nav('projects')" style="color:inherit;">→ SEE: LADRILLUDO</a>
-                </div>
-            </div>
-        </section>
-
-        <section class="concept-section" id="c4">
-            <h1 class="research-statement">
-                Recursive<br><i>Adaptation</i>.
-            </h1>
-            <div class="concept-meta">
-                <span class="concept-number">03</span>
-                <div>
-                    METHOD: RECURSIVIDAD<br><br>
-                    Hacking scarcity to produce abundance. Designing interfaces that sweat, mutate, and survive.
-                    <br><br>
-                    <a href="#" onclick="nav('projects')" style="color:inherit;">→ SEE: HUÉSPED ERRANTE</a>
-                </div>
-            </div>
-        </section>
-
+    <div class="node-text" id="node-2">
+        <span class="tag">02. Tangible Media</span>
+        <h2>Embodied<br>Tech</h2>
+        <p>"Turning passive observation into active participation through recursive interfaces."</p>
     </div>
 
-    <div id="projects-page" class="page">
-        <h1 style="font-size:4vw; font-weight:300; margin:0;">Selected Works</h1>
-        <div class="grid">
-            <div class="card" onclick="openModal('Ladrilludo', '#9ca3af')">
-                <div class="card-img"><img src="https://via.placeholder.com/600x400/555/fff?text=LADRILLUDO" alt=""></div>
-                <div class="card-meta">CRITICAL MATTER / SOUND</div>
-                <h3>Ladrilludo</h3>
-            </div>
-            <div class="card" onclick="openModal('Huésped Errante', '#d6492c')">
-                <div class="card-img"><img src="https://via.placeholder.com/600x400/a33/fff?text=HUESPED" alt=""></div>
-                <div class="card-meta">TANGIBLE MEDIA / BIO</div>
-                <h3>Huésped Errante</h3>
-            </div>
-            <div class="card" onclick="openModal('La Soledad Suena', '#333')">
-                <div class="card-img"><img src="https://via.placeholder.com/600x400/111/fff?text=SOLEDAD" alt=""></div>
-                <div class="card-meta">FUTURE SKETCHES / AV</div>
-                <h3>La Soledad Suena</h3>
-            </div>
-        </div>
+    <div class="node-text" id="node-3">
+        <span class="tag">03. Generative Code</span>
+        <h2>Organic<br>Silence</h2>
+        <p>"Preserving the memory of the Global South through data-driven generative systems."</p>
     </div>
 
-    <div id="about-page" class="page">
-        <div style="font-family:'Space Mono'; margin-bottom:30px;">[ APPLICANT MANIFESTO ]</div>
-        <div class="bio-text">
-            "I come from a landscape defined by extreme contrast. My family roots are grounded in the silence of the countryside, yet I grew up navigating the chaotic friction of the city. This duality wired my brain to be a compulsive observer."
-        </div>
-        <div class="bio-text" style="font-style:italic; border-left:2px solid var(--accent); padding-left:20px;">
-            "In the Global South, innovation is rarely about having the newest tool; it is about survival. It is the concept of <b>Recursividad</b>."
-        </div>
-        <div style="margin-top:50px; font-family:'Space Mono'; font-size:0.8rem;">
-            CONTACT: mariapaulaojedagomez@gmail.com<br>
-            GITHUB: github.com/sbleeyouk (placeholder)
-        </div>
-    </div>
-
-    <div id="modal">
-        <div class="close-btn" onclick="closeModal()">CLOSE [X]</div>
-        <div class="modal-hero" id="m-hero">
-            <h1 style="font-size:4rem; margin:0;" id="m-title">Project Name</h1>
-        </div>
-        <div class="modal-content">
-            <p style="font-family:'Space Mono';">FULL DOCUMENTATION COMING SOON.</p>
-        </div>
+    <div id="canvas-container">
+        <canvas id="ecosystem"></canvas>
     </div>
 
     <script>
-        // NAVIGATION SYSTEM
-        function nav(id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id + '-page').classList.add('active');
-            window.scrollTo(0,0);
+        const canvas = document.getElementById('ecosystem');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let branches = [];
+        
+        // Mouse interaction
+        let mouse = { x: 0, y: 0 };
+        document.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
             
-            // Toggle Altimeter
-            if(id === 'home') document.body.classList.add('show-altimeter');
-            else {
-                document.body.classList.remove('show-altimeter');
-                document.body.style.backgroundColor = '#f4f5f7';
-                document.body.style.color = '#111';
+            // Cursor effect
+            const cursor = document.getElementById('cursor');
+            const hovered = document.elementFromPoint(e.clientX, e.clientY)?.closest('a, .node-text');
+            if(hovered) cursor.classList.add('active');
+            else cursor.classList.remove('active');
+        });
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            initTree();
+        }
+        window.addEventListener('resize', resize);
+
+        // Recursive Branch Class
+        class Branch {
+            constructor(x, y, angle, depth, type) {
+                this.x = x;
+                this.y = y;
+                this.angle = angle;
+                this.depth = depth;
+                this.type = type; // 0=Base, 1=Left(Friction), 2=Right(Tangible), 3=Top(Silence)
+                this.endX = x + Math.cos(angle) * depth * 8; // Length depends on depth
+                this.endY = y + Math.sin(angle) * depth * 8;
+                this.growing = true;
+                this.currentX = x;
+                this.currentY = y;
+                this.speed = Math.random() * 2 + 1;
+                
+                this.branches = [];
+                // Has it finished growing?
+                this.finished = false;
+                
+                // Color based on position (Gradient from Earth to Sky)
+                if (depth > 6) this.color = `rgba(100, 100, 100, ${depth/12})`; // Base roots
+                else if (y < height * 0.4) this.color = "rgba(255, 255, 255, 0.6)"; // Top (Flowers)
+                else if (x < width * 0.5) this.color = "rgba(200, 100, 100, 0.4)"; // Left (Reddish)
+                else this.color = "rgba(200, 150, 100, 0.4)"; // Right (Orangeish)
+            }
+
+            update() {
+                // Grow animation
+                if (this.growing) {
+                    const dx = this.endX - this.currentX;
+                    const dy = this.endY - this.currentY;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    
+                    if (dist < 1) {
+                        this.growing = false;
+                        this.spawn();
+                    } else {
+                        this.currentX += dx * 0.1;
+                        this.currentY += dy * 0.1;
+                    }
+                }
+
+                // Interactive Bloom (Light up when mouse is near)
+                const dMouse = Math.hypot(this.currentX - mouse.x, this.currentY - mouse.y);
+                const maxDist = 150;
+                
+                ctx.beginPath();
+                ctx.moveTo(this.x, this.y);
+                
+                // If mouse is close, line vibrates (Friction)
+                if (dMouse < maxDist) {
+                    const jitter = (maxDist - dMouse) * 0.02;
+                    ctx.lineTo(this.currentX + (Math.random()-0.5)*jitter, this.currentY + (Math.random()-0.5)*jitter);
+                    ctx.strokeStyle = "rgba(255, 255, 255, 0.8)";
+                    ctx.lineWidth = this.depth * 0.8;
+                } else {
+                    ctx.lineTo(this.currentX, this.currentY);
+                    ctx.strokeStyle = this.color;
+                    ctx.lineWidth = this.depth * 0.4;
+                }
+                ctx.stroke();
+
+                // Draw "Flowers" at tips if deep enough
+                if (!this.growing && this.depth < 2 && dMouse < maxDist) {
+                    ctx.beginPath();
+                    ctx.arc(this.currentX, this.currentY, 2, 0, Math.PI*2);
+                    ctx.fillStyle = "#fff";
+                    ctx.fill();
+                }
+
+                // Update children
+                this.branches.forEach(b => b.update());
+            }
+
+            spawn() {
+                if (this.depth > 0) {
+                    const numBranches = Math.floor(Math.random() * 2) + 2; // 2 or 3 splits
+                    for (let i = 0; i < numBranches; i++) {
+                        // Variation in angle (Recursive Chaos)
+                        const variance = 0.8;
+                        const newAngle = this.angle + (Math.random() * variance - variance/2);
+                        this.branches.push(new Branch(this.currentX, this.currentY, newAngle, this.depth - 1));
+                    }
+                }
             }
         }
 
-        // MODAL SYSTEM
-        function openModal(title, color) {
-            document.getElementById('m-title').innerText = title;
-            document.getElementById('m-hero').style.backgroundColor = color;
-            document.getElementById('modal').classList.add('open');
-        }
-        function closeModal() {
-            document.getElementById('modal').classList.remove('open');
+        function initTree() {
+            branches = [];
+            // Create a "Mountain" shape using 3 main roots
+            // Center Root
+            branches.push(new Branch(width/2, height, -Math.PI/2, 12));
+            // Left Root (Wide base)
+            branches.push(new Branch(width/2 - 50, height, -Math.PI/2 - 0.3, 11));
+            // Right Root (Wide base)
+            branches.push(new Branch(width/2 + 50, height, -Math.PI/2 + 0.3, 11));
         }
 
-        // SCROLL & COLOR LOGIC (THE TRANSECT)
-        window.addEventListener('scroll', () => {
-            if(!document.getElementById('home-page').classList.contains('active')) return;
-
-            const scrollPct = window.scrollY / (document.body.scrollHeight - window.innerHeight);
-            const body = document.body;
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
             
-            // Update Altimeter
-            const alt = Math.round(3200 - (scrollPct * 3150));
-            document.getElementById('alt-val').innerText = alt;
+            // Draw connections
+            branches.forEach(b => b.update());
+            
+            requestAnimationFrame(animate);
+        }
 
-            // Update Zones
-            if (scrollPct < 0.25) {
-                // INTRO / PARAMO
-                body.style.backgroundColor = "var(--bg-paramo)";
-                body.style.color = "#111";
-                document.getElementById('zone-val').innerText = "PÁRAMO";
-                document.getElementById('stat-val').innerText = "OBSERVING";
-            } else if (scrollPct >= 0.25 && scrollPct < 0.6) {
-                // BOGOTA
-                body.style.backgroundColor = "var(--bg-bogota)";
-                body.style.color = "#000";
-                document.getElementById('zone-val').innerText = "BOGOTÁ";
-                document.getElementById('stat-val').innerText = "RECORDING";
-            } else {
-                // BARRANCA
-                body.style.backgroundColor = "var(--bg-barranca)";
-                body.style.color = "#fff";
-                document.getElementById('zone-val').innerText = "MAGDALENA";
-                document.getElementById('stat-val').innerText = "MUTATING";
-            }
-        });
-
-        // CURSOR
-        const cursor = document.getElementById('cursor');
-        document.addEventListener('mousemove', e => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
-        });
-        document.querySelectorAll('a, .card').forEach(el => {
-            el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
-            el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
-        });
+        resize();
+        animate();
 
     </script>
 </body>
