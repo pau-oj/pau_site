@@ -3,19 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maria Paula Ojeda | Critical Technologist</title>
+    <title>Maria Paula Ojeda | Critical Matter</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Space+Mono:ital,wght@0,400;0,700&display=swap" rel="stylesheet">
 
     <style>
         /* --- VARIABLES --- */
         :root {
+            --bg-dark: #050505;
             --bg-paramo: #f4f5f7;
             --bg-bogota: #8d949e;
             --bg-barranca: #d6492c;
             --text-main: #111;
+            --text-light: #e0e0e0;
             --accent: #ff3300;
         }
 
@@ -25,28 +27,29 @@
             margin: 0; padding: 0;
             font-family: 'Cormorant Garamond', serif;
             color: var(--text-main);
-            background-color: var(--bg-paramo);
+            background-color: var(--bg-dark); /* Empieza oscuro por el Canvas */
             overflow-x: hidden;
-            transition: background-color 1.2s ease, color 1.2s ease;
+            transition: background-color 1s ease, color 1s ease;
         }
 
-        /* --- UI ELEMENTS --- */
+        /* --- NOISE & CURSOR --- */
+        .noise {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 50; opacity: 0.06;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+
         #cursor {
             position: fixed; top: 0; left: 0; width: 12px; height: 12px;
             border: 1px solid currentColor; border-radius: 50%;
             pointer-events: none; z-index: 9999;
             transform: translate(-50%, -50%); mix-blend-mode: difference;
             transition: transform 0.1s; display: flex; align-items: center; justify-content: center;
+            color: white; /* Default cursor color */
         }
         #cursor.hovered { transform: translate(-50%, -50%) scale(4); background: #fff; mix-blend-mode: normal; color: black; border: none; }
-        
-        .noise {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 50; opacity: 0.08;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-        }
 
-        /* --- NAVIGATION & HEADER --- */
+        /* --- HEADER --- */
         .top-bar {
             position: fixed; top: 30px; left: 40px; right: 40px;
             display: flex; justify-content: space-between; align-items: flex-start;
@@ -54,29 +57,58 @@
             z-index: 100; mix-blend-mode: difference; color: white;
             text-transform: uppercase; letter-spacing: 1px;
         }
+        .nav-links a { margin-left: 20px; text-decoration: none; color: inherit; }
+        .nav-links a:hover { text-decoration: underline; }
 
-        .researcher-id { text-align: left; line-height: 1.4; }
-        .nav-links { display: flex; gap: 30px; }
-        .nav-links a { text-decoration: none; color: inherit; position: relative; }
-        .nav-links a::after { content: ''; display: block; width: 0; height: 1px; background: currentColor; transition: width 0.3s; }
-        .nav-links a:hover::after { width: 100%; }
-
-        /* --- ALTIMETER (LEFT SIDE) --- */
-        .altimeter {
-            position: fixed; left: 40px; top: 50%; transform: translateY(-50%);
-            font-family: 'Space Mono', monospace; font-size: 10px;
-            z-index: 100; mix-blend-mode: difference; color: white;
-            border-left: 1px solid currentColor; padding-left: 15px;
-            display: none; 
+        /* --- SECTION 0: HERO CANVAS (MOUNTAIN ROOTS) --- */
+        #hero-container {
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+            overflow: hidden;
+            color: var(--text-light);
         }
-        .show-altimeter .altimeter { display: block; }
-        .data-row { margin-bottom: 8px; }
-        .data-label { opacity: 0.6; margin-right: 5px; }
 
-        /* --- HOME (CONCEPTUAL SCROLL) --- */
-        .page { display: none; padding-top: 0; min-height: 100vh; opacity: 0; transition: opacity 0.5s; }
-        .page.active { display: block; opacity: 1; }
+        canvas#mountain-roots {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0.8;
+        }
 
+        .hero-text-overlay {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            text-align: center; pointer-events: none; z-index: 10;
+            width: 100%;
+        }
+        
+        .hero-title {
+            font-size: 4.5rem; margin: 0; font-weight: 300; letter-spacing: -1px;
+            text-shadow: 0 0 30px #000; transition: color 0.5s;
+        }
+        .hero-subtitle {
+            font-family: 'Space Mono', monospace; font-size: 0.8rem; margin-top: 15px;
+            background: #000; color: #fff; display: inline-block; padding: 5px 12px;
+        }
+        .scroll-hint {
+            position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+            font-family: 'Space Mono', monospace; font-size: 0.7rem; opacity: 0.7;
+            animation: bounce 2s infinite;
+        }
+
+        /* Interaction Zones for Hero */
+        .zones-wrapper {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: grid; grid-template-columns: 1fr 1fr 1fr;
+        }
+        .hero-zone { height: 100%; }
+
+        /* --- PAGE SYSTEM --- */
+        .page-container { display: none; padding-top: 100px; min-height: 100vh; }
+        .page-container.active { display: block; }
+        
+        /* Special case for Home to include Hero + Scroll Sections */
+        #home-page { padding-top: 0; } 
+
+        /* --- TRANSECT SECTIONS (SCROLL) --- */
         .concept-section {
             min-height: 100vh;
             display: flex; flex-direction: column; justify-content: center;
@@ -86,23 +118,12 @@
         }
 
         .research-statement {
-            font-size: 5.5vw; /* Massive text */
-            font-weight: 300;
-            line-height: 0.95;
-            margin: 0 0 40px 0;
-            letter-spacing: -0.02em;
+            font-size: 5.5vw; font-weight: 300; line-height: 0.95; margin: 0 0 40px 0; letter-spacing: -0.02em;
         }
-
         .concept-meta {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.85rem;
-            max-width: 450px;
-            line-height: 1.6;
-            border-top: 1px solid currentColor;
-            padding-top: 20px;
-            display: flex; gap: 20px;
+            font-family: 'Space Mono', monospace; font-size: 0.85rem; max-width: 450px; line-height: 1.6;
+            border-top: 1px solid currentColor; padding-top: 20px; display: flex; gap: 20px;
         }
-
         .concept-number { font-weight: 700; margin-right: 10px; }
 
         /* --- PROJECTS GRID --- */
@@ -113,26 +134,58 @@
         .card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s; }
         .card:hover img { transform: scale(1.05); }
         .card-meta { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: #666; margin-bottom: 5px; }
-        .card h3 { margin: 0; font-size: 1.8rem; font-weight: 400; }
 
         /* --- ABOUT --- */
         #about-page { padding: 150px 20vw; background: #e0e0e0; color: #111; }
         .bio-text { font-size: 1.5rem; line-height: 1.5; margin-bottom: 40px; }
-        
-        /* --- MODAL --- */
-        #modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #fff; z-index: 200; overflow-y: auto;
-            transform: translateY(100%); transition: transform 0.6s cubic-bezier(0.7,0,0.3,1);
+
+        /* --- ALTIMETER --- */
+        .altimeter {
+            position: fixed; left: 40px; top: 50%; transform: translateY(-50%);
+            font-family: 'Space Mono', monospace; font-size: 10px;
+            z-index: 100; mix-blend-mode: difference; color: white;
+            border-left: 1px solid currentColor; padding-left: 15px;
+            opacity: 0; transition: opacity 0.5s;
         }
-        #modal.open { transform: translateY(0); }
-        .close-btn { position: fixed; top: 30px; right: 40px; z-index: 201; font-family: 'Space Mono', monospace; cursor: pointer; mix-blend-mode: difference; color: white; }
-        .modal-hero { height: 50vh; background: #000; display: flex; align-items: flex-end; padding: 5vw; color: white; }
-        .modal-content { padding: 5vw 20vw; }
+        .show-altimeter .altimeter { opacity: 1; }
+        .data-row { margin-bottom: 8px; }
+        .data-label { opacity: 0.6; margin-right: 5px; }
+
+        /* --- FULL PAGE PROJECT OVERLAY (NEW PAGE FEEL) --- */
+        #project-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #f4f5f7; z-index: 999; 
+            overflow-y: auto; /* Allows scrolling within the overlay */
+            transform: translateY(100%); transition: transform 0.8s cubic-bezier(0.7, 0, 0.3, 1);
+        }
+        #project-overlay.open { transform: translateY(0); }
+
+        .project-hero {
+            height: 70vh; width: 100%; background: #111; position: relative;
+            display: flex; align-items: flex-end; padding: 5vw; color: white;
+        }
+        .project-content {
+            padding: 100px 20vw; color: #111; min-height: 100vh;
+        }
+        .close-project {
+            position: fixed; top: 30px; right: 40px;
+            font-family: 'Space Mono', monospace; font-size: 1rem; cursor: pointer;
+            z-index: 1000; mix-blend-mode: difference; color: white;
+            border: 1px solid white; padding: 5px 15px; border-radius: 20px;
+        }
+        .close-project:hover { background: white; color: black; mix-blend-mode: normal; }
+
+        .tech-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
+            margin: 60px 0; padding: 40px 0; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc;
+            font-family: 'Space Mono', monospace; font-size: 0.85rem;
+        }
+
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateX(-50%) translateY(0);} 40% {transform: translateX(-50%) translateY(-10px);} 60% {transform: translateX(-50%) translateY(-5px);} }
 
     </style>
 </head>
-<body class="show-altimeter">
+<body>
 
     <div class="noise"></div>
     <div id="cursor"></div>
@@ -143,103 +196,95 @@
             <span style="opacity:0.6;">M.D.A. Candidate 2025</span>
         </div>
         <div class="nav-links">
-            <a href="#" onclick="nav('home')">Research</a>
-            <a href="#" onclick="nav('projects')">Works</a>
-            <a href="#" onclick="nav('about')">About</a>
+            <a href="#" onclick="showPage('home')">Research</a>
+            <a href="#" onclick="showPage('projects')">Works</a>
+            <a href="#" onclick="showPage('about')">About</a>
         </div>
     </div>
 
     <div class="altimeter">
-        <div class="data-row"><span class="data-label">ZONE:</span><span id="zone-val">PÁRAMO</span></div>
-        <div class="data-row"><span class="data-label">ALT:</span><span id="alt-val">3200</span> M</div>
-        <div class="data-row"><span class="data-label">STATUS:</span><span id="stat-val">OBSERVING</span></div>
+        <div class="data-row"><span class="data-label">ZONE:</span><span id="zone-val">--</span></div>
+        <div class="data-row"><span class="data-label">ALT:</span><span id="alt-val">--</span> M</div>
     </div>
 
-    <div id="home-page" class="page active">
+    <div id="home-page" class="page-container active">
         
-        <section class="concept-section" id="c1">
-            <h1 class="research-statement">
-                Materializing<br>
-                <i>Dissonance</i>.
-            </h1>
-            <div class="concept-meta">
-                <span class="concept-number">00</span>
-                <div>
-                    INVESTIGATION STATEMENT<br><br>
-                    Researching the intersection of critical design, tangible interfaces, and body-space narratives in the Global South.
-                </div>
+        <section id="hero-container">
+            <canvas id="mountain-roots"></canvas>
+            
+            <div class="hero-text-overlay">
+                <h1 class="hero-title" id="hero-main-text">Materializing Dissonance</h1>
+                <div class="hero-subtitle" id="hero-sub-text">Explore Intersecting Areas</div>
             </div>
+
+            <div class="zones-wrapper">
+                <div class="hero-zone" onmouseenter="setHero('friction')" onmouseleave="resetHero()"></div>
+                <div class="hero-zone" onmouseenter="setHero('bio')" onmouseleave="resetHero()"></div>
+                <div class="hero-zone" onmouseenter="setHero('heat')" onmouseleave="resetHero()"></div>
+            </div>
+
+            <div class="scroll-hint">SCROLL TO ENTER TRANSECT ↓</div>
         </section>
 
         <section class="concept-section" id="c2">
-            <h1 class="research-statement">
-                The Silent<br>Archive.
-            </h1>
+            <h1 class="research-statement">The Silent<br>Archive.</h1>
             <div class="concept-meta">
                 <span class="concept-number">01</span>
                 <div>
-                    ORIGIN: PÁRAMO<br><br>
+                    ORIGIN: PÁRAMO<br>
                     How can code preserve the "small data" of biological decay? Extracting signals from the silence of the Andes.
-                    <br><br>
-                    <a href="#" onclick="nav('projects')" style="color:inherit;">→ SEE: GENERATIVE FLORA</a>
+                    <br><br><a href="#" onclick="showPage('projects')">→ SEE: GENERATIVE FLORA</a>
                 </div>
             </div>
         </section>
 
         <section class="concept-section" id="c3">
-            <h1 class="research-statement">
-                The Physics of<br>Inequality.
-            </h1>
+            <h1 class="research-statement">The Physics of<br>Inequality.</h1>
             <div class="concept-meta">
                 <span class="concept-number">02</span>
                 <div>
-                    CONTEXT: BOGOTÁ<br><br>
+                    CONTEXT: BOGOTÁ<br>
                     Dragging sensors through the city to record the invisible weight of social stratification.
-                    <br><br>
-                    <a href="#" onclick="nav('projects')" style="color:inherit;">→ SEE: LADRILLUDO</a>
+                    <br><br><a href="#" onclick="showPage('projects')">→ SEE: LADRILLUDO</a>
                 </div>
             </div>
         </section>
 
         <section class="concept-section" id="c4">
-            <h1 class="research-statement">
-                Recursive<br><i>Adaptation</i>.
-            </h1>
+            <h1 class="research-statement">Recursive<br><i>Adaptation</i>.</h1>
             <div class="concept-meta">
                 <span class="concept-number">03</span>
                 <div>
-                    METHOD: RECURSIVIDAD<br><br>
+                    METHOD: RECURSIVIDAD<br>
                     Hacking scarcity to produce abundance. Designing interfaces that sweat, mutate, and survive.
-                    <br><br>
-                    <a href="#" onclick="nav('projects')" style="color:inherit;">→ SEE: HUÉSPED ERRANTE</a>
+                    <br><br><a href="#" onclick="showPage('projects')">→ SEE: HUÉSPED ERRANTE</a>
                 </div>
             </div>
         </section>
-
     </div>
 
-    <div id="projects-page" class="page">
+    <div id="projects-page" class="page-container">
         <h1 style="font-size:4vw; font-weight:300; margin:0;">Selected Works</h1>
         <div class="grid">
-            <div class="card" onclick="openModal('Ladrilludo', '#9ca3af')">
-                <div class="card-img"><img src="https://via.placeholder.com/600x400/555/fff?text=LADRILLUDO" alt=""></div>
+            <div class="card" onclick="openProject('ladrilludo')">
+                <div class="card-img" style="background:#8d949e;"></div>
                 <div class="card-meta">CRITICAL MATTER / SOUND</div>
                 <h3>Ladrilludo</h3>
             </div>
-            <div class="card" onclick="openModal('Huésped Errante', '#d6492c')">
-                <div class="card-img"><img src="https://via.placeholder.com/600x400/a33/fff?text=HUESPED" alt=""></div>
+            <div class="card" onclick="openProject('huesped')">
+                <div class="card-img" style="background:#d6492c;"></div>
                 <div class="card-meta">TANGIBLE MEDIA / BIO</div>
                 <h3>Huésped Errante</h3>
             </div>
-            <div class="card" onclick="openModal('La Soledad Suena', '#333')">
-                <div class="card-img"><img src="https://via.placeholder.com/600x400/111/fff?text=SOLEDAD" alt=""></div>
-                <div class="card-meta">FUTURE SKETCHES / AV</div>
-                <h3>La Soledad Suena</h3>
+            <div class="card" onclick="openProject('flora')">
+                <div class="card-img" style="background:#f4f5f7;"></div>
+                <div class="card-meta">GENERATIVE ART / DATA</div>
+                <h3>Endangered Pigments</h3>
             </div>
         </div>
     </div>
 
-    <div id="about-page" class="page">
+    <div id="about-page" class="page-container">
         <div style="font-family:'Space Mono'; margin-bottom:30px;">[ APPLICANT MANIFESTO ]</div>
         <div class="bio-text">
             "I come from a landscape defined by extreme contrast. My family roots are grounded in the silence of the countryside, yet I grew up navigating the chaotic friction of the city. This duality wired my brain to be a compulsive observer."
@@ -248,87 +293,184 @@
             "In the Global South, innovation is rarely about having the newest tool; it is about survival. It is the concept of <b>Recursividad</b>."
         </div>
         <div style="margin-top:50px; font-family:'Space Mono'; font-size:0.8rem;">
-            CONTACT: mariapaulaojedagomez@gmail.com<br>
-            GITHUB: github.com/sbleeyouk (placeholder)
+            CONTACT: mariapaulaojedagomez@gmail.com
         </div>
     </div>
 
-    <div id="modal">
-        <div class="close-btn" onclick="closeModal()">CLOSE [X]</div>
-        <div class="modal-hero" id="m-hero">
-            <h1 style="font-size:4rem; margin:0;" id="m-title">Project Name</h1>
+    <div id="project-overlay">
+        <div class="close-project" onclick="closeProject()">CLOSE [X]</div>
+        
+        <div class="project-hero" id="p-hero-bg">
+            <h1 style="font-size:5vw; margin:0;" id="p-title">Project Title</h1>
         </div>
-        <div class="modal-content">
-            <p style="font-family:'Space Mono';">FULL DOCUMENTATION COMING SOON.</p>
+        
+        <div class="project-content">
+            <h2 style="font-family:'Space Mono'; font-size:1rem; opacity:0.5;">ABSTRACT</h2>
+            <p style="font-size:1.5rem; line-height:1.4;" id="p-desc">Description goes here.</p>
+
+            <div class="tech-grid">
+                <div>
+                    <strong>ROLE:</strong> <span id="p-role">Lead</span><br>
+                    <strong>YEAR:</strong> <span id="p-year">2024</span>
+                </div>
+                <div>
+                    <strong>TECH:</strong> <span id="p-tech">Arduino</span><br>
+                    <strong>GROUP:</strong> <span id="p-group">Critical Matter</span>
+                </div>
+            </div>
+            
+            <p>Here you would include full documentation images, diagrams, and video documentation.</p>
         </div>
     </div>
 
     <script>
-        // NAVIGATION SYSTEM
-        function nav(id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        // --- 1. GENERATIVE MOUNTAIN CANVAS ---
+        const canvas = document.getElementById('mountain-roots');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        function drawRoot(x, y, angle, depth, type) {
+            if (depth <= 0) return;
+            const len = depth * (Math.random() * 5 + 4);
+            const endX = x + Math.cos(angle) * len;
+            const endY = y + Math.sin(angle) * len;
+
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(endX, endY);
+            
+            if (type === 'bio') ctx.strokeStyle = `rgba(255, 255, 255, ${depth/12})`;
+            if (type === 'friction') ctx.strokeStyle = `rgba(200, 50, 50, ${depth/12})`;
+            if (type === 'heat') ctx.strokeStyle = `rgba(200, 150, 100, ${depth/12})`;
+
+            ctx.lineWidth = depth * 0.4;
+            ctx.stroke();
+
+            const numBranches = Math.floor(Math.random() * 2) + 2;
+            for (let i = 0; i < numBranches; i++) {
+                const spread = 0.5; 
+                const newAngle = angle + (Math.random() * spread - spread/2);
+                drawRoot(endX, endY, newAngle, depth - 1, type);
+            }
+        }
+
+        // Draw the Mountain Range
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        // Friction Peak (Left)
+        drawRoot(w * 0.2, h, -Math.PI/2, 12, 'friction');
+        drawRoot(w * 0.25, h, -Math.PI/2 - 0.2, 10, 'friction');
+        // Bio Peak (Center - Highest)
+        drawRoot(w * 0.5, h, -Math.PI/2, 13, 'bio');
+        drawRoot(w * 0.45, h, -Math.PI/2 + 0.1, 11, 'bio');
+        // Heat Peak (Right)
+        drawRoot(w * 0.8, h, -Math.PI/2, 12, 'heat');
+        drawRoot(w * 0.75, h, -Math.PI/2 + 0.2, 10, 'heat');
+
+
+        // --- 2. HERO INTERACTION ---
+        const hTitle = document.getElementById('hero-main-text');
+        const hSub = document.getElementById('hero-sub-text');
+
+        function setHero(type) {
+            if(type === 'friction') {
+                hTitle.innerHTML = "Systemic Friction";
+                hTitle.style.color = "#ff6666";
+                hSub.innerHTML = "Materializing Inequality";
+            }
+            if(type === 'bio') {
+                hTitle.innerHTML = "Silent Archive";
+                hTitle.style.color = "#ffffff";
+                hSub.innerHTML = "Preserving Organic Data";
+            }
+            if(type === 'heat') {
+                hTitle.innerHTML = "Embodied Tech";
+                hTitle.style.color = "#ffcc99";
+                hSub.innerHTML = "Interfaces that Sweat";
+            }
+        }
+        function resetHero() {
+            hTitle.innerHTML = "Materializing Dissonance";
+            hTitle.style.color = "#e0e0e0";
+            hSub.innerHTML = "Explore Intersecting Areas";
+        }
+
+        // --- 3. PAGE NAVIGATION ---
+        function showPage(id) {
+            document.querySelectorAll('.page-container').forEach(p => p.classList.remove('active'));
             document.getElementById(id + '-page').classList.add('active');
             window.scrollTo(0,0);
             
-            // Toggle Altimeter
-            if(id === 'home') document.body.classList.add('show-altimeter');
-            else {
-                document.body.classList.remove('show-altimeter');
-                document.body.style.backgroundColor = '#f4f5f7';
-                document.body.style.color = '#111';
-            }
+            // Toggle Altimeter Visibility
+            const alt = document.querySelector('.altimeter');
+            if(id !== 'home') alt.style.display = 'none';
+            else alt.style.display = 'block';
         }
 
-        // MODAL SYSTEM
-        function openModal(title, color) {
-            document.getElementById('m-title').innerText = title;
-            document.getElementById('m-hero').style.backgroundColor = color;
-            document.getElementById('modal').classList.add('open');
-        }
-        function closeModal() {
-            document.getElementById('modal').classList.remove('open');
+        // --- 4. PROJECT DATA & OVERLAY ---
+        const projects = {
+            'ladrilludo': { title: "Ladrilludo", desc: "A sensing brick that records the soundscape of social inequality.", role: "Co-Researcher", color: "#8d949e", tech: "Arduino Nano, Piezo" },
+            'huesped': { title: "Huésped Errante", desc: "A living sculpture that reacts to heat with thermochromic pigments.", role: "Prototyper", color: "#d6492c", tech: "TouchDesigner, Heat Wire" },
+            'flora': { title: "Endangered Pigments", desc: "Generative art system based on Colombian flower data.", role: "Developer", color: "#f4f5f7", tech: "P5.js, Python" }
+        };
+
+        function openProject(key) {
+            const p = projects[key];
+            document.getElementById('p-title').innerText = p.title;
+            document.getElementById('p-desc').innerText = p.desc;
+            document.getElementById('p-role').innerText = p.role;
+            document.getElementById('p-tech').innerText = p.tech;
+            document.getElementById('p-hero-bg').style.backgroundColor = p.color;
+            
+            document.getElementById('project-overlay').classList.add('open');
         }
 
-        // SCROLL & COLOR LOGIC (THE TRANSECT)
+        function closeProject() {
+            document.getElementById('project-overlay').classList.remove('open');
+        }
+
+        // --- 5. SCROLL LOGIC ---
         window.addEventListener('scroll', () => {
             if(!document.getElementById('home-page').classList.contains('active')) return;
-
-            const scrollPct = window.scrollY / (document.body.scrollHeight - window.innerHeight);
-            const body = document.body;
             
-            // Update Altimeter
-            const alt = Math.round(3200 - (scrollPct * 3150));
-            document.getElementById('alt-val').innerText = alt;
+            const scrollY = window.scrollY;
+            const h = window.innerHeight;
+            const pct = scrollY / (document.body.scrollHeight - h);
+            
+            // Altimeter
+            if(scrollY > h/2) document.querySelector('.altimeter').classList.add('show-altimeter');
+            else document.querySelector('.altimeter').classList.remove('show-altimeter');
+            
+            document.getElementById('alt-val').innerText = Math.round(3200 - (pct * 3150));
 
-            // Update Zones
-            if (scrollPct < 0.25) {
-                // INTRO / PARAMO
+            // Background Color Logic
+            const body = document.body;
+            if (scrollY < h * 0.8) {
+                body.style.backgroundColor = "var(--bg-dark)"; // Hero
+                body.style.color = "#e0e0e0";
+            } else if (pct < 0.4) {
                 body.style.backgroundColor = "var(--bg-paramo)";
                 body.style.color = "#111";
                 document.getElementById('zone-val').innerText = "PÁRAMO";
-                document.getElementById('stat-val').innerText = "OBSERVING";
-            } else if (scrollPct >= 0.25 && scrollPct < 0.6) {
-                // BOGOTA
+            } else if (pct >= 0.4 && pct < 0.7) {
                 body.style.backgroundColor = "var(--bg-bogota)";
                 body.style.color = "#000";
                 document.getElementById('zone-val').innerText = "BOGOTÁ";
-                document.getElementById('stat-val').innerText = "RECORDING";
             } else {
-                // BARRANCA
                 body.style.backgroundColor = "var(--bg-barranca)";
                 body.style.color = "#fff";
                 document.getElementById('zone-val').innerText = "MAGDALENA";
-                document.getElementById('stat-val').innerText = "MUTATING";
             }
         });
 
-        // CURSOR
+        // Cursor Follower
         const cursor = document.getElementById('cursor');
         document.addEventListener('mousemove', e => {
             cursor.style.left = e.clientX + 'px';
             cursor.style.top = e.clientY + 'px';
         });
-        document.querySelectorAll('a, .card').forEach(el => {
+        document.querySelectorAll('a, .card, .hero-zone, .close-project').forEach(el => {
             el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
             el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
         });
