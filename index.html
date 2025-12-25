@@ -12,16 +12,16 @@
     <style>
         /* --- VARIABLES --- */
         :root {
-            /* Colores Base */
-            --bg-hero: #0e1110; /* Verde muy oscuro, casi negro */
+            /* FONDO CLARO (PAPEL) DESDE EL INICIO */
+            --bg-hero: #f0f2f0; 
             
             /* Colores de Secciones */
-            --bg-paramo: #f4f5f7; /* Blanco Niebla */
-            --bg-bogota: #8d949e; /* Gris Concreto */
-            --bg-barranca: #d6492c; /* Rojo Tierra */
+            --bg-paramo: #f0f2f0;
+            --bg-bogota: #8d949e;
+            --bg-barranca: #d6492c;
             
             --text-main: #111;
-            --text-light: #e6e8e6;
+            --text-light: #333; /* Texto oscuro para fondo claro */
         }
 
         * { box-sizing: border-box; cursor: none; }
@@ -30,7 +30,7 @@
             margin: 0; padding: 0;
             font-family: 'Cormorant Garamond', serif;
             color: var(--text-main);
-            background-color: var(--bg-hero);
+            background-color: var(--bg-hero); /* Fondo base claro */
             overflow-x: hidden;
             transition: background-color 1s ease, color 1s ease;
         }
@@ -38,35 +38,36 @@
         /* --- NOISE & CURSOR --- */
         .noise {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 50; opacity: 0.04;
+            pointer-events: none; z-index: 50; opacity: 0.08; /* Un poco más visible para textura papel */
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            mix-blend-mode: multiply;
         }
 
         #cursor {
             position: fixed; top: 0; left: 0; width: 20px; height: 20px;
-            border: 1px solid rgba(255,255,255,0.4); border-radius: 50%;
+            border: 1px solid rgba(0,0,0,0.4); /* Borde oscuro */
+            border-radius: 50%;
             pointer-events: none; z-index: 9999;
-            transform: translate(-50%, -50%); mix-blend-mode: difference;
+            transform: translate(-50%, -50%); 
             transition: transform 0.15s ease-out; display: flex; align-items: center; justify-content: center;
         }
-        #cursor.hovered { transform: translate(-50%, -50%) scale(2.5); background: rgba(255,255,255,0.9); border: none; mix-blend-mode: normal; }
+        #cursor.hovered { transform: translate(-50%, -50%) scale(2.5); background: rgba(0,0,0,0.1); border: none; }
 
         /* --- HEADER --- */
         .top-bar {
             position: fixed; top: 30px; left: 40px; right: 40px;
             display: flex; justify-content: space-between; align-items: flex-start;
             font-family: 'Space Mono', monospace; font-size: 0.75rem;
-            z-index: 100; mix-blend-mode: difference; color: white;
+            z-index: 100; mix-blend-mode: multiply; color: #111;
             text-transform: uppercase; letter-spacing: 1px;
         }
         .nav-links a { margin-left: 20px; text-decoration: none; color: inherit; }
         .nav-links a:hover { text-decoration: underline; }
 
-        /* --- HERO: HANGING GARDEN --- */
+        /* --- HERO: BOTANICAL ROOTS --- */
         #hero-container {
             height: 100vh; width: 100vw; position: relative; overflow: hidden;
-            color: var(--text-light);
-            /* Fondo sólido inicial */
+            color: var(--text-main);
             background-color: var(--bg-hero);
         }
 
@@ -74,17 +75,11 @@
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
         }
 
-        /* --- LA SOLUCIÓN DE TRANSICIÓN: GRADIENT FADE --- */
+        /* FADE SUAVE HACIA EL CONTENIDO */
         .hero-fade {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 250px; /* Altura del desvanecimiento */
-            /* Gradiente de transparente -> al color de la siguiente sección (Páramo) */
-            background: linear-gradient(to bottom, rgba(244, 245, 247, 0) 0%, var(--bg-paramo) 100%);
-            z-index: 5;
-            pointer-events: none;
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 200px;
+            background: linear-gradient(to bottom, rgba(240, 242, 240, 0) 0%, var(--bg-paramo) 100%);
+            z-index: 5; pointer-events: none;
         }
 
         .interaction-overlay {
@@ -94,25 +89,24 @@
 
         .center-text h1 {
             font-size: 5rem; margin: 0; font-weight: 300; letter-spacing: -2px;
-            text-shadow: 0 5px 30px rgba(0,0,0,0.5);
-            font-style: italic;
+            font-style: italic; color: #111;
         }
         
         .center-text p {
             font-family: 'Space Mono', monospace; font-size: 0.8rem; margin-top: 20px;
-            background: rgba(255,255,255,0.05); backdrop-filter: blur(10px);
-            color: #dcdcdc; display: inline-block; padding: 10px 20px; border-radius: 50px;
-            border: 1px solid rgba(255,255,255,0.1); letter-spacing: 1px;
+            background: rgba(255,255,255,0.8); backdrop-filter: blur(5px);
+            color: #111; display: inline-block; padding: 10px 20px; border-radius: 50px;
+            border: 1px solid rgba(0,0,0,0.1); letter-spacing: 1px;
         }
 
         .scroll-hint {
             position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
             font-family: 'Space Mono', monospace; font-size: 0.7rem; opacity: 0.6;
             animation: float 3s ease-in-out infinite; cursor: pointer; pointer-events: auto;
-            color: #111; z-index: 20; /* Texto oscuro para que se vea sobre el fade blanco */
+            color: #111; z-index: 20;
         }
 
-        /* --- CONTENT PAGES --- */
+        /* --- SECTIONS --- */
         .page-container { display: none; padding-top: 100px; min-height: 100vh; }
         .page-container.active { display: block; }
         #home-page { padding-top: 0; } 
@@ -136,7 +130,7 @@
         .altimeter {
             position: fixed; left: 40px; top: 50%; transform: translateY(-50%);
             font-family: 'Space Mono', monospace; font-size: 10px;
-            z-index: 100; mix-blend-mode: difference; color: white;
+            z-index: 100; mix-blend-mode: multiply; color: #111;
             border-left: 1px solid currentColor; padding-left: 15px;
             opacity: 0; transition: opacity 0.5s;
         }
@@ -180,7 +174,6 @@
     <div id="home-page" class="page-container active">
         <section id="hero-container">
             <canvas id="generative-canopy"></canvas>
-            
             <div class="hero-fade"></div>
 
             <div class="interaction-overlay">
@@ -195,26 +188,17 @@
 
         <section class="concept-section" id="c2">
             <h1 class="research-statement">The Silent Archive.</h1>
-            <div class="concept-meta">
-                <span class="concept-number">01</span>
-                <div>ORIGIN: PÁRAMO<br>Extracting signals from the silence of the Andes.<br><br><a href="#" onclick="showPage('projects')">→ SEE: GENERATIVE FLORA</a></div>
-            </div>
+            <div class="concept-meta"><span class="concept-number">01</span><div>ORIGIN: PÁRAMO<br>Extracting signals from the silence of the Andes.<br><br><a href="#" onclick="showPage('projects')">→ SEE: GENERATIVE FLORA</a></div></div>
         </section>
 
         <section class="concept-section" id="c3">
             <h1 class="research-statement">The Physics of Inequality.</h1>
-            <div class="concept-meta">
-                <span class="concept-number">02</span>
-                <div>CONTEXT: BOGOTÁ<br>Recording the invisible weight of social stratification.<br><br><a href="#" onclick="showPage('projects')">→ SEE: LADRILLUDO</a></div>
-            </div>
+            <div class="concept-meta"><span class="concept-number">02</span><div>CONTEXT: BOGOTÁ<br>Recording the invisible weight of social stratification.<br><br><a href="#" onclick="showPage('projects')">→ SEE: LADRILLUDO</a></div></div>
         </section>
 
         <section class="concept-section" id="c4">
             <h1 class="research-statement">Recursive Adaptation.</h1>
-            <div class="concept-meta">
-                <span class="concept-number">03</span>
-                <div>METHOD: RECURSIVIDAD<br>Interfaces that sweat, mutate, and survive.<br><br><a href="#" onclick="showPage('projects')">→ SEE: HUÉSPED ERRANTE</a></div>
-            </div>
+            <div class="concept-meta"><span class="concept-number">03</span><div>METHOD: RECURSIVIDAD<br>Interfaces that sweat, mutate, and survive.<br><br><a href="#" onclick="showPage('projects')">→ SEE: HUÉSPED ERRANTE</a></div></div>
         </section>
     </div>
 
@@ -235,13 +219,13 @@
         class Vine {
             constructor(x, targetY, type) {
                 this.x = x;
-                this.targetY = targetY;
+                this.targetY = targetY; // Ahora son más largas
                 this.type = type;
                 this.points = [];
                 this.currentY = 0;
-                this.growSpeed = Math.random() * 3 + 2;
+                this.growSpeed = Math.random() * 4 + 2; // Más rápidas
                 this.waviness = Math.random() * 20; 
-                this.frequency = Math.random() * 0.05;
+                this.frequency = Math.random() * 0.03;
                 this.width = Math.random() * 1.5 + 0.5;
             }
 
@@ -259,37 +243,36 @@
                 ctx.beginPath();
                 ctx.moveTo(this.points[0].x, this.points[0].y);
 
-                // COLORES BOTÁNICOS (Más naturales)
+                // COLORES DE TINTA (OSCUROS PORQUE EL FONDO ES CLARO)
                 let r, g, b;
-                if(this.type === 'bio') { r=200; g=220; b=210; } // Verde Pálido/Frailejón
-                if(this.type === 'friction') { r=160; g=60; b=60; } // Rojo Arcilla Oscuro
-                if(this.type === 'heat') { r=210; g=160; b=100; } // Ocre/Dorado
+                if(this.type === 'bio') { r=45; g=90; b=39; } // Verde Musgo Profundo
+                if(this.type === 'friction') { r=138; g=28; b=28; } // Sangre Seca / Arcilla
+                if(this.type === 'heat') { r=140; g=94; b=42; } // Sepia / Tierra
 
+                // Interacción (Se vuelven más vibrantes al pasar el mouse)
                 let dist = Math.abs(mouse.x - this.points[this.points.length-1].x);
-                let alpha = 0.4;
-                if(dist < 150 && mouse.y < this.targetY + 100) alpha = 0.9;
+                let alpha = 0.5; // Opacidad base de acuarela
+                
+                if(dist < 150 && mouse.y < this.targetY + 100) {
+                    alpha = 1; // Tinta pura al interactuar
+                    ctx.lineWidth = this.width * 1.5;
+                } else {
+                    ctx.lineWidth = this.width;
+                }
 
                 ctx.strokeStyle = `rgba(${r},${g},${b},${alpha})`;
-                ctx.lineWidth = this.width;
-
+                
                 for(let i = 1; i < this.points.length; i++) {
                     ctx.lineTo(this.points[i].x, this.points[i].y);
                 }
                 ctx.stroke();
 
-                // DIBUJAR HOJAS (NO CÍRCULOS)
+                // SIN CÍRCULOS NI HOJAS - SOLO LA PUNTA DE LA RAÍZ
+                // Opcional: un pequeño punto casi invisible para suavizar el final
                 if(this.currentY >= this.targetY) {
-                    let endX = this.points[this.points.length-1].x;
-                    let endY = this.points[this.points.length-1].y;
-                    
-                    ctx.fillStyle = `rgba(${r},${g},${b}, 0.8)`;
-                    
-                    // Función para dibujar una hoja orgánica simple
                     ctx.beginPath();
-                    ctx.moveTo(endX, endY);
-                    // Curva bezier para forma de gota/hoja
-                    ctx.bezierCurveTo(endX - 5, endY + 5, endX - 5, endY + 15, endX, endY + 20);
-                    ctx.bezierCurveTo(endX + 5, endY + 15, endX + 5, endY + 5, endX, endY);
+                    ctx.fillStyle = `rgba(${r},${g},${b}, ${alpha})`;
+                    ctx.arc(this.points[this.points.length-1].x, this.points[this.points.length-1].y, this.width/2, 0, Math.PI*2);
                     ctx.fill();
                 }
             }
@@ -299,11 +282,13 @@
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
             vines = [];
-            const count = 70; 
+            const count = 80; // Más densidad
             for(let i = 0; i < count; i++) {
                 let x = (width / count) * i + (Math.random()*20);
+                
+                // MÁS LARGAS: Llegan casi hasta el final (0.7 a 0.9 de la altura)
                 let lengthRatio = Math.sin((i / count) * Math.PI); 
-                let maxH = height * 0.5 + (Math.random() * height * 0.3); // Más largo para que entre en el fade
+                let maxH = height * 0.7 + (Math.random() * height * 0.2); 
                 
                 let type = 'bio';
                 if (i < count * 0.33) type = 'friction';
@@ -318,17 +303,19 @@
             requestAnimationFrame(animate);
         }
 
-        // --- INTERACTION & SCROLL LOGIC (Igual que antes) ---
+        // --- INTERACTION ---
         const hTitle = document.getElementById('hero-title');
         const hSub = document.getElementById('hero-sub');
         function checkHover() {
             let section = mouse.x / width;
             if(mouse.y > height * 0.8) return;
-            if (section < 0.33) { hTitle.innerHTML = "Systemic Friction"; hTitle.style.color = "#a03c3c"; hSub.innerHTML = "MATERIALIZING INEQUALITY"; } 
-            else if (section > 0.66) { hTitle.innerHTML = "Embodied Tech"; hTitle.style.color = "#d2a064"; hSub.innerHTML = "INTERFACES THAT SWEAT"; } 
-            else { hTitle.innerHTML = "Silent Archive"; hTitle.style.color = "#c8dcd2"; hSub.innerHTML = "PRESERVING ORGANIC DATA"; }
+            // Colores de texto oscuros para leerse bien en blanco
+            if (section < 0.33) { hTitle.innerHTML = "Systemic Friction"; hTitle.style.color = "#8a1c1c"; hSub.innerHTML = "MATERIALIZING INEQUALITY"; } 
+            else if (section > 0.66) { hTitle.innerHTML = "Embodied Tech"; hTitle.style.color = "#8c5e2a"; hSub.innerHTML = "INTERFACES THAT SWEAT"; } 
+            else { hTitle.innerHTML = "Silent Archive"; hTitle.style.color = "#2d5a27"; hSub.innerHTML = "PRESERVING ORGANIC DATA"; }
         }
 
+        // --- NAVIGATION & SCROLL ---
         function showPage(id) {
             document.querySelectorAll('.page-container').forEach(p => p.classList.remove('active'));
             document.getElementById(id + '-page').classList.add('active');
@@ -336,18 +323,18 @@
             const alt = document.querySelector('.altimeter');
             if(id === 'home') alt.style.display = 'block'; else alt.style.display = 'none';
         }
-
         function scrollToID(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
         function closeProject() { document.getElementById('project-overlay').classList.remove('open'); }
 
         window.addEventListener('scroll', () => {
             if(!document.getElementById('home-page').classList.contains('active')) return;
             const y = window.scrollY; const h = window.innerHeight; const body = document.body;
+            
             if(y > h * 0.5) document.querySelector('.altimeter').classList.add('show-altimeter');
             else document.querySelector('.altimeter').classList.remove('show-altimeter');
             
-            // Logic Background
-            if(y < h * 0.8) { body.style.backgroundColor = "var(--bg-hero)"; body.style.color = "#e6e8e6"; }
+            // Lógica de Fondo (Ahora todo es claro/tierra, no hay negro)
+            if(y < h * 0.8) { body.style.backgroundColor = "var(--bg-hero)"; body.style.color = "#111"; }
             else if (y < h * 1.5) { body.style.backgroundColor = "var(--bg-paramo)"; body.style.color = "#111"; document.getElementById('zone-val').innerText = "PÁRAMO"; }
             else if (y < h * 2.5) { body.style.backgroundColor = "var(--bg-bogota)"; body.style.color = "#000"; document.getElementById('zone-val').innerText = "BOGOTÁ"; }
             else { body.style.backgroundColor = "var(--bg-barranca)"; body.style.color = "#fff"; document.getElementById('zone-val').innerText = "MAGDALENA"; }
