@@ -12,13 +12,16 @@
     <style>
         /* --- VARIABLES --- */
         :root {
-            --bg-dark: #080808; /* Casi negro profundo */
-            --bg-paramo: #f4f5f7;
-            --bg-bogota: #8d949e;
-            --bg-barranca: #d6492c;
+            /* NUEVO FONDO: Verde Musgo Profundo (No negro) */
+            --bg-hero: #0d1210; 
+            
+            /* Colores de las secciones (Transecto) */
+            --bg-paramo: #f0f2f0;
+            --bg-bogota: #8a8f94;
+            --bg-barranca: #c75b45;
+            
             --text-main: #111;
-            --text-light: #e0e0e0;
-            --accent: #ff3300;
+            --text-light: #e6e8e6;
         }
 
         * { box-sizing: border-box; cursor: none; }
@@ -27,7 +30,7 @@
             margin: 0; padding: 0;
             font-family: 'Cormorant Garamond', serif;
             color: var(--text-main);
-            background-color: var(--bg-dark);
+            background-color: var(--bg-hero);
             overflow-x: hidden;
             transition: background-color 1s ease, color 1s ease;
         }
@@ -35,19 +38,18 @@
         /* --- NOISE & CURSOR --- */
         .noise {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 50; opacity: 0.05;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            pointer-events: none; z-index: 50; opacity: 0.04;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
         }
 
         #cursor {
             position: fixed; top: 0; left: 0; width: 20px; height: 20px;
-            border: 1px solid rgba(255,255,255,0.5); border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.4); border-radius: 50%;
             pointer-events: none; z-index: 9999;
             transform: translate(-50%, -50%); mix-blend-mode: difference;
-            transition: transform 0.1s, background-color 0.2s;
-            display: flex; align-items: center; justify-content: center;
+            transition: transform 0.15s ease-out; display: flex; align-items: center; justify-content: center;
         }
-        #cursor.hovered { transform: translate(-50%, -50%) scale(3); background: white; border-color: transparent; mix-blend-mode: normal; }
+        #cursor.hovered { transform: translate(-50%, -50%) scale(2.5); background: rgba(255,255,255,0.9); border: none; mix-blend-mode: normal; }
 
         /* --- HEADER --- */
         .top-bar {
@@ -60,35 +62,41 @@
         .nav-links a { margin-left: 20px; text-decoration: none; color: inherit; }
         .nav-links a:hover { text-decoration: underline; }
 
-        /* --- HERO: GENERATIVE LANDSCAPE --- */
+        /* --- HERO: HANGING GARDEN (TOP DOWN) --- */
         #hero-container {
             height: 100vh; width: 100vw; position: relative; overflow: hidden;
             color: var(--text-light);
+            /* Gradient sutil para dar profundidad */
+            background: linear-gradient(to bottom, #0d1210 0%, #1a211e 100%);
         }
 
-        canvas#generative-landscape {
+        canvas#generative-canopy {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
         }
 
         .interaction-overlay {
-            position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%);
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             width: 100%; text-align: center; pointer-events: none; z-index: 10;
         }
 
         .center-text h1 {
             font-size: 5rem; margin: 0; font-weight: 300; letter-spacing: -2px;
-            text-shadow: 0 0 30px #000;
+            text-shadow: 0 5px 30px rgba(0,0,0,0.5);
+            font-style: italic;
         }
+        
         .center-text p {
-            font-family: 'Space Mono', monospace; font-size: 0.9rem; margin-top: 20px;
-            background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
-            color: #fff; display: inline-block; padding: 8px 16px; border: 1px solid rgba(255,255,255,0.3);
+            font-family: 'Space Mono', monospace; font-size: 0.8rem; margin-top: 20px;
+            background: rgba(255,255,255,0.05); backdrop-filter: blur(10px);
+            color: #dcdcdc; display: inline-block; padding: 10px 20px; border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.1);
+            letter-spacing: 1px;
         }
 
         .scroll-hint {
             position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
-            font-family: 'Space Mono', monospace; font-size: 0.7rem; opacity: 0.7;
-            animation: bounce 2s infinite; pointer-events: auto; cursor: pointer;
+            font-family: 'Space Mono', monospace; font-size: 0.7rem; opacity: 0.6;
+            animation: float 3s ease-in-out infinite; cursor: pointer; pointer-events: auto;
         }
 
         /* --- CONTENT PAGES --- */
@@ -107,10 +115,8 @@
         /* --- PROJECTS GRID --- */
         #projects-page { padding: 150px 5vw; background: #f4f5f7; color: #111; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 40px; margin-top: 50px; }
-        .card { cursor: none; }
-        .card-img { height: 280px; background: #ccc; margin-bottom: 15px; position: relative; overflow: hidden; }
-        .card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s; }
-        .card:hover img { transform: scale(1.05); }
+        .card { cursor: none; position: relative; }
+        .card-img { height: 320px; background: #ccc; margin-bottom: 15px; overflow: hidden; border-radius: 4px; }
         .card-meta { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: #666; margin-bottom: 5px; }
 
         /* --- ALTIMETER --- */
@@ -135,7 +141,7 @@
         .project-content { padding: 100px 20vw; color: #111; min-height: 100vh; }
         .close-project { position: fixed; top: 30px; right: 40px; font-family: 'Space Mono', monospace; font-size: 1rem; cursor: pointer; z-index: 1000; mix-blend-mode: difference; color: white; border: 1px solid white; padding: 5px 15px; border-radius: 20px; }
 
-        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateX(-50%) translateY(0);} 40% {transform: translateX(-50%) translateY(-10px);} 60% {transform: translateX(-50%) translateY(-5px);} }
+        @keyframes float { 0% {transform: translateX(-50%) translateY(0);} 50% {transform: translateX(-50%) translateY(10px);} 100% {transform: translateX(-50%) translateY(0);} }
 
     </style>
 </head>
@@ -160,16 +166,16 @@
 
     <div id="home-page" class="page-container active">
         <section id="hero-container">
-            <canvas id="generative-landscape"></canvas>
+            <canvas id="generative-canopy"></canvas>
             
             <div class="interaction-overlay">
                 <div class="center-text">
                     <h1 id="hero-title">Materializing Dissonance</h1>
-                    <p id="hero-sub">HOVER THE LANDSCAPE TO EXPLORE</p>
+                    <p id="hero-sub">HOVER TO ILLUMINATE THE ECOSYSTEM</p>
                 </div>
             </div>
             
-            <div class="scroll-hint" onclick="scrollToID('c2')">SCROLL TO BEGIN TRANSECT ↓</div>
+            <div class="scroll-hint" onclick="scrollToID('c2')">DESCEND INTO THE TRANSECT ↓</div>
         </section>
 
         <section class="concept-section" id="c2">
@@ -216,11 +222,11 @@
     </div>
 
     <script>
-        // --- GENERATIVE MOUNTAIN LOGIC ---
-        const canvas = document.getElementById('generative-landscape');
+        // --- GENERATIVE CANOPY (TOP-DOWN VINES) ---
+        const canvas = document.getElementById('generative-canopy');
         const ctx = canvas.getContext('2d');
         let width, height;
-        let trees = [];
+        let vines = [];
         let mouse = { x: 0, y: 0 };
 
         window.addEventListener('resize', init);
@@ -230,76 +236,68 @@
             checkHover();
         });
 
-        class Tree {
-            constructor(x, y, maxHeight, colorType) {
+        class Vine {
+            constructor(x, targetY, type) {
                 this.x = x;
-                this.y = y;
-                this.maxHeight = maxHeight;
-                this.colorType = colorType; // 'friction', 'bio', 'heat'
-                this.branches = [];
-                this.growSpeed = Math.random() * 2 + 1;
-                this.currentHeight = 0;
-                this.done = false;
+                this.y = 0; // START AT TOP
+                this.targetY = targetY; // How far down it grows
+                this.type = type; // 'bio', 'friction', 'heat'
                 
-                // Root branch
-                this.branches.push({
-                    x: x, y: y, angle: -Math.PI/2, len: 0, maxLen: 40, width: 4, parent: null
-                });
+                this.points = []; // Store path for curve drawing
+                this.currentY = 0;
+                this.growSpeed = Math.random() * 3 + 2;
+                
+                // Random organic properties
+                this.waviness = Math.random() * 20; 
+                this.frequency = Math.random() * 0.05;
+                this.width = Math.random() * 1.5 + 0.5;
             }
 
             grow() {
-                if (this.currentHeight < this.maxHeight) {
-                    // Add generative branches logic here (simplified for visual effect)
-                    // We will simulate growth by drawing lines upwards
-                    this.currentHeight += this.growSpeed;
+                if (this.currentY < this.targetY) {
+                    this.currentY += this.growSpeed;
                     
-                    // Create more branches as it goes up
-                    if (Math.random() < 0.05) {
-                        let lastBranch = this.branches[this.branches.length-1];
-                        let angle = -Math.PI/2 + (Math.random() - 0.5);
-                        this.branches.push({
-                            x: this.x + (Math.random()-0.5)*this.currentHeight*0.5,
-                            y: this.y - this.currentHeight,
-                            angle: angle,
-                            width: Math.max(0.5, 4 - this.currentHeight/50)
-                        });
-                    }
-                } else {
-                    this.done = true;
+                    // Calculate wavy X position (Bezier simulation)
+                    let offsetX = Math.sin(this.currentY * this.frequency) * this.waviness;
+                    
+                    // Add point to path
+                    this.points.push({x: this.x + offsetX, y: this.currentY});
                 }
             }
 
             draw() {
+                if(this.points.length < 2) return;
+
                 ctx.beginPath();
-                // Determine color
-                let baseColor = '255, 255, 255';
-                if(this.colorType === 'friction') baseColor = '255, 50, 80'; // Red/Pink
-                if(this.colorType === 'heat') baseColor = '255, 180, 50'; // Orange/Gold
-                if(this.colorType === 'bio') baseColor = '200, 255, 255'; // Cyan/White
+                ctx.moveTo(this.points[0].x, this.points[0].y);
 
-                // Interaction Glow
-                let dist = Math.abs(mouse.x - this.x);
+                // Determine Color based on Theme (BOTANICAL COLORS)
+                let r, g, b;
+                if(this.type === 'bio') { r=220; g=200; b=255; } // Orchid/Lilac
+                if(this.type === 'friction') { r=200; g=50; b=100; } // Bromeliad Red
+                if(this.type === 'heat') { r=255; g=150; b=100; } // Coral/Passion Fruit
+
+                // Interaction: Glow on hover
+                let dist = Math.abs(mouse.x - this.points[this.points.length-1].x);
                 let alpha = 0.3;
-                if(dist < 150) alpha = 0.8; // Glow on hover
+                if(dist < 150 && mouse.y < this.targetY + 100) alpha = 0.8;
 
-                ctx.strokeStyle = `rgba(${baseColor}, ${alpha})`;
-                
-                this.branches.forEach(b => {
-                    ctx.moveTo(b.x, this.y); // Simplified drawing for "mountain" look
-                    ctx.lineTo(b.x + (Math.random()-0.5)*10, b.y); // Jittery lines
-                });
-                
-                // Draw main trunk growing
-                ctx.moveTo(this.x, this.y);
-                ctx.lineTo(this.x + (Math.random()-0.5)*20, this.y - this.currentHeight);
-                ctx.lineWidth = 1;
+                ctx.strokeStyle = `rgba(${r},${g},${b},${alpha})`;
+                ctx.lineWidth = this.width;
+
+                // Draw curve
+                for(let i = 1; i < this.points.length; i++) {
+                    ctx.lineTo(this.points[i].x, this.points[i].y);
+                }
                 ctx.stroke();
 
-                // Draw Flowers at tips when done
-                if(this.done) {
+                // Draw Flowers/Leaves at the tip
+                if(this.currentY >= this.targetY) {
                     ctx.beginPath();
-                    ctx.fillStyle = `rgba(${baseColor}, 0.9)`;
-                    ctx.arc(this.x + (Math.random()-0.5)*50, this.y - this.currentHeight, Math.random()*3, 0, Math.PI*2);
+                    ctx.fillStyle = `rgba(${r},${g},${b}, 0.8)`;
+                    // Organic shape (not perfect circle)
+                    let size = Math.random() * 4 + 2;
+                    ctx.arc(this.points[this.points.length-1].x, this.points[this.points.length-1].y, size, 0, Math.PI*2);
                     ctx.fill();
                 }
             }
@@ -308,63 +306,59 @@
         function init() {
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
-            trees = [];
+            vines = [];
             
-            // Spawn multiple trees to form a mountain range
-            const count = 30; // Number of "peaks"
+            const count = 60; // Density of the forest
             for(let i = 0; i < count; i++) {
-                let x = (width / count) * i + (width/count)/2;
+                let x = (width / count) * i + (Math.random()*20);
                 
-                // Mountain Shape Logic (Sine wave + Noise)
-                // Center is higher (Bio), Sides are lower/different
-                let hRatio = Math.sin((i / count) * Math.PI); 
-                let maxH = height * 0.4 + (hRatio * height * 0.4) + Math.random()*100;
+                // Varied lengths (Hanging Garden effect)
+                // Center is shorter (Bio), Sides are longer
+                let lengthRatio = Math.sin((i / count) * Math.PI); 
+                let maxH = height * 0.4 + (Math.random() * height * 0.4);
 
-                // Color Logic based on position
                 let type = 'bio';
                 if (i < count * 0.33) type = 'friction';
                 else if (i > count * 0.66) type = 'heat';
 
-                trees.push(new Tree(x, height, maxH, type));
+                vines.push(new Vine(x, maxH, type));
             }
         }
 
         function animate() {
-            // Trail effect (leave previous frames slightly visible)
-            ctx.fillStyle = 'rgba(5, 5, 5, 0.1)';
-            ctx.fillRect(0, 0, width, height);
-
-            trees.forEach(t => {
-                t.grow();
-                t.draw();
+            ctx.clearRect(0, 0, width, height); // Clear for clean animation
+            
+            vines.forEach(v => {
+                v.grow();
+                v.draw();
             });
             requestAnimationFrame(animate);
         }
 
-        // --- INTERACTION LOGIC ---
+        // --- INTERACTION ---
         const hTitle = document.getElementById('hero-title');
         const hSub = document.getElementById('hero-sub');
 
         function checkHover() {
             let section = mouse.x / width;
-            if(mouse.y > height * 0.8) return; // Don't trigger if mouse is at bottom
+            if(mouse.y > height * 0.8) return;
 
             if (section < 0.33) {
                 hTitle.innerHTML = "Systemic Friction";
-                hTitle.style.color = "#ff3250";
+                hTitle.style.color = "#ff6b8b"; // Soft Red
                 hSub.innerHTML = "MATERIALIZING INEQUALITY";
             } else if (section > 0.66) {
                 hTitle.innerHTML = "Embodied Tech";
-                hTitle.style.color = "#ffb432";
+                hTitle.style.color = "#ffb380"; // Soft Coral
                 hSub.innerHTML = "INTERFACES THAT SWEAT";
             } else {
                 hTitle.innerHTML = "Silent Archive";
-                hTitle.style.color = "#c8ffff";
+                hTitle.style.color = "#dcd0ff"; // Pale Lilac
                 hSub.innerHTML = "PRESERVING ORGANIC DATA";
             }
         }
 
-        // --- NAVIGATION & UTILS ---
+        // --- NAVIGATION ---
         function showPage(id) {
             document.querySelectorAll('.page-container').forEach(p => p.classList.remove('active'));
             document.getElementById(id + '-page').classList.add('active');
@@ -377,32 +371,23 @@
         function scrollToID(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
         
         function openProject(key) {
-            const data = {
-                'ladrilludo': {t: "Ladrilludo", d: "Sensing brick for urban friction.", c: "#8d949e"},
-                'huesped': {t: "Huésped Errante", d: "Thermochromic living sculpture.", c: "#d6492c"}
-            };
-            const p = data[key];
-            if(!p) return;
-            document.getElementById('p-title').innerText = p.t;
-            document.getElementById('p-desc').innerText = p.d;
-            document.getElementById('p-hero-bg').style.backgroundColor = p.c;
             document.getElementById('project-overlay').classList.add('open');
         }
         function closeProject() { document.getElementById('project-overlay').classList.remove('open'); }
 
-        // --- SCROLL BACKGROUND LOGIC ---
+        // --- SCROLL COLORS ---
         window.addEventListener('scroll', () => {
             if(!document.getElementById('home-page').classList.contains('active')) return;
             const y = window.scrollY;
             const h = window.innerHeight;
             const body = document.body;
             
-            // Altimeter visibility
+            // Altimeter
             if(y > h * 0.5) document.querySelector('.altimeter').classList.add('show-altimeter');
             else document.querySelector('.altimeter').classList.remove('show-altimeter');
 
-            // Scroll Logic
-            if(y < h * 0.8) { body.style.backgroundColor = "var(--bg-dark)"; body.style.color = "#e0e0e0"; }
+            // BG Logic
+            if(y < h * 0.8) { body.style.backgroundColor = "var(--bg-hero)"; body.style.color = "#e6e8e6"; }
             else if (y < h * 1.5) { body.style.backgroundColor = "var(--bg-paramo)"; body.style.color = "#111"; document.getElementById('zone-val').innerText = "PÁRAMO"; }
             else if (y < h * 2.5) { body.style.backgroundColor = "var(--bg-bogota)"; body.style.color = "#000"; document.getElementById('zone-val').innerText = "BOGOTÁ"; }
             else { body.style.backgroundColor = "var(--bg-barranca)"; body.style.color = "#fff"; document.getElementById('zone-val').innerText = "MAGDALENA"; }
