@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maria Paula Ojeda | Critical Matter</title>
+    <title>Maria Paula Ojeda | Critical Technologist</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,500;0,700;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
     <style>
         /* --- VARIABLES --- */
         :root {
-            --bg-paramo: #e8e8e3; /* Papel viejo / Niebla sucia */
-            --bg-bogota: #8a9198; /* Concreto húmedo */
-            --bg-barranca: #c44e2b; /* Arcilla quemada */
-            --text-main: #0a0a0a;
-            --accent: #ff2a00;
+            --bg-paramo: #f4f5f7;
+            --bg-bogota: #8d949e;
+            --bg-barranca: #d6492c;
+            --text-main: #111;
+            --accent: #ff3300;
         }
 
         * { box-sizing: border-box; cursor: none; }
@@ -27,305 +27,316 @@
             color: var(--text-main);
             background-color: var(--bg-paramo);
             overflow-x: hidden;
-            transition: background-color 1s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: background-color 1.2s ease, color 1.2s ease;
         }
 
-        /* --- TEXTURE LAYER (ANTI-MINIMALISM) --- */
-        /* Añadimos una trama de "papel/ruido" más agresiva */
-        .texture-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 50; opacity: 0.12;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
-            mix-blend-mode: multiply;
-        }
-
-        /* --- CURSOR --- */
+        /* --- UI ELEMENTS --- */
         #cursor {
-            position: fixed; top: 0; left: 0; width: 20px; height: 20px;
-            border: 1px solid var(--text-main); border-radius: 50%;
+            position: fixed; top: 0; left: 0; width: 12px; height: 12px;
+            border: 1px solid currentColor; border-radius: 50%;
             pointer-events: none; z-index: 9999;
             transform: translate(-50%, -50%); mix-blend-mode: difference;
-            transition: transform 0.1s, width 0.2s, height 0.2s;
-            display: flex; align-items: center; justify-content: center;
-            background: rgba(255, 255, 255, 0.1);
+            transition: transform 0.1s; display: flex; align-items: center; justify-content: center;
         }
-        #cursor::after { content: '+'; font-family: 'Space Mono'; font-size: 10px; color: white; }
-        #cursor.hovered { transform: translate(-50%, -50%) scale(2.5); background: var(--text-main); border: none; }
-        #cursor.hovered::after { content: ''; }
+        #cursor.hovered { transform: translate(-50%, -50%) scale(4); background: #fff; mix-blend-mode: normal; color: black; border: none; }
+        
+        .noise {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 50; opacity: 0.08;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
 
-        /* --- NAVIGATION (TECHNICAL) --- */
+        /* --- NAVIGATION --- */
         .top-bar {
-            position: fixed; top: 40px; left: 40px; right: 40px;
+            position: fixed; top: 30px; left: 40px; right: 40px;
             display: flex; justify-content: space-between; align-items: flex-start;
-            font-family: 'Space Mono', monospace; font-size: 0.7rem;
-            z-index: 100; mix-blend-mode: exclusion; color: white;
+            font-family: 'Space Mono', monospace; font-size: 0.75rem;
+            z-index: 100; mix-blend-mode: difference; color: white;
             text-transform: uppercase; letter-spacing: 1px;
-            border-bottom: 1px solid rgba(255,255,255,0.3);
-            padding-bottom: 10px;
         }
-        .nav-links a { margin-left: 25px; text-decoration: none; color: inherit; position: relative; }
-        .nav-links a::before { content: '['; margin-right: 5px; opacity: 0; transition: opacity 0.3s; }
-        .nav-links a::after { content: ']'; margin-left: 5px; opacity: 0; transition: opacity 0.3s; }
-        .nav-links a:hover::before, .nav-links a:hover::after { opacity: 1; }
+        .nav-links a { margin-left: 20px; text-decoration: none; color: inherit; position: relative; }
+        .nav-links a:hover { text-decoration: underline; }
 
-        /* --- HERO: ORGANIC NETWORK --- */
-        #hero-network {
-            height: 100vh; width: 100%;
+        /* --- SECTION 0: THE INTERACTIVE "ABREBOCAS" (RADAR) --- */
+        #interactive-hero {
+            height: 100vh;
+            width: 100vw;
             position: relative;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             overflow: hidden;
+            /* Placeholder background - Replace with abstract blurred video later */
+            background: radial-gradient(circle at center, #ffffff 0%, #dcdcdc 100%);
+            transition: background 0.8s ease;
         }
 
-        /* SVG Connections (The Wires) */
-        .connections-svg {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 1; pointer-events: none;
-            stroke: rgba(0,0,0,0.2); stroke-width: 1; stroke-dasharray: 5,5;
-        }
-
-        /* The Nodes (Blobs) */
-        .node-container {
-            position: relative; width: 800px; height: 600px; z-index: 10;
-        }
-
-        .blob-zone {
+        /* The Overlay Text that changes */
+        .hero-question {
             position: absolute;
-            width: 250px; height: 250px;
-            display: flex; justify-content: center; align-items: center; flex-direction: column;
+            top: 15%;
             text-align: center;
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            /* Shape definition using border-radius manipulation */
-            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
-            border: 1px solid var(--text-main);
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(4px);
-            animation: morph 8s ease-in-out infinite;
-        }
-
-        /* Organic Animation */
-        @keyframes morph {
-            0% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
-            33% { border-radius: 70% 30% 30% 70% / 60% 40% 60% 40%; }
-            66% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
-            100% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
-        }
-
-        .blob-zone span.label {
-            font-family: 'Space Mono', monospace; font-size: 0.7rem; letter-spacing: 2px;
-            background: var(--text-main); color: var(--bg-paramo); padding: 2px 6px;
-            transform: rotate(-5deg); /* Slight rotation for "collage" feel */
-        }
-        .blob-zone h3 {
-            font-size: 1.8rem; font-weight: 400; margin: 10px 0 0 0; line-height: 0.9;
-            mix-blend-mode: difference;
-        }
-
-        /* Positions */
-        .b-top { top: 5%; left: 50%; transform: translateX(-50%); }
-        .b-left { bottom: 10%; left: 10%; }
-        .b-right { bottom: 10%; right: 10%; }
-
-        /* Hover Interaction */
-        .blob-zone:hover {
-            background: var(--text-main);
-            color: var(--bg-paramo);
-            border-color: transparent;
+            width: 80%;
+            max-width: 800px;
             z-index: 20;
-            transform: scale(1.15) rotate(2deg); /* Reactive scaling */
-            cursor: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+            pointer-events: none;
         }
-        .blob-zone:hover h3 { mix-blend-mode: normal; color: var(--bg-paramo); }
-        .b-top:hover { transform: translateX(-50%) scale(1.15); }
+        .hero-question.active { opacity: 1; transform: translateY(0); }
+        .hero-question h2 { font-size: 2.5rem; font-weight: 300; margin-bottom: 10px; }
+        .hero-question p { font-family: 'Space Mono', monospace; font-size: 0.8rem; }
 
-        /* Central Question Display */
-        .center-display {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            text-align: center; width: 400px; pointer-events: none; z-index: 5;
-        }
-        .center-display h2 {
-            font-size: 3rem; margin: 0; opacity: 0; transition: opacity 0.3s;
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%;
-        }
-        .center-display h2.active { opacity: 1; }
-
-        /* --- TRANSECT SECTIONS (Scroll) --- */
-        .section {
-            min-height: 100vh; padding: 0 15vw;
-            display: flex; flex-direction: column; justify-content: center;
-            border-top: 1px dashed rgba(0,0,0,0.3); /* Dashed lines = Plans/Blueprints */
+        /* The Diagram Container */
+        .radar-container {
             position: relative;
+            width: 600px;
+            height: 600px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        /* The Circles */
+        .radar-zone {
+            position: absolute;
+            width: 280px;
+            height: 280px;
+            border: 1px solid rgba(0,0,0,0.3);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(2px);
         }
         
-        .big-text { font-size: 5vw; line-height: 0.9; margin: 0 0 30px 0; font-weight: 400; }
-        .meta-box {
-            font-family: 'Space Mono', monospace; font-size: 0.8rem;
-            border-left: 2px solid var(--accent); padding-left: 20px;
-            max-width: 500px;
+        .radar-zone span {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            pointer-events: none;
+            text-align: center;
         }
 
-        /* --- ALTIMETER --- */
+        /* Positioning the 3 Circles */
+        .z-top { top: 50px; left: 50%; transform: translateX(-50%); border-color: #666; }
+        .z-left { bottom: 50px; left: 20px; border-color: #666; }
+        .z-right { bottom: 50px; right: 20px; border-color: #666; }
+
+        /* Hover Effects */
+        .radar-zone:hover {
+            background: rgba(255,255,255,0.2);
+            border-color: #000;
+            transform: scale(1.1) translateX(0); /* Reset translateX for top one via JS logic usually, but here simple */
+            z-index: 50;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+        }
+        .z-top:hover { transform: translateX(-50%) scale(1.1); }
+
+        /* Scroll Down Indicator */
+        .scroll-hint {
+            position: absolute;
+            bottom: 40px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            animation: bounce 2s infinite;
+            cursor: pointer;
+            z-index: 20;
+        }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-10px);} 60% {transform: translateY(-5px);} }
+
+
+        /* --- ALTIMETER (Appears after hero) --- */
         .altimeter {
             position: fixed; left: 40px; top: 50%; transform: translateY(-50%);
-            font-family: 'Space Mono', monospace; font-size: 0.65rem;
-            z-index: 90; color: var(--text-main);
-            display: flex; flex-direction: column; gap: 5px;
-            mix-blend-mode: difference;
+            font-family: 'Space Mono', monospace; font-size: 10px;
+            z-index: 100; mix-blend-mode: difference; color: white;
+            border-left: 1px solid currentColor; padding-left: 15px;
+            opacity: 0; transition: opacity 0.5s;
         }
-        .altimeter div { border-bottom: 1px solid currentColor; padding-bottom: 2px; }
+        .show-ui .altimeter { opacity: 1; }
+        .data-row { margin-bottom: 8px; }
+        .data-label { opacity: 0.6; margin-right: 5px; }
+
+        /* --- THE TRANSECT (Original Content) --- */
+        .concept-section {
+            min-height: 100vh;
+            display: flex; flex-direction: column; justify-content: center;
+            padding: 0 15vw;
+            position: relative;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .research-statement { font-size: 5.5vw; font-weight: 300; line-height: 0.95; margin: 0 0 40px 0; letter-spacing: -0.02em; }
+        .concept-meta { font-family: 'Space Mono', monospace; font-size: 0.85rem; max-width: 450px; line-height: 1.6; border-top: 1px solid currentColor; padding-top: 20px; display: flex; gap: 20px; }
+        .concept-number { font-weight: 700; margin-right: 10px; }
+
+        /* --- PROJECTS GRID & MODAL (Hidden for brevity but essential) --- */
+        /* (Using same styles as previous response for grid/modal) */
+        #projects-page { padding: 150px 5vw; background: #f4f5f7; color: #111; display:none; }
+        #projects-page.active { display: block; }
 
     </style>
 </head>
 <body>
 
-    <div class="texture-overlay"></div>
+    <div class="noise"></div>
     <div id="cursor"></div>
 
     <div class="top-bar">
-        <div>MP. OJEDA <span style="opacity:0.5">// 2025</span></div>
+        <div class="researcher-id">
+            Maria Paula Ojeda<br>
+            <span style="opacity:0.6;">M.D.A. Candidate 2025</span>
+        </div>
         <div class="nav-links">
-            <a href="#hero-network">INDEX</a>
-            <a href="#projects">ARCHIVE</a>
-            <a href="#about">INFO</a>
+            <a href="#" onclick="scrollToID('interactive-hero')">Intro</a>
+            <a href="#" onclick="scrollToID('c1')">Transect</a>
+            <a href="#">Work</a>
         </div>
     </div>
 
     <div class="altimeter">
-        <div>Z: <span id="zone-display">WAITING</span></div>
-        <div>Y: <span id="alt-display">3200</span></div>
-        <div>T: <span id="temp-display">8°C</span></div>
+        <div class="data-row"><span class="data-label">ZONE:</span><span id="zone-val">--</span></div>
+        <div class="data-row"><span class="data-label">ALT:</span><span id="alt-val">--</span> M</div>
     </div>
 
-    <section id="hero-network">
+    <div id="interactive-hero">
         
-        <svg class="connections-svg">
-            <line x1="50%" y1="20%" x2="25%" y2="75%" />
-            <line x1="50%" y1="20%" x2="75%" y2="75%" />
-            <line x1="25%" y1="75%" x2="75%" y2="75%" />
-        </svg>
-
-        <div class="center-display">
-            <h2 class="active" id="title-main">Materializing<br>Dissonance</h2>
-            <h2 id="title-bio">The Silent<br>Archive</h2>
-            <h2 id="title-city">The Weight<br>of Friction</h2>
-            <h2 id="title-body">Recursive<br>Adaptation</h2>
+        <div class="hero-question active" id="q-default">
+            <h2>The Silence & The Friction</h2>
+            <p>EXPLORE THE INTERSECTING AREAS</p>
+        </div>
+        <div class="hero-question" id="q-silence">
+            <h2>The Silent Archive</h2>
+            <p>Can code preserve the biological memory we are losing?</p>
+        </div>
+        <div class="hero-question" id="q-friction">
+            <h2>Materialized Friction</h2>
+            <p>How do we give physical weight to social inequality?</p>
+        </div>
+        <div class="hero-question" id="q-heat">
+            <h2>Recursive Adaptation</h2>
+            <p>Designing interfaces that sweat, mutate, and survive.</p>
         </div>
 
-        <div class="node-container">
-            <div class="blob-zone b-top" 
-                 onmouseenter="setContext('bio', '#f0f4f8')" 
-                 onmouseleave="resetContext()">
-                <span class="label">DATA</span>
-                <h3>Silent<br>Matter</h3>
+        <div class="radar-container">
+            <div class="radar-zone z-top" onmouseenter="activateZone('silence', '#eef2f3')" onmouseleave="resetZone()">
+                <span>OF<br>ORGANIC DATA</span>
             </div>
-
-            <div class="blob-zone b-left" 
-                 onmouseenter="setContext('city', '#9ea4ab')" 
-                 onmouseleave="resetContext()">
-                <span class="label">JUSTICE</span>
-                <h3>Urban<br>Friction</h3>
+            <div class="radar-zone z-left" onmouseenter="activateZone('friction', '#9ca3af')" onmouseleave="resetZone()">
+                <span>TOWARD<br>SOCIAL JUSTICE</span>
             </div>
-
-            <div class="blob-zone b-right" 
-                 onmouseenter="setContext('body', '#d95a36')" 
-                 onmouseleave="resetContext()">
-                <span class="label">TECH</span>
-                <h3>Living<br>Interface</h3>
+            <div class="radar-zone z-right" onmouseenter="activateZone('heat', '#e05e36')" onmouseleave="resetZone()">
+                <span>BY<br>SCALABLE MATERIALITY</span>
             </div>
         </div>
 
-        <div style="position:absolute; bottom:30px; font-family:'Space Mono'; font-size:0.7rem; opacity:0.6;">
-            SCROLL TO NAVIGATE TRANSECT ↓
+        <div class="scroll-hint" onclick="scrollToID('c1')">
+            BEGIN TRANSECT ↓
         </div>
-    </section>
+    </div>
 
-    <section class="section" id="sec-paramo">
-        <h1 class="big-text">Exploring the<br><i>Silence</i>.</h1>
-        <div class="meta-box">
-            01 — PÁRAMO DE SUMAPAZ<br>
-            Extracting signals from organic decay.
+    <div id="c1" class="concept-section">
+        <h1 class="research-statement">Materializing<br><i>Dissonance</i>.</h1>
+        <div class="concept-meta">
+            <span class="concept-number">00</span>
+            <div>Researching the intersection of critical design, tangible interfaces, and body-space narratives in the Global South.</div>
         </div>
-    </section>
+    </div>
 
-    <section class="section" id="sec-bogota">
-        <h1 class="big-text">Recording the<br><i>Friction</i>.</h1>
-        <div class="meta-box">
-            02 — BOGOTÁ D.C.<br>
-            Materializing social inequality through sound.
+    <div id="c2" class="concept-section">
+        <h1 class="research-statement">The Silent<br>Archive.</h1>
+        <div class="concept-meta">
+            <span class="concept-number">01</span>
+            <div>ORIGIN: PÁRAMO<br>Extracting signals from the silence of the Andes.</div>
         </div>
-    </section>
+    </div>
 
-    <section class="section" id="sec-barranca">
-        <h1 class="big-text">Designing for<br><i>Survival</i>.</h1>
-        <div class="meta-box">
-            03 — MAGDALENA BASIN<br>
-            Hacking scarcity to produce abundance.
+    <div id="c3" class="concept-section">
+        <h1 class="research-statement">The Physics of<br>Inequality.</h1>
+        <div class="concept-meta">
+            <span class="concept-number">02</span>
+            <div>CONTEXT: BOGOTÁ<br>Dragging sensors through the city to record invisible friction.</div>
         </div>
-    </section>
+    </div>
+
+    <div id="c4" class="concept-section">
+        <h1 class="research-statement">Recursive<br><i>Adaptation</i>.</h1>
+        <div class="concept-meta">
+            <span class="concept-number">03</span>
+            <div>METHOD: RECURSIVIDAD<br>Hacking scarcity to produce abundance.</div>
+        </div>
+    </div>
 
     <script>
-        // --- INTERACTION LOGIC ---
-        const titles = {
-            main: document.getElementById('title-main'),
-            bio: document.getElementById('title-bio'),
-            city: document.getElementById('title-city'),
-            body: document.getElementById('title-body')
-        };
-        const zoneDisp = document.getElementById('zone-display');
+        // --- INTERACTIVE HERO LOGIC ---
+        const hero = document.getElementById('interactive-hero');
+        const questions = document.querySelectorAll('.hero-question');
 
-        function setContext(type, color) {
-            // Hide all titles
-            Object.values(titles).forEach(t => t.classList.remove('active'));
+        function activateZone(zone, color) {
+            // Change Background Color (Simulating Saetbyeol's blur change)
+            hero.style.background = `radial-gradient(circle at center, ${color} 0%, #111 100%)`;
             
-            // Show specific title
-            if(titles[type]) titles[type].classList.add('active');
-            
-            // Change BG slightly
-            document.body.style.backgroundColor = color;
-            
-            // Update Altimeter Text
-            zoneDisp.innerText = type.toUpperCase();
+            // Show specific text
+            questions.forEach(q => q.classList.remove('active'));
+            document.getElementById('q-' + zone).classList.add('active');
         }
 
-        function resetContext() {
-            Object.values(titles).forEach(t => t.classList.remove('active'));
-            titles.main.classList.add('active');
-            document.body.style.backgroundColor = 'var(--bg-paramo)';
-            zoneDisp.innerText = "WAITING";
+        function resetZone() {
+            hero.style.background = `radial-gradient(circle at center, #ffffff 0%, #dcdcdc 100%)`;
+            questions.forEach(q => q.classList.remove('active'));
+            document.getElementById('q-default').classList.add('active');
         }
 
-        // --- CURSOR FOLLOWER ---
+        function scrollToID(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // --- SCROLL & TRANSECT LOGIC ---
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            const height = window.innerHeight;
+            
+            // Show Altimeter only after passing hero
+            if(scrollY > height * 0.5) {
+                document.body.classList.add('show-ui');
+            } else {
+                document.body.classList.remove('show-ui');
+            }
+
+            // Simple Color Logic based on section
+            // (You can expand this with the detailed logic from previous code)
+            const scrollPct = scrollY / (document.body.scrollHeight - height);
+            const alt = Math.round(3200 - (scrollPct * 3150));
+            document.getElementById('alt-val').innerText = alt;
+
+            if (scrollY > height && scrollPct < 0.4) {
+                 document.getElementById('zone-val').innerText = "PÁRAMO";
+                 document.body.style.backgroundColor = "var(--bg-paramo)";
+            } else if (scrollPct >= 0.4 && scrollPct < 0.7) {
+                 document.getElementById('zone-val').innerText = "BOGOTÁ";
+                 document.body.style.backgroundColor = "var(--bg-bogota)";
+            } else if (scrollPct >= 0.7) {
+                 document.getElementById('zone-val').innerText = "MAGDALENA";
+                 document.body.style.backgroundColor = "var(--bg-barranca)";
+            }
+        });
+
+        // --- CURSOR LOGIC ---
         const cursor = document.getElementById('cursor');
         document.addEventListener('mousemove', e => {
             cursor.style.left = e.clientX + 'px';
             cursor.style.top = e.clientY + 'px';
         });
-        document.querySelectorAll('a, .blob-zone').forEach(el => {
+        // Add hover effect to interactive zones
+        document.querySelectorAll('.radar-zone, a, .scroll-hint').forEach(el => {
             el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
             el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
-        });
-
-        // --- SCROLL COLOR LOGIC (TRANSECT) ---
-        window.addEventListener('scroll', () => {
-            const scrollY = window.scrollY;
-            const h = window.innerHeight;
-            const pct = scrollY / (document.body.scrollHeight - h);
-            
-            // Calculate Altitude
-            document.getElementById('alt-display').innerText = Math.round(3200 - (pct * 3150));
-
-            // Section Logic
-            if(scrollY > h * 0.5) {
-                if(pct < 0.4) {
-                    document.body.style.backgroundColor = "var(--bg-paramo)";
-                    document.getElementById('temp-display').innerText = "8°C";
-                } else if(pct >= 0.4 && pct < 0.7) {
-                    document.body.style.backgroundColor = "var(--bg-bogota)";
-                    document.getElementById('temp-display').innerText = "19°C";
-                } else {
-                    document.body.style.backgroundColor = "var(--bg-barranca)";
-                    document.getElementById('temp-display').innerText = "36°C";
-                }
-            }
         });
     </script>
 </body>
