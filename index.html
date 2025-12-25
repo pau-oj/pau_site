@@ -12,13 +12,13 @@
     <style>
         /* --- VARIABLES --- */
         :root {
-            /* NUEVO FONDO: Verde Musgo Profundo (No negro) */
-            --bg-hero: #0d1210; 
+            /* Colores Base */
+            --bg-hero: #0e1110; /* Verde muy oscuro, casi negro */
             
-            /* Colores de las secciones (Transecto) */
-            --bg-paramo: #f0f2f0;
-            --bg-bogota: #8a8f94;
-            --bg-barranca: #c75b45;
+            /* Colores de Secciones */
+            --bg-paramo: #f4f5f7; /* Blanco Niebla */
+            --bg-bogota: #8d949e; /* Gris Concreto */
+            --bg-barranca: #d6492c; /* Rojo Tierra */
             
             --text-main: #111;
             --text-light: #e6e8e6;
@@ -62,16 +62,29 @@
         .nav-links a { margin-left: 20px; text-decoration: none; color: inherit; }
         .nav-links a:hover { text-decoration: underline; }
 
-        /* --- HERO: HANGING GARDEN (TOP DOWN) --- */
+        /* --- HERO: HANGING GARDEN --- */
         #hero-container {
             height: 100vh; width: 100vw; position: relative; overflow: hidden;
             color: var(--text-light);
-            /* Gradient sutil para dar profundidad */
-            background: linear-gradient(to bottom, #0d1210 0%, #1a211e 100%);
+            /* Fondo sólido inicial */
+            background-color: var(--bg-hero);
         }
 
         canvas#generative-canopy {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        }
+
+        /* --- LA SOLUCIÓN DE TRANSICIÓN: GRADIENT FADE --- */
+        .hero-fade {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 250px; /* Altura del desvanecimiento */
+            /* Gradiente de transparente -> al color de la siguiente sección (Páramo) */
+            background: linear-gradient(to bottom, rgba(244, 245, 247, 0) 0%, var(--bg-paramo) 100%);
+            z-index: 5;
+            pointer-events: none;
         }
 
         .interaction-overlay {
@@ -89,14 +102,14 @@
             font-family: 'Space Mono', monospace; font-size: 0.8rem; margin-top: 20px;
             background: rgba(255,255,255,0.05); backdrop-filter: blur(10px);
             color: #dcdcdc; display: inline-block; padding: 10px 20px; border-radius: 50px;
-            border: 1px solid rgba(255,255,255,0.1);
-            letter-spacing: 1px;
+            border: 1px solid rgba(255,255,255,0.1); letter-spacing: 1px;
         }
 
         .scroll-hint {
             position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
             font-family: 'Space Mono', monospace; font-size: 0.7rem; opacity: 0.6;
             animation: float 3s ease-in-out infinite; cursor: pointer; pointer-events: auto;
+            color: #111; z-index: 20; /* Texto oscuro para que se vea sobre el fade blanco */
         }
 
         /* --- CONTENT PAGES --- */
@@ -168,6 +181,8 @@
         <section id="hero-container">
             <canvas id="generative-canopy"></canvas>
             
+            <div class="hero-fade"></div>
+
             <div class="interaction-overlay">
                 <div class="center-text">
                     <h1 id="hero-title">Materializing Dissonance</h1>
@@ -203,26 +218,11 @@
         </section>
     </div>
 
-    <div id="projects-page" class="page-container">
-        <h1 style="font-size:4vw; font-weight:300; margin:0;">Selected Works</h1>
-        <div class="grid">
-            <div class="card" onclick="openProject('ladrilludo')"><div class="card-img" style="background:#8d949e;"></div><div class="card-meta">CRITICAL MATTER</div><h3>Ladrilludo</h3></div>
-            <div class="card" onclick="openProject('huesped')"><div class="card-img" style="background:#d6492c;"></div><div class="card-meta">TANGIBLE MEDIA</div><h3>Huésped Errante</h3></div>
-        </div>
-    </div>
-    
-    <div id="about-page" class="page-container" style="padding:150px 20vw; background:#e0e0e0; color:#111;">
-        <div class="bio-text" style="font-size:1.5rem;">"I come from a landscape defined by extreme contrast..."</div>
-    </div>
-
-    <div id="project-overlay">
-        <div class="close-project" onclick="closeProject()">CLOSE [X]</div>
-        <div class="project-hero" id="p-hero-bg"><h1 style="font-size:5vw; margin:0;" id="p-title">Title</h1></div>
-        <div class="project-content"><p id="p-desc">Desc</p></div>
-    </div>
+    <div id="projects-page" class="page-container"><h1 style="padding:150px 5vw; font-size:4vw;">Selected Works</h1></div>
+    <div id="about-page" class="page-container"></div>
+    <div id="project-overlay"><div class="close-project" onclick="closeProject()">X</div></div>
 
     <script>
-        // --- GENERATIVE CANOPY (TOP-DOWN VINES) ---
         const canvas = document.getElementById('generative-canopy');
         const ctx = canvas.getContext('2d');
         let width, height;
@@ -230,24 +230,16 @@
         let mouse = { x: 0, y: 0 };
 
         window.addEventListener('resize', init);
-        document.addEventListener('mousemove', e => {
-            mouse.x = e.clientX;
-            mouse.y = e.clientY;
-            checkHover();
-        });
+        document.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; checkHover(); });
 
         class Vine {
             constructor(x, targetY, type) {
                 this.x = x;
-                this.y = 0; // START AT TOP
-                this.targetY = targetY; // How far down it grows
-                this.type = type; // 'bio', 'friction', 'heat'
-                
-                this.points = []; // Store path for curve drawing
+                this.targetY = targetY;
+                this.type = type;
+                this.points = [];
                 this.currentY = 0;
                 this.growSpeed = Math.random() * 3 + 2;
-                
-                // Random organic properties
                 this.waviness = Math.random() * 20; 
                 this.frequency = Math.random() * 0.05;
                 this.width = Math.random() * 1.5 + 0.5;
@@ -256,11 +248,7 @@
             grow() {
                 if (this.currentY < this.targetY) {
                     this.currentY += this.growSpeed;
-                    
-                    // Calculate wavy X position (Bezier simulation)
                     let offsetX = Math.sin(this.currentY * this.frequency) * this.waviness;
-                    
-                    // Add point to path
                     this.points.push({x: this.x + offsetX, y: this.currentY});
                 }
             }
@@ -271,33 +259,37 @@
                 ctx.beginPath();
                 ctx.moveTo(this.points[0].x, this.points[0].y);
 
-                // Determine Color based on Theme (BOTANICAL COLORS)
+                // COLORES BOTÁNICOS (Más naturales)
                 let r, g, b;
-                if(this.type === 'bio') { r=220; g=200; b=255; } // Orchid/Lilac
-                if(this.type === 'friction') { r=200; g=50; b=100; } // Bromeliad Red
-                if(this.type === 'heat') { r=255; g=150; b=100; } // Coral/Passion Fruit
+                if(this.type === 'bio') { r=200; g=220; b=210; } // Verde Pálido/Frailejón
+                if(this.type === 'friction') { r=160; g=60; b=60; } // Rojo Arcilla Oscuro
+                if(this.type === 'heat') { r=210; g=160; b=100; } // Ocre/Dorado
 
-                // Interaction: Glow on hover
                 let dist = Math.abs(mouse.x - this.points[this.points.length-1].x);
-                let alpha = 0.3;
-                if(dist < 150 && mouse.y < this.targetY + 100) alpha = 0.8;
+                let alpha = 0.4;
+                if(dist < 150 && mouse.y < this.targetY + 100) alpha = 0.9;
 
                 ctx.strokeStyle = `rgba(${r},${g},${b},${alpha})`;
                 ctx.lineWidth = this.width;
 
-                // Draw curve
                 for(let i = 1; i < this.points.length; i++) {
                     ctx.lineTo(this.points[i].x, this.points[i].y);
                 }
                 ctx.stroke();
 
-                // Draw Flowers/Leaves at the tip
+                // DIBUJAR HOJAS (NO CÍRCULOS)
                 if(this.currentY >= this.targetY) {
-                    ctx.beginPath();
+                    let endX = this.points[this.points.length-1].x;
+                    let endY = this.points[this.points.length-1].y;
+                    
                     ctx.fillStyle = `rgba(${r},${g},${b}, 0.8)`;
-                    // Organic shape (not perfect circle)
-                    let size = Math.random() * 4 + 2;
-                    ctx.arc(this.points[this.points.length-1].x, this.points[this.points.length-1].y, size, 0, Math.PI*2);
+                    
+                    // Función para dibujar una hoja orgánica simple
+                    ctx.beginPath();
+                    ctx.moveTo(endX, endY);
+                    // Curva bezier para forma de gota/hoja
+                    ctx.bezierCurveTo(endX - 5, endY + 5, endX - 5, endY + 15, endX, endY + 20);
+                    ctx.bezierCurveTo(endX + 5, endY + 15, endX + 5, endY + 5, endX, endY);
                     ctx.fill();
                 }
             }
@@ -307,102 +299,65 @@
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
             vines = [];
-            
-            const count = 60; // Density of the forest
+            const count = 70; 
             for(let i = 0; i < count; i++) {
                 let x = (width / count) * i + (Math.random()*20);
-                
-                // Varied lengths (Hanging Garden effect)
-                // Center is shorter (Bio), Sides are longer
                 let lengthRatio = Math.sin((i / count) * Math.PI); 
-                let maxH = height * 0.4 + (Math.random() * height * 0.4);
-
+                let maxH = height * 0.5 + (Math.random() * height * 0.3); // Más largo para que entre en el fade
+                
                 let type = 'bio';
                 if (i < count * 0.33) type = 'friction';
                 else if (i > count * 0.66) type = 'heat';
-
                 vines.push(new Vine(x, maxH, type));
             }
         }
 
         function animate() {
-            ctx.clearRect(0, 0, width, height); // Clear for clean animation
-            
-            vines.forEach(v => {
-                v.grow();
-                v.draw();
-            });
+            ctx.clearRect(0, 0, width, height);
+            vines.forEach(v => { v.grow(); v.draw(); });
             requestAnimationFrame(animate);
         }
 
-        // --- INTERACTION ---
+        // --- INTERACTION & SCROLL LOGIC (Igual que antes) ---
         const hTitle = document.getElementById('hero-title');
         const hSub = document.getElementById('hero-sub');
-
         function checkHover() {
             let section = mouse.x / width;
             if(mouse.y > height * 0.8) return;
-
-            if (section < 0.33) {
-                hTitle.innerHTML = "Systemic Friction";
-                hTitle.style.color = "#ff6b8b"; // Soft Red
-                hSub.innerHTML = "MATERIALIZING INEQUALITY";
-            } else if (section > 0.66) {
-                hTitle.innerHTML = "Embodied Tech";
-                hTitle.style.color = "#ffb380"; // Soft Coral
-                hSub.innerHTML = "INTERFACES THAT SWEAT";
-            } else {
-                hTitle.innerHTML = "Silent Archive";
-                hTitle.style.color = "#dcd0ff"; // Pale Lilac
-                hSub.innerHTML = "PRESERVING ORGANIC DATA";
-            }
+            if (section < 0.33) { hTitle.innerHTML = "Systemic Friction"; hTitle.style.color = "#a03c3c"; hSub.innerHTML = "MATERIALIZING INEQUALITY"; } 
+            else if (section > 0.66) { hTitle.innerHTML = "Embodied Tech"; hTitle.style.color = "#d2a064"; hSub.innerHTML = "INTERFACES THAT SWEAT"; } 
+            else { hTitle.innerHTML = "Silent Archive"; hTitle.style.color = "#c8dcd2"; hSub.innerHTML = "PRESERVING ORGANIC DATA"; }
         }
 
-        // --- NAVIGATION ---
         function showPage(id) {
             document.querySelectorAll('.page-container').forEach(p => p.classList.remove('active'));
             document.getElementById(id + '-page').classList.add('active');
             window.scrollTo(0,0);
-            
             const alt = document.querySelector('.altimeter');
             if(id === 'home') alt.style.display = 'block'; else alt.style.display = 'none';
         }
 
         function scrollToID(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
-        
-        function openProject(key) {
-            document.getElementById('project-overlay').classList.add('open');
-        }
         function closeProject() { document.getElementById('project-overlay').classList.remove('open'); }
 
-        // --- SCROLL COLORS ---
         window.addEventListener('scroll', () => {
             if(!document.getElementById('home-page').classList.contains('active')) return;
-            const y = window.scrollY;
-            const h = window.innerHeight;
-            const body = document.body;
-            
-            // Altimeter
+            const y = window.scrollY; const h = window.innerHeight; const body = document.body;
             if(y > h * 0.5) document.querySelector('.altimeter').classList.add('show-altimeter');
             else document.querySelector('.altimeter').classList.remove('show-altimeter');
-
-            // BG Logic
+            
+            // Logic Background
             if(y < h * 0.8) { body.style.backgroundColor = "var(--bg-hero)"; body.style.color = "#e6e8e6"; }
             else if (y < h * 1.5) { body.style.backgroundColor = "var(--bg-paramo)"; body.style.color = "#111"; document.getElementById('zone-val').innerText = "PÁRAMO"; }
             else if (y < h * 2.5) { body.style.backgroundColor = "var(--bg-bogota)"; body.style.color = "#000"; document.getElementById('zone-val').innerText = "BOGOTÁ"; }
             else { body.style.backgroundColor = "var(--bg-barranca)"; body.style.color = "#fff"; document.getElementById('zone-val').innerText = "MAGDALENA"; }
         });
 
-        // Init
-        init();
-        animate();
-
-        // Cursor
-        document.querySelectorAll('a, .card, .scroll-hint, .close-project').forEach(el => {
+        init(); animate();
+        document.querySelectorAll('a, .card').forEach(el => {
             el.addEventListener('mouseenter', () => document.getElementById('cursor').classList.add('hovered'));
             el.addEventListener('mouseleave', () => document.getElementById('cursor').classList.remove('hovered'));
         });
-
     </script>
 </body>
 </html>
