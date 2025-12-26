@@ -7,7 +7,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Space+Mono:ital,wght@0,400;0,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
     <style>
         /* --- VARIABLES --- */
@@ -51,7 +51,7 @@
             position: fixed; top: 30px; left: 40px; right: 40px;
             display: flex; justify-content: space-between; align-items: flex-start;
             font-family: 'Space Mono', monospace; font-size: 0.75rem;
-            z-index: 100; mix-blend-mode: multiply; color: #111; /* Color oscuro para leerse bien */
+            z-index: 100; mix-blend-mode: difference; color: white;
             text-transform: uppercase; letter-spacing: 1px;
         }
 
@@ -65,7 +65,7 @@
         .altimeter {
             position: fixed; left: 40px; top: 50%; transform: translateY(-50%);
             font-family: 'Space Mono', monospace; font-size: 10px;
-            z-index: 100; mix-blend-mode: multiply; color: #111;
+            z-index: 100; mix-blend-mode: difference; color: white;
             border-left: 1px solid currentColor; padding-left: 15px;
             display: none; 
         }
@@ -73,35 +73,122 @@
         .data-row { margin-bottom: 8px; }
         .data-label { opacity: 0.6; margin-right: 5px; }
 
+        /* --- HERO SECTION (NEW) --- */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 15vw;
+            position: relative;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .hero-meta {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            margin-bottom: 30px;
+            display: flex;
+            gap: 40px;
+            opacity: 0.6;
+        }
+
+        .hero-title {
+            font-size: 7vw;
+            font-weight: 300;
+            line-height: 0.9;
+            margin: 0 0 30px 0;
+            letter-spacing: -0.03em;
+        }
+
+        .hero-title .highlight {
+            font-style: italic;
+            font-weight: 400;
+            border-bottom: 3px solid var(--accent); 
+        }
+
+        .hero-abstract {
+            font-size: 1.4rem;
+            line-height: 1.5;
+            max-width: 700px;
+            margin-bottom: 60px;
+            font-weight: 300;
+        }
+
+        .research-pillars {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            border-top: 1px solid currentColor;
+            padding-top: 30px;
+        }
+
+        .pillar {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .p-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .p-content {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            line-height: 1.6;
+            opacity: 0.8;
+        }
+
+        .scroll-prompt {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
         /* --- HOME (CONCEPTUAL SCROLL) --- */
         .page { display: none; padding-top: 0; min-height: 100vh; opacity: 0; transition: opacity 0.5s; }
         .page.active { display: block; opacity: 1; }
 
         .concept-section {
             min-height: 100vh;
-            display: flex; flex-direction: column; justify-content: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
             padding: 0 15vw;
             position: relative;
             border-bottom: 1px solid rgba(0,0,0,0.05);
         }
 
-        /* ESTILO ESPECÍFICO PARA LA PRIMERA SECCIÓN (HERO DE RAMAS) */
-        #hero-canvas-container {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; /* Para que puedas seleccionar texto */
-            z-index: 0;
-            opacity: 0.6; /* Sutil transparencia */
-        }
-
         .research-statement {
-            font-size: 5.5vw; font-weight: 300; line-height: 0.95; margin: 0 0 40px 0; letter-spacing: -0.02em;
-            position: relative; z-index: 1; /* Texto encima de las ramas */
+            font-size: 5.5vw;
+            font-weight: 300;
+            line-height: 0.95;
+            margin: 0 0 40px 0;
+            letter-spacing: -0.02em;
         }
 
         .concept-meta {
-            font-family: 'Space Mono', monospace; font-size: 0.85rem; max-width: 450px; line-height: 1.6;
-            border-top: 1px solid currentColor; padding-top: 20px; display: flex; gap: 20px;
-            position: relative; z-index: 1;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            max-width: 450px;
+            line-height: 1.6;
+            border-top: 1px solid currentColor;
+            padding-top: 20px;
+            display: flex; gap: 20px;
         }
 
         .concept-number { font-weight: 700; margin-right: 10px; }
@@ -158,9 +245,46 @@
 
     <div id="home-page" class="page active">
         
-        <section class="concept-section" id="c1">
-            <canvas id="hero-canvas-container"></canvas>
+        <section class="hero-section">
+            <div class="hero-container">
+                <div class="hero-meta">
+                    <span>ROLE: CRITICAL TECHNOLOGIST</span>
+                    <span>LOC: BOGOTÁ, CO (3,600 MASL)</span>
+                </div>
 
+                <h1 class="hero-title">
+                    I engineer <br>
+                    <span class="highlight">dissonance.</span>
+                </h1>
+
+                <p class="hero-abstract">
+                    Bridging the gap between the ancestral and the computational. 
+                    I build <b>situated interfaces</b> that expose the invisible codes of 
+                    social friction in the Global South.
+                </p>
+
+                <div class="research-pillars">
+                    <div class="pillar">
+                        <span class="p-label">01. INQUIRY</span>
+                        <span class="p-content">How does inequality sound? Transducing social stratification into sonic environments.</span>
+                    </div>
+                    <div class="pillar">
+                        <span class="p-label">02. METHOD</span>
+                        <span class="p-content"><b>Recursividad:</b> Hacking scarcity to produce high-fidelity interaction from low-fidelity contexts.</span>
+                    </div>
+                    <div class="pillar">
+                        <span class="p-label">03. MATTER</span>
+                        <span class="p-content">Computing with <b>Small Data</b>: Extracting signals from biological decay and rural silence.</span>
+                    </div>
+                </div>
+
+                <div class="scroll-prompt">
+                    BEGIN TRANSECT ↓
+                </div>
+            </div>
+        </section>
+
+        <section class="concept-section" id="c1">
             <h1 class="research-statement">
                 Materializing<br>
                 <i>Dissonance</i>.
@@ -225,17 +349,17 @@
         <h1 style="font-size:4vw; font-weight:300; margin:0;">Selected Works</h1>
         <div class="grid">
             <div class="card" onclick="openModal('Ladrilludo', '#9ca3af')">
-                <div class="card-img" style="background:#555;"></div>
+                <div class="card-img"><img src="https://via.placeholder.com/600x400/555/fff?text=LADRILLUDO" alt=""></div>
                 <div class="card-meta">CRITICAL MATTER / SOUND</div>
                 <h3>Ladrilludo</h3>
             </div>
             <div class="card" onclick="openModal('Huésped Errante', '#d6492c')">
-                <div class="card-img" style="background:#d44d28;"></div>
+                <div class="card-img"><img src="https://via.placeholder.com/600x400/a33/fff?text=HUESPED" alt=""></div>
                 <div class="card-meta">TANGIBLE MEDIA / BIO</div>
                 <h3>Huésped Errante</h3>
             </div>
             <div class="card" onclick="openModal('La Soledad Suena', '#333')">
-                <div class="card-img" style="background:#111;"></div>
+                <div class="card-img"><img src="https://via.placeholder.com/600x400/111/fff?text=SOLEDAD" alt=""></div>
                 <div class="card-meta">FUTURE SKETCHES / AV</div>
                 <h3>La Soledad Suena</h3>
             </div>
@@ -267,97 +391,13 @@
     </div>
 
     <script>
-        // --- 1. SCRIPT DE RAMAS (HERO ONLY) ---
-        const canvas = document.getElementById('hero-canvas-container');
-        if (canvas) {
-            const ctx = canvas.getContext('2d');
-            let width, height;
-            let branches = [];
-
-            // Ajuste al tamaño de la pantalla
-            function resize() {
-                width = canvas.width = window.innerWidth;
-                height = canvas.height = window.innerHeight;
-                initTree();
-            }
-            window.addEventListener('resize', resize);
-
-            // Clase Rama
-            class Branch {
-                constructor(x, y, angle, depth) {
-                    this.x = x;
-                    this.y = y;
-                    this.angle = angle;
-                    this.depth = depth;
-                    this.endX = x + Math.cos(angle) * depth * 10;
-                    this.endY = y + Math.sin(angle) * depth * 10;
-                    this.currentX = x;
-                    this.currentY = y;
-                    this.finished = false;
-                    this.branches = [];
-                }
-
-                update() {
-                    if (!this.finished) {
-                        const dx = this.endX - this.currentX;
-                        const dy = this.endY - this.currentY;
-                        const dist = Math.sqrt(dx*dx + dy*dy);
-
-                        if (dist < 1) {
-                            this.finished = true;
-                            if (this.depth > 0) this.spawn();
-                        } else {
-                            this.currentX += dx * 0.1;
-                            this.currentY += dy * 0.1;
-                        }
-                    }
-                    this.branches.forEach(b => b.update());
-                    this.draw();
-                }
-
-                spawn() {
-                    const num = Math.floor(Math.random() * 2) + 2;
-                    for(let i=0; i<num; i++) {
-                        const angle = this.angle + (Math.random() - 0.5);
-                        this.branches.push(new Branch(this.currentX, this.currentY, angle, this.depth - 1));
-                    }
-                }
-
-                draw() {
-                    ctx.beginPath();
-                    ctx.moveTo(this.x, this.y);
-                    ctx.lineTo(this.currentX, this.currentY);
-                    
-                    // COLOR DE RAMAS: Oscuro para contraste sobre fondo claro
-                    // Se desvanecen un poco en las puntas (transparencia)
-                    ctx.strokeStyle = `rgba(30, 30, 30, ${this.depth/8 + 0.2})`;
-                    ctx.lineWidth = this.depth * 0.5;
-                    ctx.stroke();
-                }
-            }
-
-            function initTree() {
-                branches = [];
-                // Nace desde abajo, centro
-                branches.push(new Branch(width/2, height, -Math.PI/2, 10));
-            }
-
-            function animate() {
-                ctx.clearRect(0, 0, width, height);
-                branches.forEach(b => b.update());
-                requestAnimationFrame(animate);
-            }
-
-            resize();
-            animate();
-        }
-
-        // --- 2. NAVEGACIÓN ---
+        // NAVIGATION SYSTEM
         function nav(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id + '-page').classList.add('active');
             window.scrollTo(0,0);
             
+            // Toggle Altimeter
             if(id === 'home') document.body.classList.add('show-altimeter');
             else {
                 document.body.classList.remove('show-altimeter');
@@ -366,7 +406,7 @@
             }
         }
 
-        // --- 3. MODAL ---
+        // MODAL SYSTEM
         function openModal(title, color) {
             document.getElementById('m-title').innerText = title;
             document.getElementById('m-hero').style.backgroundColor = color;
@@ -376,34 +416,40 @@
             document.getElementById('modal').classList.remove('open');
         }
 
-        // --- 4. SCROLL LOGIC ---
+        // SCROLL & COLOR LOGIC (THE TRANSECT)
         window.addEventListener('scroll', () => {
             if(!document.getElementById('home-page').classList.contains('active')) return;
 
             const scrollPct = window.scrollY / (document.body.scrollHeight - window.innerHeight);
             const body = document.body;
             
-            // Altimeter
+            // Update Altimeter
             const alt = Math.round(3200 - (scrollPct * 3150));
             document.getElementById('alt-val').innerText = alt;
 
-            // Zonas
+            // Update Zones
             if (scrollPct < 0.25) {
+                // INTRO / PARAMO
                 body.style.backgroundColor = "var(--bg-paramo)";
                 body.style.color = "#111";
                 document.getElementById('zone-val').innerText = "PÁRAMO";
+                document.getElementById('stat-val').innerText = "OBSERVING";
             } else if (scrollPct >= 0.25 && scrollPct < 0.6) {
+                // BOGOTA
                 body.style.backgroundColor = "var(--bg-bogota)";
                 body.style.color = "#000";
                 document.getElementById('zone-val').innerText = "BOGOTÁ";
+                document.getElementById('stat-val').innerText = "RECORDING";
             } else {
+                // BARRANCA
                 body.style.backgroundColor = "var(--bg-barranca)";
                 body.style.color = "#fff";
                 document.getElementById('zone-val').innerText = "MAGDALENA";
+                document.getElementById('stat-val').innerText = "MUTATING";
             }
         });
 
-        // --- 5. CURSOR ---
+        // CURSOR
         const cursor = document.getElementById('cursor');
         document.addEventListener('mousemove', e => {
             cursor.style.left = e.clientX + 'px';
