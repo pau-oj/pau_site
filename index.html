@@ -19,7 +19,8 @@
             --accent: #ff3300;
         }
 
-        * { box-sizing: border-box; cursor: none; }
+        /* CORRECCIÓN: Quitamos 'cursor: none' para ver la flecha normal */
+        * { box-sizing: border-box; }
 
         body {
             margin: 0; padding: 0;
@@ -31,12 +32,15 @@
         }
 
         /* --- UI ELEMENTS --- */
+        
+        /* Opcional: Si quieres quitar la bolita, descomenta la linea 'display: none' abajo */
         #cursor {
             position: fixed; top: 0; left: 0; width: 12px; height: 12px;
             border: 1px solid currentColor; border-radius: 50%;
             pointer-events: none; z-index: 9999;
             transform: translate(-50%, -50%); mix-blend-mode: difference;
             transition: transform 0.1s; display: flex; align-items: center; justify-content: center;
+            /* display: none; <--- QUITA LAS BARRAS SI QUIERES BORRAR LA BOLITA */
         }
         #cursor.hovered { transform: translate(-50%, -50%) scale(4); background: #fff; mix-blend-mode: normal; color: black; border: none; }
         
@@ -73,7 +77,7 @@
         .data-row { margin-bottom: 8px; }
         .data-label { opacity: 0.6; margin-right: 5px; }
 
-        /* --- HERO SECTION (NEW) --- */
+        /* --- HERO SECTION --- */
         .hero-section {
             min-height: 100vh;
             display: flex;
@@ -196,7 +200,7 @@
         /* --- PROJECTS GRID --- */
         #projects-page { padding: 150px 5vw; background: #f4f5f7; color: #111; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 40px; margin-top: 50px; }
-        .card { cursor: none; }
+        .card { cursor: pointer; } /* CORRECCION: Pointer normal */
         .card-img { height: 280px; background: #ccc; margin-bottom: 15px; position: relative; overflow: hidden; }
         .card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s; }
         .card:hover img { transform: scale(1.05); }
