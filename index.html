@@ -3,467 +3,381 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maria Paula Ojeda | Critical Technologist</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-
+    <title>PAULA OJEDA | CRITICAL MATTER</title>
     <style>
-        /* --- VARIABLES --- */
+        /* --- 1. BRUTALIST CORE STYLES --- */
         :root {
-            --bg-paramo: #f4f5f7;
-            --bg-bogota: #8d949e;
-            --bg-barranca: #d6492c;
-            --text-main: #111;
-            --accent: #ff3300;
+            --bg-color: #050505;
+            --text-main: #e0e0e0;
+            --accent-green: #00ff41; /* Terminal Green */
+            --accent-dim: #444;
+            --font-mono: 'Courier New', Courier, monospace;
+            --font-display: 'Helvetica', 'Arial', sans-serif;
         }
 
-        /* CORRECCIÓN: Quitamos 'cursor: none' para ver la flecha normal */
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            cursor: crosshair; /* Precision cursor */
+        }
 
         body {
-            margin: 0; padding: 0;
-            font-family: 'Cormorant Garamond', serif;
+            background-color: var(--bg-color);
             color: var(--text-main);
-            background-color: var(--bg-paramo);
+            font-family: var(--font-mono);
+            line-height: 1.4;
             overflow-x: hidden;
-            transition: background-color 1.2s ease, color 1.2s ease;
         }
 
-        /* --- UI ELEMENTS --- */
+        a { text-decoration: none; color: inherit; }
         
-        /* Opcional: Si quieres quitar la bolita, descomenta la linea 'display: none' abajo */
-        #cursor {
-            position: fixed; top: 0; left: 0; width: 12px; height: 12px;
-            border: 1px solid currentColor; border-radius: 50%;
-            pointer-events: none; z-index: 9999;
-            transform: translate(-50%, -50%); mix-blend-mode: difference;
-            transition: transform 0.1s; display: flex; align-items: center; justify-content: center;
-            /* display: none; <--- QUITA LAS BARRAS SI QUIERES BORRAR LA BOLITA */
-        }
-        #cursor.hovered { transform: translate(-50%, -50%) scale(4); background: #fff; mix-blend-mode: normal; color: black; border: none; }
-        
-        .noise {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 50; opacity: 0.08;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-        }
-
-        /* --- NAVIGATION & HEADER --- */
-        .top-bar {
-            position: fixed; top: 30px; left: 40px; right: 40px;
-            display: flex; justify-content: space-between; align-items: flex-start;
-            font-family: 'Space Mono', monospace; font-size: 0.75rem;
-            z-index: 100; mix-blend-mode: difference; color: white;
-            text-transform: uppercase; letter-spacing: 1px;
-        }
-
-        .researcher-id { text-align: left; line-height: 1.4; }
-        .nav-links { display: flex; gap: 30px; }
-        .nav-links a { text-decoration: none; color: inherit; position: relative; }
-        .nav-links a::after { content: ''; display: block; width: 0; height: 1px; background: currentColor; transition: width 0.3s; }
-        .nav-links a:hover::after { width: 100%; }
-
-        /* --- ALTIMETER (LEFT SIDE) --- */
-        .altimeter {
-            position: fixed; left: 40px; top: 50%; transform: translateY(-50%);
-            font-family: 'Space Mono', monospace; font-size: 10px;
-            z-index: 100; mix-blend-mode: difference; color: white;
-            border-left: 1px solid currentColor; padding-left: 15px;
-            display: none; 
-        }
-        .show-altimeter .altimeter { display: block; }
-        .data-row { margin-bottom: 8px; }
-        .data-label { opacity: 0.6; margin-right: 5px; }
-
-        /* --- HERO SECTION --- */
-        .hero-section {
-            min-height: 100vh;
+        /* --- 2. HEADER & NAV --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 0 15vw;
-            position: relative;
-            border-bottom: 1px solid rgba(0,0,0,0.1);
-        }
-
-        .hero-meta {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.7rem;
-            letter-spacing: 1px;
-            margin-bottom: 30px;
-            display: flex;
-            gap: 40px;
-            opacity: 0.6;
-        }
-
-        .hero-title {
-            font-size: 7vw;
-            font-weight: 300;
-            line-height: 0.9;
-            margin: 0 0 30px 0;
-            letter-spacing: -0.03em;
-        }
-
-        .hero-title .highlight {
-            font-style: italic;
-            font-weight: 400;
-            border-bottom: 3px solid var(--accent); 
-        }
-
-        .hero-abstract {
-            font-size: 1.4rem;
-            line-height: 1.5;
-            max-width: 700px;
-            margin-bottom: 60px;
-            font-weight: 300;
-        }
-
-        .research-pillars {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 40px;
-            border-top: 1px solid currentColor;
-            padding-top: 30px;
-        }
-
-        .pillar {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .p-label {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: var(--accent);
-        }
-
-        .p-content {
-            font-family: 'Space Mono', monospace;
+            justify-content: space-between;
+            padding: 20px;
+            border-bottom: 1px solid var(--accent-dim);
+            background: rgba(5,5,5,0.9);
+            z-index: 100;
             font-size: 0.8rem;
-            line-height: 1.6;
-            opacity: 0.8;
+            text-transform: uppercase;
         }
 
-        .scroll-prompt {
-            position: absolute;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-family: 'Space Mono', monospace;
-            font-size: 0.7rem;
-            animation: blink 2s infinite;
-        }
+        .nav-right span { margin-left: 20px; }
 
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-
-        /* --- HOME (CONCEPTUAL SCROLL) --- */
-        .page { display: none; padding-top: 0; min-height: 100vh; opacity: 0; transition: opacity 0.5s; }
-        .page.active { display: block; opacity: 1; }
-
-        .concept-section {
-            min-height: 100vh;
+        /* --- 3. HERO SECTION (OBSERVE) --- */
+        #hero {
+            height: 90vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 0 15vw;
+            padding: 40px;
+            border-bottom: 1px solid var(--accent-dim);
+        }
+
+        h1.manifesto {
+            font-family: var(--font-display);
+            font-size: 8vw; /* Responsive giant text */
+            font-weight: 900;
+            line-height: 0.9;
+            letter-spacing: -0.05em;
+            text-transform: uppercase;
+            color: var(--text-main);
+        }
+
+        .manifesto span:hover {
+            color: transparent;
+            -webkit-text-stroke: 2px var(--accent-green); /* Outline effect */
+        }
+
+        .sub-manifesto {
+            margin-top: 40px;
+            max-width: 600px;
+            font-size: 1.2rem;
+            color: #888;
+        }
+
+        /* --- 4. PROJECTS LIST (MATERIALIZE) --- */
+        #projects {
+            padding: 100px 20px;
+        }
+
+        .section-label {
+            font-size: 0.8rem;
+            color: var(--accent-green);
+            margin-bottom: 40px;
+            display: block;
+            border-bottom: 1px solid var(--accent-green);
+            padding-bottom: 10px;
+            width: fit-content;
+        }
+
+        .project-row {
+            border-top: 1px solid var(--accent-dim);
+            padding: 40px 0;
             position: relative;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
         }
 
-        .research-statement {
-            font-size: 5.5vw;
-            font-weight: 300;
-            line-height: 0.95;
-            margin: 0 0 40px 0;
-            letter-spacing: -0.02em;
+        .project-row:last-child { border-bottom: 1px solid var(--accent-dim); }
+
+        .project-row:hover {
+            background: #111;
         }
 
-        .concept-meta {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.85rem;
-            max-width: 450px;
-            line-height: 1.6;
-            border-top: 1px solid currentColor;
-            padding-top: 20px;
-            display: flex; gap: 20px;
-        }
-
-        .concept-number { font-weight: 700; margin-right: 10px; }
-
-        /* --- PROJECTS GRID --- */
-        #projects-page { padding: 150px 5vw; background: #f4f5f7; color: #111; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 40px; margin-top: 50px; }
-        .card { cursor: pointer; } /* CORRECCION: Pointer normal */
-        .card-img { height: 280px; background: #ccc; margin-bottom: 15px; position: relative; overflow: hidden; }
-        .card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s; }
-        .card:hover img { transform: scale(1.05); }
-        .card-meta { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: #666; margin-bottom: 5px; }
-        .card h3 { margin: 0; font-size: 1.8rem; font-weight: 400; }
-
-        /* --- ABOUT --- */
-        #about-page { padding: 150px 20vw; background: #e0e0e0; color: #111; }
-        .bio-text { font-size: 1.5rem; line-height: 1.5; margin-bottom: 40px; }
+        .p-id { font-size: 1rem; color: #555; margin-bottom: 10px; display: block; }
         
-        /* --- MODAL --- */
-        #modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #fff; z-index: 200; overflow-y: auto;
-            transform: translateY(100%); transition: transform 0.6s cubic-bezier(0.7,0,0.3,1);
+        .p-title {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: opacity 0.3s;
         }
-        #modal.open { transform: translateY(0); }
-        .close-btn { position: fixed; top: 30px; right: 40px; z-index: 201; font-family: 'Space Mono', monospace; cursor: pointer; mix-blend-mode: difference; color: white; }
-        .modal-hero { height: 50vh; background: #000; display: flex; align-items: flex-end; padding: 5vw; color: white; }
-        .modal-content { padding: 5vw 20vw; }
+
+        /* The hidden technical layer */
+        .p-tech-layer {
+            position: absolute;
+            top: 40px;
+            left: 20px;
+            right: 20px;
+            opacity: 0;
+            pointer-events: none;
+            color: var(--accent-green);
+            font-size: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .project-row:hover .p-title { opacity: 0.1; filter: blur(4px); }
+        .project-row:hover .p-tech-layer { opacity: 1; }
+
+        .click-hint {
+            margin-top: 20px;
+            font-size: 0.8rem;
+            border: 1px solid var(--accent-green);
+            padding: 5px 10px;
+            width: fit-content;
+        }
+
+        /* --- 5. FULL SCREEN OVERLAYS (PROJECT PAGES) --- */
+        .project-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+            z-index: 200;
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            overflow-y: auto;
+            padding: 40px;
+        }
+
+        .close-btn {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            font-size: 1.5rem;
+            color: var(--accent-green);
+            cursor: pointer;
+            border: 1px solid var(--accent-green);
+            padding: 10px 20px;
+            background: black;
+            z-index: 210;
+        }
+
+        .close-btn:hover { background: var(--accent-green); color: black; }
+
+        .overlay-content {
+            max-width: 900px;
+            margin: 60px auto;
+        }
+
+        .overlay-title {
+            font-family: var(--font-display);
+            font-size: 4rem;
+            margin-bottom: 20px;
+            line-height: 1;
+        }
+
+        .overlay-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 60px;
+            border-bottom: 1px solid var(--accent-dim);
+            padding-bottom: 20px;
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+        .overlay-body {
+            font-size: 1.4rem;
+            margin-bottom: 40px;
+        }
+
+        .overlay-gallery {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .placeholder-img {
+            width: 100%;
+            height: 300px;
+            background: #222;
+            border: 1px dashed var(--accent-dim);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #555;
+        }
+
+        /* --- 6. FOOTER --- */
+        footer {
+            padding: 40px 20px;
+            border-top: 1px solid var(--accent-dim);
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #555;
+        }
 
     </style>
 </head>
-<body class="show-altimeter">
+<body>
 
-    <div class="noise"></div>
-    <div id="cursor"></div>
-
-    <div class="top-bar">
-        <div class="researcher-id">
-            Maria Paula Ojeda<br>
-            <span style="opacity:0.6;">M.D.A. Candidate 2025</span>
+    <nav>
+        <div class="nav-left">PAULA OJEDA / MIT APPLICANT</div>
+        <div class="nav-right">
+            <span>BOGOTÁ [4.71, -74.07]</span>
+            <span>STATUS: RECURSIVE</span>
         </div>
-        <div class="nav-links">
-            <a href="#" onclick="nav('home')">Research</a>
-            <a href="#" onclick="nav('projects')">Works</a>
-            <a href="#" onclick="nav('about')">About</a>
+    </nav>
+
+    <header id="hero">
+        <h1 class="manifesto">
+            <span>MATERIALIZING</span><br>
+            <span>DISSONANCE.</span>
+        </h1>
+        <div class="sub-manifesto">
+            [cite_start]<p>> I bridge the gap between high-fidelity technology and the low-fidelity reality of the Global South. [cite: 107]</p>
+            <p>> Critical Technologist & Interaction Designer.</p>
         </div>
-    </div>
+    </header>
 
-    <div class="altimeter">
-        <div class="data-row"><span class="data-label">ZONE:</span><span id="zone-val">PÁRAMO</span></div>
-        <div class="data-row"><span class="data-label">ALT:</span><span id="alt-val">3200</span> M</div>
-        <div class="data-row"><span class="data-label">STATUS:</span><span id="stat-val">OBSERVING</span></div>
-    </div>
+    <section id="projects">
+        <span class="section-label">01 // SELECTED WORKS_</span>
 
-    <div id="home-page" class="page active">
-        
-        <section class="hero-section">
-            <div class="hero-container">
-                <div class="hero-meta">
-                    <span>ROLE: CRITICAL TECHNOLOGIST</span>
-                    <span>LOC: BOGOTÁ, CO (3,600 MASL)</span>
-                </div>
-
-                <h1 class="hero-title">
-                    I engineer <br>
-                    <span class="highlight">dissonance.</span>
-                </h1>
-
-                <p class="hero-abstract">
-                    Bridging the gap between the ancestral and the computational. 
-                    I build <b>situated interfaces</b> that expose the invisible codes of 
-                    social friction in the Global South.
-                </p>
-
-                <div class="research-pillars">
-                    <div class="pillar">
-                        <span class="p-label">01. INQUIRY</span>
-                        <span class="p-content">How does inequality sound? Transducing social stratification into sonic environments.</span>
-                    </div>
-                    <div class="pillar">
-                        <span class="p-label">02. METHOD</span>
-                        <span class="p-content"><b>Recursividad:</b> Hacking scarcity to produce high-fidelity interaction from low-fidelity contexts.</span>
-                    </div>
-                    <div class="pillar">
-                        <span class="p-label">03. MATTER</span>
-                        <span class="p-content">Computing with <b>Small Data</b>: Extracting signals from biological decay and rural silence.</span>
-                    </div>
-                </div>
-
-                <div class="scroll-prompt">
-                    BEGIN TRANSECT ↓
-                </div>
+        <div class="project-row" onclick="openProject('p1')">
+            <span class="p-id">01. PUBLIC INQUIRY</span>
+            <div class="p-title">LADRILLUDO</div>
+            <div class="p-tech-layer">
+                <p>> PROTOCOL: LISTENING TO INEQUALITY</p>
+                <p>> TECH: SENSING BRICK / MICROPHONES / ARDUINO</p>
+                <div class="click-hint">[ CLICK TO ACCESS DATA ]</div>
             </div>
-        </section>
+        </div>
 
-        <section class="concept-section" id="c1">
-            <h1 class="research-statement">
-                Materializing<br>
-                <i>Dissonance</i>.
-            </h1>
-            <div class="concept-meta">
-                <span class="concept-number">00</span>
-                <div>
-                    INVESTIGATION STATEMENT<br><br>
-                    Researching the intersection of critical design, tangible interfaces, and body-space narratives in the Global South.
-                </div>
+        <div class="project-row" onclick="openProject('p2')">
+            <span class="p-id">02. IMMERSIVE INSTALLATION</span>
+            <div class="p-title">LA SOLEDAD SUENA</div>
+            <div class="p-tech-layer">
+                <p>> PROTOCOL: TRANSLATING SOLITUDE</p>
+                <p>> TECH: TOUCHDESIGNER / REAL-TIME DATA</p>
+                <div class="click-hint">[ CLICK TO ACCESS DATA ]</div>
             </div>
-        </section>
+        </div>
 
-        <section class="concept-section" id="c2">
-            <h1 class="research-statement">
-                The Silent<br>Archive.
-            </h1>
-            <div class="concept-meta">
-                <span class="concept-number">01</span>
-                <div>
-                    ORIGIN: PÁRAMO<br><br>
-                    How can code preserve the "small data" of biological decay? Extracting signals from the silence of the Andes.
-                    <br><br>
-                    <a href="#" onclick="nav('projects')" style="color:inherit;">→ SEE: GENERATIVE FLORA</a>
-                </div>
+        <div class="project-row" onclick="openProject('p3')">
+            <span class="p-id">03. LIVING SCULPTURE</span>
+            <div class="p-title">HUÉSPED ERRANTE</div>
+            <div class="p-tech-layer">
+                <p>> PROTOCOL: MUTATING BIOLOGY</p>
+                <p>> TECH: CIRCUITS / THERMOCHROMIC PIGMENTS</p>
+                <div class="click-hint">[ CLICK TO ACCESS DATA ]</div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section class="concept-section" id="c3">
-            <h1 class="research-statement">
-                The Physics of<br>Inequality.
-            </h1>
-            <div class="concept-meta">
-                <span class="concept-number">02</span>
-                <div>
-                    CONTEXT: BOGOTÁ<br><br>
-                    Dragging sensors through the city to record the invisible weight of social stratification.
-                    <br><br>
-                    <a href="#" onclick="nav('projects')" style="color:inherit;">→ SEE: LADRILLUDO</a>
-                </div>
-            </div>
-        </section>
+    <footer>
+        [cite_start]<div>CONTACT: mariapaulaojedagomez@gmail.com [cite: 2]</div>
+        <div>CODED RAW IN BOGOTÁ.</div>
+    </footer>
 
-        <section class="concept-section" id="c4">
-            <h1 class="research-statement">
-                Recursive<br><i>Adaptation</i>.
-            </h1>
-            <div class="concept-meta">
-                <span class="concept-number">03</span>
-                <div>
-                    METHOD: RECURSIVIDAD<br><br>
-                    Hacking scarcity to produce abundance. Designing interfaces that sweat, mutate, and survive.
-                    <br><br>
-                    <a href="#" onclick="nav('projects')" style="color:inherit;">→ SEE: HUÉSPED ERRANTE</a>
-                </div>
+    <div id="p1" class="project-overlay">
+        <div class="close-btn" onclick="closeProject('p1')">[X] CLOSE LOG</div>
+        <div class="overlay-content">
+            <div class="overlay-title">LADRILLUDO:<br>WALKING-WITH A BRICK</div>
+            <div class="overlay-meta">
+                [cite_start]<div>ROLE: Co-Researcher / Prototyper [cite: 57]</div>
+                <div>YEAR: 2024</div>
+                [cite_start]<div>OUTPUT: Public Pedagogical Inquiry [cite: 57]</div>
+                <div>STATUS: Published</div>
             </div>
-        </section>
-
-    </div>
-
-    <div id="projects-page" class="page">
-        <h1 style="font-size:4vw; font-weight:300; margin:0;">Selected Works</h1>
-        <div class="grid">
-            <div class="card" onclick="openModal('Ladrilludo', '#9ca3af')">
-                <div class="card-img"><img src="https://via.placeholder.com/600x400/555/fff?text=LADRILLUDO" alt=""></div>
-                <div class="card-meta">CRITICAL MATTER / SOUND</div>
-                <h3>Ladrilludo</h3>
+            <div class="overlay-body">
+                <p>> <strong>HYPOTHESIS:</strong> Can a brick record the sound of inequality?</p>
+                <br>
+                <p>Designed a "sensing brick" with embedded microphones to record urban soundscapes. This project gives physical weight to the concept of social mobility by dragging a brick through the city. [cite_start]Published as a collaborative paper on Object-Oriented Inquiry. [cite: 60, 133]</p>
+                <br>
+                <p>The device acts as an acoustic probe disguised as construction debris, recording the raw friction of the streets.</p>
             </div>
-            <div class="card" onclick="openModal('Huésped Errante', '#d6492c')">
-                <div class="card-img"><img src="https://via.placeholder.com/600x400/a33/fff?text=HUESPED" alt=""></div>
-                <div class="card-meta">TANGIBLE MEDIA / BIO</div>
-                <h3>Huésped Errante</h3>
-            </div>
-            <div class="card" onclick="openModal('La Soledad Suena', '#333')">
-                <div class="card-img"><img src="https://via.placeholder.com/600x400/111/fff?text=SOLEDAD" alt=""></div>
-                <div class="card-meta">FUTURE SKETCHES / AV</div>
-                <h3>La Soledad Suena</h3>
+            <div class="overlay-gallery">
+                <div class="placeholder-img">[ INSERT PHOTO: THE BRICK DEVICE ]</div>
+                <div class="placeholder-img">[ INSERT PHOTO: CIRCUIT DIAGRAM ]</div>
+                <div class="placeholder-img">[ INSERT PHOTO: URBAN INTERVENTION ]</div>
+                <div class="placeholder-img">[ INSERT CODE SNIPPET ]</div>
             </div>
         </div>
     </div>
 
-    <div id="about-page" class="page">
-        <div style="font-family:'Space Mono'; margin-bottom:30px;">[ APPLICANT MANIFESTO ]</div>
-        <div class="bio-text">
-            "I come from a landscape defined by extreme contrast. My family roots are grounded in the silence of the countryside, yet I grew up navigating the chaotic friction of the city. This duality wired my brain to be a compulsive observer."
-        </div>
-        <div class="bio-text" style="font-style:italic; border-left:2px solid var(--accent); padding-left:20px;">
-            "In the Global South, innovation is rarely about having the newest tool; it is about survival. It is the concept of <b>Recursividad</b>."
-        </div>
-        <div style="margin-top:50px; font-family:'Space Mono'; font-size:0.8rem;">
-            CONTACT: mariapaulaojedagomez@gmail.com<br>
-            GITHUB: github.com/sbleeyouk (placeholder)
+    <div id="p2" class="project-overlay">
+        <div class="close-btn" onclick="closeProject('p2')">[X] CLOSE LOG</div>
+        <div class="overlay-content">
+            <div class="overlay-title">LA SOLEDAD SUENA:<br>(SOLITUDE SOUNDS)</div>
+            <div class="overlay-meta">
+                [cite_start]<div>ROLE: Interaction Designer [cite: 62]</div>
+                [cite_start]<div>YEAR: May 2025 [cite: 63]</div>
+                [cite_start]<div>TOOL: TouchDesigner [cite: 62]</div>
+                <div>TYPE: Installation</div>
+            </div>
+            <div class="overlay-body">
+                <p>> <strong>HYPOTHESIS:</strong> Translating solitude into a sonic environment.</p>
+                <br>
+                <p>An immersive audiovisual installation using real-time data feedback. [cite_start]The system captures the "silent phenomenology" of isolation and translates it into an immersive sonic environment using TouchDesigner. [cite: 64]</p>
+                <br>
+                <p>The goal is to force the spectator to listen to the noise of their own solitude, turning a passive feeling into an active input.</p>
+            </div>
+            <div class="overlay-gallery">
+                <div class="placeholder-img">[ INSERT PHOTO: INSTALLATION VIEW ]</div>
+                <div class="placeholder-img">[ INSERT SCREENSHOT: TOUCHDESIGNER NETWORK ]</div>
+            </div>
         </div>
     </div>
 
-    <div id="modal">
-        <div class="close-btn" onclick="closeModal()">CLOSE [X]</div>
-        <div class="modal-hero" id="m-hero">
-            <h1 style="font-size:4rem; margin:0;" id="m-title">Project Name</h1>
-        </div>
-        <div class="modal-content">
-            <p style="font-family:'Space Mono';">FULL DOCUMENTATION COMING SOON.</p>
+    <div id="p3" class="project-overlay">
+        <div class="close-btn" onclick="closeProject('p3')">[X] CLOSE LOG</div>
+        <div class="overlay-content">
+            <div class="overlay-title">HUÉSPED ERRANTE:<br>(WANDERING GUEST)</div>
+            <div class="overlay-meta">
+                [cite_start]<div>ROLE: Lead Prototyper [cite: 67]</div>
+                <div>YEAR: 2024</div>
+                [cite_start]<div>TECH: Thermosensitive Pigments [cite: 69]</div>
+                <div>TYPE: Living Sculpture</div>
+            </div>
+            <div class="overlay-body">
+                <p>> <strong>HYPOTHESIS:</strong> Engineering organic chaos.</p>
+                <br>
+                <p>Engineered circuits controlling heating elements to activate thermosensitive pigments. [cite_start]The result is a "living sculpture" that creates mutating biological patterns through heat data. [cite: 69]</p>
+                <br>
+                <p>This project proves that rigid engineering (circuits) can simulate organic unpredictability (biology), bridging the gap between the ancestral and the technological.</p>
+            </div>
+            <div class="overlay-gallery">
+                <div class="placeholder-img">[ INSERT PHOTO: THE SCULPTURE ]</div>
+                <div class="placeholder-img">[ INSERT PHOTO: HEATING ELEMENT WIRING ]</div>
+            </div>
         </div>
     </div>
 
     <script>
-        // NAVIGATION SYSTEM
-        function nav(id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id + '-page').classList.add('active');
-            window.scrollTo(0,0);
-            
-            // Toggle Altimeter
-            if(id === 'home') document.body.classList.add('show-altimeter');
-            else {
-                document.body.classList.remove('show-altimeter');
-                document.body.style.backgroundColor = '#f4f5f7';
-                document.body.style.color = '#111';
-            }
+        // SCRIPT SIMPLE PARA ABRIR Y CERRAR PROYECTOS
+        function openProject(id) {
+            document.getElementById(id).style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // Evita scroll en el fondo
         }
 
-        // MODAL SYSTEM
-        function openModal(title, color) {
-            document.getElementById('m-title').innerText = title;
-            document.getElementById('m-hero').style.backgroundColor = color;
-            document.getElementById('modal').classList.add('open');
+        function closeProject(id) {
+            document.getElementById(id).style.display = 'none';
+            document.body.style.overflow = 'auto'; // Reactiva scroll
         }
-        function closeModal() {
-            document.getElementById('modal').classList.remove('open');
-        }
-
-        // SCROLL & COLOR LOGIC (THE TRANSECT)
-        window.addEventListener('scroll', () => {
-            if(!document.getElementById('home-page').classList.contains('active')) return;
-
-            const scrollPct = window.scrollY / (document.body.scrollHeight - window.innerHeight);
-            const body = document.body;
-            
-            // Update Altimeter
-            const alt = Math.round(3200 - (scrollPct * 3150));
-            document.getElementById('alt-val').innerText = alt;
-
-            // Update Zones
-            if (scrollPct < 0.25) {
-                // INTRO / PARAMO
-                body.style.backgroundColor = "var(--bg-paramo)";
-                body.style.color = "#111";
-                document.getElementById('zone-val').innerText = "PÁRAMO";
-                document.getElementById('stat-val').innerText = "OBSERVING";
-            } else if (scrollPct >= 0.25 && scrollPct < 0.6) {
-                // BOGOTA
-                body.style.backgroundColor = "var(--bg-bogota)";
-                body.style.color = "#000";
-                document.getElementById('zone-val').innerText = "BOGOTÁ";
-                document.getElementById('stat-val').innerText = "RECORDING";
-            } else {
-                // BARRANCA
-                body.style.backgroundColor = "var(--bg-barranca)";
-                body.style.color = "#fff";
-                document.getElementById('zone-val').innerText = "MAGDALENA";
-                document.getElementById('stat-val').innerText = "MUTATING";
-            }
-        });
-
-        // CURSOR
-        const cursor = document.getElementById('cursor');
-        document.addEventListener('mousemove', e => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
-        });
-        document.querySelectorAll('a, .card').forEach(el => {
-            el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
-            el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
-        });
-
     </script>
 </body>
 </html>
