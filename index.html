@@ -18,8 +18,7 @@
             
             --neon-green: #d4e035; 
             --deep-green: #1a2e1a; 
-            --accent: #ff3300;     
-            --stroke-color: #111; /* Color de las líneas del mapa */
+            --terracotta: #cc4422;
 
             --font-serif: 'Cormorant Garamond', serif;
             --font-mono: 'Space Mono', monospace;
@@ -36,142 +35,107 @@
             transition: background-color 1.5s cubic-bezier(0.25, 1, 0.5, 1), color 1s ease;
         }
 
-        /* --- 2. AMBIENTE --- */
-        .ambient-canvas {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; overflow: hidden; pointer-events: none;
-        }
-        .orb {
-            position: absolute; border-radius: 50%;
-            filter: blur(80px); opacity: 0.6;
-            transition: background-color 1.5s ease;
-            animation: breathe 10s infinite alternate;
-        }
-        .orb-1 { width: 60vw; height: 60vw; top: -20%; left: -10%; background: #fff; }
-        .orb-2 { width: 50vw; height: 50vw; bottom: -10%; right: -20%; background: #e0e0e0; }
-        @keyframes breathe { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
-
+        /* --- 2. AMBIENTE (RUIDO Y FONDO) --- */
         .noise {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 50; opacity: 0.07;
+            pointer-events: none; z-index: 50; opacity: 0.05;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
         }
 
         /* --- 3. CURSOR FLORAL --- */
         #cursor {
-            position: fixed; top: 0; left: 0; width: 40px; height: 40px;
+            position: fixed; top: 0; left: 0; width: 30px; height: 30px;
             pointer-events: none; z-index: 9999;
             transform: translate(-50%, -50%); 
             mix-blend-mode: difference; 
-            transition: transform 0.1s;
-            display: flex; align-items: center; justify-content: center;
-            color: white;
+            transition: transform 0.2s;
+            color: white; display: flex; align-items: center; justify-content: center;
         }
-        #cursor svg { width: 100%; height: 100%; animation: spin 12s linear infinite; }
-        #cursor.hovered { transform: translate(-50%, -50%) scale(2.5); color: var(--neon-green); mix-blend-mode: normal; }
+        #cursor svg { width: 100%; height: 100%; animation: spin 10s linear infinite; }
+        #cursor.hovered { transform: translate(-50%, -50%) scale(3); color: var(--neon-green); mix-blend-mode: normal; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* --- 4. HERO SECTION (NUEVO DISEÑO TOPOGRÁFICO) --- */
+        /* --- 4. HERO CON FLORES FLOTANTES (INTERACCIÓN PRINCIPAL) --- */
         .hero-section {
             height: 100vh;
             position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            padding-top: 15vh;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
         }
 
-        .main-title-container {
-            text-align: center; z-index: 10; width: 100%; pointer-events: none;
-            margin-bottom: 20px;
-        }
-        
         .main-title {
-            font-size: 8vw; line-height: 0.9; margin: 0; font-weight: 300;
-            color: #111; position: relative; display: inline-block;
+            font-size: 7vw; line-height: 0.9; margin: 0; font-weight: 300; z-index: 10; text-align: center;
+            pointer-events: none; mix-blend-mode: multiply;
+        }
+
+        /* CONTENEDOR DE LAS FLORES */
+        .floating-garden {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; /* Deja pasar clicks al fondo salvo en las flores */
+        }
+
+        /* ESTILO BASE DE LAS FLORES */
+        .abstract-flower {
+            position: absolute;
+            width: 280px; height: 280px;
+            pointer-events: auto; /* Reactiva el mouse */
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: none;
+            display: flex; align-items: center; justify-content: center;
+            text-align: center;
         }
         
-        .subtitle {
-            font-family: var(--font-mono); font-size: 0.9rem; margin-top: 20px; max-width: 600px; margin-left: auto; margin-right: auto;
-            opacity: 0.7;
-        }
-
-        /* EL MAPA SVG */
-        .topo-map-container {
-            position: absolute; bottom: -5%; left: 0; width: 100%; height: 65%;
-            z-index: 5;
-        }
-
-        svg.topo-map {
+        .abstract-flower svg {
             width: 100%; height: 100%;
-            display: block;
+            position: absolute; top: 0; left: 0;
+            fill: currentColor; opacity: 0.8;
+            transition: all 0.5s ease;
         }
 
-        /* Estilos de las curvas de nivel */
-        .contour-path {
-            fill: transparent; /* Por defecto transparente */
-            stroke: var(--stroke-color);
-            stroke-width: 1px;
-            vector-effect: non-scaling-stroke;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: none; /* Mantiene cursor custom */
+        /* TEXTO DENTRO DE LA FLOR */
+        .flower-content {
+            position: relative; z-index: 2; opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.4s ease;
+            font-family: var(--font-mono); font-size: 0.8rem; color: #fff;
+        }
+        .flower-content strong { display: block; font-size: 1.2rem; margin-bottom: 5px; font-family: var(--font-serif); }
+
+        /* ANIMACIÓN DE FLOTACIÓN */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(2deg); }
         }
 
-        /* CAPA 1: INQUIRY (Fondo) */
-        .c-inquiry:hover {
-            fill: rgba(200, 210, 220, 0.4); /* Azul niebla suave */
-            stroke-width: 2px;
+        /* --- FLOR 1: INQUIRY (Izquierda - Terracota) --- */
+        .f-inquiry {
+            top: 20%; left: 15%; color: var(--terracotta);
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        /* --- FLOR 2: METHOD (Derecha - Neón) --- */
+        .f-method {
+            top: 30%; right: 15%; color: var(--neon-green);
+            animation: float 7s ease-in-out infinite reverse;
+        }
+        /* Ajuste de color de texto para el neón (para contraste) */
+        .f-method .flower-content { color: #111; } 
+
+        /* --- FLOR 3: MATTER (Abajo - Verde Oscuro) --- */
+        .f-matter {
+            bottom: 15%; left: 50%; margin-left: -140px; color: var(--deep-green);
+            animation: float 8s ease-in-out infinite 1s;
         }
 
-        /* CAPA 2: METHOD (Medio) */
-        .c-method:hover {
-            fill: rgba(26, 46, 26, 0.1); /* Verde suave */
-            stroke: var(--deep-green);
-            stroke-width: 2px;
+        /* INTERACCIÓN HOVER EN LAS FLORES */
+        .abstract-flower:hover {
+            transform: scale(1.2) !important; /* Crece */
+            z-index: 20;
         }
+        .abstract-flower:hover svg { opacity: 1; }
+        .abstract-flower:hover .flower-content { opacity: 1; transform: translateY(0); }
 
-        /* CAPA 3: MATTER (Frente) */
-        .c-matter:hover {
-            fill: rgba(255, 51, 0, 0.1); /* Rojo suave */
-            stroke: var(--accent);
-            stroke-width: 2px;
-        }
-
-        /* ETIQUETAS FLOTANTES (LABEL SYSTEM) */
-        .labels-container {
-            position: absolute; bottom: 0; left: 0; width: 100%; height: 65%;
-            pointer-events: none; z-index: 6;
-        }
-
-        .map-label {
-            position: absolute;
-            font-family: var(--font-mono);
-            font-size: 0.8rem;
-            color: #111;
-            padding: 5px 10px;
-            border-left: 2px solid transparent;
-            transition: all 0.3s ease;
-            opacity: 0.6;
-        }
-
-        .map-label strong {
-            display: block; font-size: 1.2rem; font-family: var(--font-serif); margin-bottom: 5px;
-        }
-
-        /* Posiciones aproximadas sobre las montañas */
-        .lbl-1 { top: 20%; left: 20%; }
-        .lbl-2 { top: 45%; right: 25%; text-align: right; border-left: none; border-right: 2px solid transparent; }
-        .lbl-3 { bottom: 15%; left: 35%; }
-
-        /* Activar etiqueta cuando se hace hover en el mapa (vía JS) */
-        .active-label {
-            opacity: 1;
-            border-color: var(--neon-green);
-            transform: translateY(-5px);
-        }
-
-        /* --- 5. SECCIONES Y MODALES (MANTENIDOS) --- */
+        /* --- 5. UI ELEMENTS (BASE CODE) --- */
         .top-bar {
             position: fixed; top: 30px; left: 40px; right: 40px;
             display: flex; justify-content: space-between; align-items: flex-start;
@@ -179,10 +143,7 @@
             z-index: 100; mix-blend-mode: difference; color: white;
             text-transform: uppercase; letter-spacing: 1px;
         }
-
-        .nav-links a { text-decoration: none; color: inherit; margin-left: 20px; position: relative; }
-        .nav-links a::after { content: ''; display: block; width: 0; height: 1px; background: currentColor; transition: width 0.3s; }
-        .nav-links a:hover::after { width: 100%; }
+        .nav-links a { text-decoration: none; color: inherit; margin-left: 20px; }
 
         .altimeter {
             position: fixed; left: 40px; top: 50%; transform: translateY(-50%);
@@ -194,6 +155,7 @@
         .show-altimeter .altimeter { display: block; }
         .data-row { margin-bottom: 8px; }
 
+        /* --- 6. SECCIONES DETALLADAS (SCROLL) --- */
         .page { display: none; opacity: 0; transition: opacity 0.5s; }
         .page.active { display: block; opacity: 1; }
 
@@ -202,29 +164,29 @@
             justify-content: center; padding: 0 15vw;
             border-bottom: 1px solid rgba(0,0,0,0.05);
         }
-        .research-statement { font-size: 5.5vw; font-weight: 300; line-height: 0.95; margin-bottom: 40px; }
-        .concept-meta {
-            font-family: var(--font-mono); font-size: 0.85rem; max-width: 450px;
-            border-top: 1px solid currentColor; padding-top: 20px; display: flex; gap: 20px;
+        .research-statement { font-size: 5vw; font-weight: 300; line-height: 1; margin-bottom: 40px; }
+        
+        .concept-details {
+            display: grid; grid-template-columns: 100px 1fr; gap: 40px;
+            font-family: var(--font-mono); font-size: 0.9rem; line-height: 1.6;
+            border-top: 1px solid currentColor; padding-top: 30px;
         }
-        .concept-number { font-weight: 700; color: var(--neon-green); }
+        .concept-tag { color: var(--neon-green); font-weight: bold; }
+        .concept-text { max-width: 600px; }
 
+        /* PROJECTS GRID */
         #projects-page { padding: 150px 5vw; min-height: 100vh; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 60px; margin-top: 50px; }
         .card-img {
-            height: 350px; background: #ccc; margin-bottom: 20px;
-            position: relative; overflow: hidden; border-radius: 4px; 
-            transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            height: 350px; background: #ccc; margin-bottom: 20px; overflow: hidden;
+            border-radius: 4px; transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
         }
         .card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s; filter: grayscale(100%); }
-        .card:hover .card-img {
-            border-radius: 40% 60% 30% 70% / 60% 30% 70% 40%;
-            transform: translateY(-10px);
-        }
+        .card:hover .card-img { border-radius: 50% 50% 0 0; transform: translateY(-10px); } /* Arco de flor al hover */
         .card:hover img { transform: scale(1.1); filter: grayscale(0%); }
-        .card-meta { font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent); margin-bottom: 10px; }
-        .card h3 { font-family: var(--font-serif); font-size: 2.2rem; font-weight: 400; margin: 0; }
+        .card h3 { font-family: var(--font-serif); font-size: 2.2rem; margin: 0; }
 
+        /* MODAL */
         #modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #fff; z-index: 200; overflow-y: auto;
@@ -233,16 +195,12 @@
         #modal.open { transform: translateY(0); }
         .close-btn { position: fixed; top: 30px; right: 40px; z-index: 201; font-family: var(--font-mono); cursor: pointer; mix-blend-mode: difference; color: white; }
         .modal-hero { height: 50vh; display: flex; align-items: flex-end; padding: 5vw; color: white; }
-        .modal-content { padding: 5vw 20vw; max-width: 1200px; margin: 0 auto; font-size: 1.2rem; line-height: 1.6; }
+        .modal-content { padding: 5vw 20vw; max-width: 1200px; margin: 0 auto; }
 
     </style>
 </head>
 <body class="show-altimeter">
 
-    <div class="ambient-canvas">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-    </div>
     <div class="noise"></div>
     
     <div id="cursor">
@@ -272,84 +230,99 @@
     <div id="home-page" class="page active">
         
         <section class="hero-section">
-            <div class="main-title-container">
-                <h1 class="main-title">Materializing<br>Dissonance.</h1>
-                <p class="subtitle">> From the silence of the Andes to the friction of the city. situated interfaces that translate social inequality.</p>
-            </div>
+            <h1 class="main-title">Materializing<br>Dissonance.</h1>
 
-            <div class="topo-map-container">
+            <div class="floating-garden">
                 
-                <svg class="topo-map" viewBox="0 0 1440 600" preserveAspectRatio="none">
-                    <path class="contour-path c-inquiry" d="M0,600 L0,250 C200,300 400,100 700,200 C1000,300 1200,150 1440,300 L1440,600 Z" 
-                          onmouseenter="activateLabel('l1')" onmouseleave="deactivateLabel('l1')"/>
-                    
-                    <path class="contour-path c-method" d="M0,600 L0,400 C300,450 500,300 800,350 C1100,400 1300,250 1440,400 L1440,600 Z"
-                          onmouseenter="activateLabel('l2')" onmouseleave="deactivateLabel('l2')"/>
-                    
-                    <path class="contour-path c-matter" d="M0,600 L0,500 C250,550 600,450 900,500 C1200,550 1350,480 1440,550 L1440,600 Z"
-                          onmouseenter="activateLabel('l3')" onmouseleave="deactivateLabel('l3')"/>
-                </svg>
+                <div class="abstract-flower f-inquiry" onclick="document.getElementById('c2').scrollIntoView({behavior: 'smooth'})">
+                    <svg viewBox="0 0 200 200">
+                        <path d="M20,50 Q50,0 100,20 Q150,0 180,50 Q200,100 180,150 Q150,200 100,180 Q50,200 20,150 Q0,100 20,50 Z" />
+                    </svg>
+                    <div class="flower-content">
+                        <strong>INQUIRY</strong>
+                        How does inequality<br>sound?
+                    </div>
+                </div>
 
-                <div class="labels-container">
-                    <div id="l1" class="map-label lbl-1">
-                        <strong>01. INQUIRY</strong>
-                        Can a brick record inequality?
+                <div class="abstract-flower f-method" onclick="document.getElementById('c4').scrollIntoView({behavior: 'smooth'})">
+                    <svg viewBox="0 0 200 200">
+                        <path d="M100,0 L130,70 L200,80 L140,120 L160,190 L100,150 L40,190 L60,120 L0,80 L70,70 Z" />
+                    </svg>
+                    <div class="flower-content">
+                        <strong>METHOD</strong>
+                        Recursividad &<br>Hacking
                     </div>
-                    <div id="l2" class="map-label lbl-2">
-                        <strong>02. METHOD</strong>
-                        Recursividad & Hacking Scarcity
-                    </div>
-                    <div id="l3" class="map-label lbl-3">
-                        <strong>03. MATTER</strong>
-                        Small Data & Bio-Decay
+                </div>
+
+                <div class="abstract-flower f-matter" onclick="document.getElementById('c2').scrollIntoView({behavior: 'smooth'})">
+                    <svg viewBox="0 0 200 200">
+                        <path d="M100,20 C140,20 180,60 180,100 C180,140 140,180 100,180 C60,180 20,140 20,100 C20,60 60,20 100,20 Z M100,50 A50,50 0 0,0 100,150 A50,50 0 0,0 100,50 Z" fill-rule="evenodd"/>
+                    </svg>
+                    <div class="flower-content">
+                        <strong>MATTER</strong>
+                        Small Data &<br>Bio-Decay
                     </div>
                 </div>
 
             </div>
+            
+            <div style="position: absolute; bottom: 40px; font-family: var(--font-mono); font-size: 0.7rem; opacity: 0.6;">
+                EXPLORE THE ECOSYSTEM ↓
+            </div>
         </section>
 
         <section class="concept-section" id="c2">
-            <h1 class="research-statement">The Silent<br>Archive.</h1>
-            <div class="concept-meta">
-                <span class="concept-number">3,200 M</span>
-                <div>ORIGIN: PÁRAMO<br>Extracting "small data" from biological decay.</div>
+            <h1 class="research-statement">The Silent Archive.</h1>
+            <div class="concept-details">
+                <div class="concept-tag">01. INQUIRY</div>
+                <div class="concept-text">
+                    <p><strong>ORIGIN: PÁRAMO [3,200 MASL]</strong></p>
+                    <p>My research begins in the silence of the high Andes. Here, I investigate how code can preserve the "small data" of biological decay. I use computer vision to analyze the fading chromatics of endangered flora, creating a digital archive that breathes.</p>
+                </div>
             </div>
         </section>
 
         <section class="concept-section" id="c3">
-            <h1 class="research-statement">The Physics of<br>Inequality.</h1>
-            <div class="concept-meta">
-                <span class="concept-number">2,600 M</span>
-                <div>CONTEXT: BOGOTÁ<br>Dragging sensors through the city.</div>
+            <h1 class="research-statement">The Physics of Inequality.</h1>
+            <div class="concept-details">
+                <div class="concept-tag">02. CONTEXT</div>
+                <div class="concept-text">
+                    <p><strong>CONTEXT: BOGOTÁ [2,600 MASL]</strong></p>
+                    <p>Descending into the city, the silence breaks. This section documents "Ladrilludo", an acoustic probe disguised as a brick. By dragging sensors through the streets, I record the invisible weight of social stratification, translating friction into sound.</p>
+                </div>
             </div>
         </section>
 
         <section class="concept-section" id="c4">
-            <h1 class="research-statement">Recursive<br><i>Mutation</i>.</h1>
-            <div class="concept-meta">
-                <span class="concept-number">100 M</span>
-                <div>METHOD: MAGDALENA<br>Interfaces that sweat and mutate.</div>
+            <h1 class="research-statement">Recursive Mutation.</h1>
+            <div class="concept-details">
+                <div class="concept-tag">03. METHOD</div>
+                <div class="concept-text">
+                    <p><strong>METHOD: MAGDALENA [100 MASL]</strong></p>
+                    <p>In the heat of the river valley, technology must adapt or die. This is "Recursividad": hacking scarcity to produce abundance. Here, I display interfaces that sweat, mutate, and survive, bridging high-fidelity engineering with organic chaos.</p>
+                </div>
             </div>
         </section>
+
     </div>
 
     <div id="projects-page" class="page">
         <h1 style="font-size:4vw; font-weight:300; margin:0 0 40px 0;">Selected Inquiries</h1>
         <div class="grid">
-            <div class="card" onclick="openModal('Ladrilludo', '#8d949e')">
+            <div class="card" onclick="openModal('Ladrilludo', '#cc4422')">
                 <div class="card-img"><img src="https://images.unsplash.com/photo-1591543620767-58268571c994?q=80&w=800&auto=format&fit=crop" alt=""></div>
-                <div class="card-meta">SOUND / TERRITORY</div>
                 <h3>Ladrilludo</h3>
+                <div style="font-family:var(--font-mono); font-size:0.8rem; margin-top:10px;">SOUND / TERRITORY</div>
             </div>
-            <div class="card" onclick="openModal('Huésped Errante', '#a83e28')">
+            <div class="card" onclick="openModal('Huésped Errante', '#d4e035')">
                 <div class="card-img"><img src="https://images.unsplash.com/photo-1530906622080-12e0e5a59603?q=80&w=800&auto=format&fit=crop" alt=""></div>
-                <div class="card-meta">BIO-INTERACTION</div>
                 <h3>Huésped Errante</h3>
+                <div style="font-family:var(--font-mono); font-size:0.8rem; margin-top:10px;">BIO-INTERACTION</div>
             </div>
             <div class="card" onclick="openModal('La Soledad Suena', '#1a2e1a')">
                 <div class="card-img"><img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=800&auto=format&fit=crop" alt=""></div>
-                <div class="card-meta">IMMERSIVE DATA</div>
                 <h3>La Soledad Suena</h3>
+                <div style="font-family:var(--font-mono); font-size:0.8rem; margin-top:10px;">IMMERSIVE DATA</div>
             </div>
         </div>
     </div>
@@ -360,7 +333,7 @@
             <h1 style="font-size:4rem; margin:0;" id="m-title">Project Name</h1>
         </div>
         <div class="modal-content">
-            <p style="font-family: var(--font-mono);">RESEARCH LOG PENDING.</p>
+            <p style="font-family: var(--font-mono);">FULL DOCUMENTATION PENDING.</p>
         </div>
     </div>
 
@@ -390,19 +363,11 @@
             document.getElementById('modal').classList.remove('open');
         }
 
-        // MAPA INTERACTIVO (Label Logic)
-        function activateLabel(id) {
-            document.getElementById(id).classList.add('active-label');
-            document.getElementById('cursor').classList.add('hovered');
-        }
-        function deactivateLabel(id) {
-            document.getElementById(id).classList.remove('active-label');
-            document.getElementById('cursor').classList.remove('hovered');
-        }
-
-        // SCROLL LOGIC
-        const orb1 = document.querySelector('.orb-1');
+        // SCROLL TRANSECT LOGIC
         const body = document.body;
+        const fl1 = document.querySelector('.f-inquiry');
+        const fl2 = document.querySelector('.f-method');
+        const fl3 = document.querySelector('.f-matter');
 
         window.addEventListener('scroll', () => {
             if(!document.getElementById('home-page').classList.contains('active')) return;
@@ -415,19 +380,16 @@
                 // PARAMO
                 body.style.backgroundColor = "var(--bg-paramo)";
                 body.style.color = "#111";
-                orb1.style.background = "#fff";
                 document.getElementById('zone-val').innerText = "PÁRAMO";
             } else if (scrollPct >= 0.25 && scrollPct < 0.6) {
                 // BOGOTA
                 body.style.backgroundColor = "var(--bg-bogota)";
                 body.style.color = "#000"; 
-                orb1.style.background = "var(--neon-green)";
                 document.getElementById('zone-val').innerText = "BOGOTÁ";
             } else {
                 // BARRANCA
                 body.style.backgroundColor = "var(--bg-barranca)";
                 body.style.color = "#fff";
-                orb1.style.background = "#ff5e00";
                 document.getElementById('zone-val').innerText = "MAGDALENA";
             }
         });
@@ -439,7 +401,7 @@
             cursor.style.top = e.clientY + 'px';
         });
         
-        const interactables = document.querySelectorAll('a, .card');
+        const interactables = document.querySelectorAll('a, .card, .abstract-flower');
         interactables.forEach(el => {
             el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
             el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
