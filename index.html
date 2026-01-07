@@ -37,11 +37,27 @@
 
         .noise {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 50; opacity: 0.05;
+            pointer-events: none; z-index: 50; opacity: 0.06;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
         }
 
-        /* --- 2. CURSOR --- */
+        /* --- 2. FONDO LIQUIDO (Interactive Background) --- */
+        .liquid-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; overflow: hidden; pointer-events: none;
+        }
+        
+        .orb {
+            position: absolute; border-radius: 50%;
+            filter: blur(90px); opacity: 0.5;
+            transition: transform 0.2s cubic-bezier(0.1, 0.7, 1.0, 0.1); /* Movimiento fluido pero con delay */
+        }
+
+        .orb-1 { width: 70vw; height: 70vw; top: -20%; left: -20%; background: #fff; }
+        .orb-2 { width: 60vw; height: 60vw; bottom: -20%; right: -20%; background: #dcdcdc; }
+        .orb-3 { width: 40vw; height: 40vw; top: 30%; left: 30%; background: var(--neon-green); opacity: 0.15; }
+
+        /* --- 3. CURSOR --- */
         #cursor {
             position: fixed; top: 0; left: 0; width: 20px; height: 20px;
             pointer-events: none; z-index: 9999;
@@ -50,86 +66,89 @@
             mix-blend-mode: difference; color: white;
             transition: width 0.3s, height 0.3s, background-color 0.3s;
         }
-        #cursor.hovered { width: 50px; height: 50px; background: var(--neon-green); mix-blend-mode: normal; border: none; opacity: 0.8; }
+        #cursor.hovered { width: 50px; height: 50px; background: var(--neon-green); mix-blend-mode: normal; border: none; opacity: 0.9; }
 
-        /* --- 3. HERO: ECOSYSTEM INTERACTION --- */
+        /* --- 4. HERO SECTION (Layout Asimétrico) --- */
         .hero-section {
             height: 100vh; position: relative; overflow: hidden;
+            display: flex; align-items: center; 
+            padding-left: 8vw; /* Margen izquierdo fuerte */
+        }
+
+        .hero-content {
+            z-index: 10; pointer-events: none; max-width: 50vw;
+            text-align: left; /* Título a la izquierda */
         }
 
         .hero-title {
-            position: absolute; width: 100%; text-align: center; top: 10%;
-            font-size: 5vw; font-weight: 300; pointer-events: none; z-index: 10;
+            font-size: 8vw; line-height: 0.85; margin: 0; font-weight: 300;
+            color: #111; letter-spacing: -0.02em;
+        }
+        
+        .hero-subtitle {
+            font-family: var(--font-mono); font-size: 1rem; 
+            margin-top: 30px; line-height: 1.5; max-width: 400px;
+            border-left: 2px solid var(--terracotta); padding-left: 20px;
+            opacity: 0.8;
         }
 
-        /* EL CONTENEDOR DE UN GRUPO DE FLORES */
+        /* --- 5. FLOWER CLUSTERS (INTERACCIÓN PRINCIPAL) --- */
+        /* Ahora ubicados a la DERECHA para equilibrar el título izquierdo */
+        
         .flower-cluster {
             position: absolute;
-            width: 300px; height: 300px;
+            width: 350px; height: 350px;
             display: flex; align-items: center; justify-content: center;
             cursor: none;
         }
 
-        /* POSICIONES DE LOS GRUPOS */
-        #cluster-1 { top: 30%; left: 15%; } /* Inquiry */
-        #cluster-2 { top: 40%; right: 15%; } /* Method */
-        #cluster-3 { bottom: 10%; left: 50%; transform: translateX(-50%); } /* Matter */
+        /* Posiciones estratégicas (Lado Derecho) */
+        #cluster-1 { top: 10%; right: 10%; } /* Inquiry (Arriba Derecha) */
+        #cluster-2 { top: 45%; right: 25%; } /* Method (Centro Derecha) */
+        #cluster-3 { bottom: 5%; right: 5%; }  /* Matter (Abajo Derecha) */
 
-        /* EL TEXTO OCULTO (Detrás de las flores) */
         .hidden-concept {
-            position: absolute;
-            text-align: center;
-            opacity: 0; /* Invisible al principio */
-            transform: scale(0.8);
-            transition: all 0.6s ease;
-            z-index: 1; /* Al fondo */
-            pointer-events: none;
+            position: absolute; text-align: center;
+            opacity: 0; transform: scale(0.8);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1; pointer-events: none;
         }
-        .hidden-concept h2 { margin: 0; font-size: 2rem; font-family: var(--font-serif); letter-spacing: 0.05em; }
-        .hidden-concept span { font-family: var(--font-mono); font-size: 0.7rem; color: var(--terracotta); text-transform: uppercase; }
+        .hidden-concept h2 { margin: 0; font-size: 2.5rem; font-family: var(--font-serif); font-style: italic; }
+        .hidden-concept span { font-family: var(--font-mono); font-size: 0.8rem; color: var(--terracotta); text-transform: uppercase; font-weight: bold; }
 
-        /* LAS FLORES INDIVIDUALES */
+        /* ESTILO DE LAS FLORES (SVG) */
         .flower {
-            position: absolute;
-            width: 80px; height: 80px;
-            fill: currentColor;
-            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 5; /* Encima del texto */
-            opacity: 0.9;
+            position: absolute; width: 100px; height: 100px;
+            fill: currentColor; opacity: 0.95;
+            transition: all 1s cubic-bezier(0.19, 1, 0.22, 1); /* Movimiento tipo tentáculo suave */
+            z-index: 5;
+            filter: drop-shadow(0px 10px 10px rgba(0,0,0,0.1));
         }
 
-        /* ANIMACIÓN DE FLOTACIÓN (IDLE) */
-        @keyframes float {
+        /* Animación pasiva (Respiración) */
+        @keyframes sway {
             0%, 100% { transform: translate(0,0) rotate(0deg); }
-            50% { transform: translate(5px, -10px) rotate(5deg); }
+            50% { transform: translate(5px, -8px) rotate(3deg); }
         }
-        .flower { animation: float 6s ease-in-out infinite; }
-        .flower:nth-child(2) { animation-delay: 1s; }
-        .flower:nth-child(3) { animation-delay: 2s; }
-        .flower:nth-child(4) { animation-delay: 3s; }
+        .flower { animation: sway 8s ease-in-out infinite; }
+        .flower:nth-child(even) { animation-delay: 1s; animation-direction: reverse; }
 
-        /* --- LA MAGIA: INTERACCIÓN HOVER (DISPERSIÓN) --- */
-        
-        /* Cuando el mouse entra al cluster... */
-        .flower-cluster:hover .hidden-concept {
-            opacity: 1; /* Aparece el texto */
-            transform: scale(1);
-        }
+        /* INTERACCIÓN HOVER: DISPERSIÓN ORGÁNICA */
+        .flower-cluster:hover .hidden-concept { opacity: 1; transform: scale(1); }
 
-        /* Las flores se apartan (Valores distintos para caos orgánico) */
-        .flower-cluster:hover .f1 { transform: translate(-120px, -80px) rotate(-20deg) scale(0.8); }
-        .flower-cluster:hover .f2 { transform: translate(120px, -60px) rotate(20deg) scale(0.9); }
-        .flower-cluster:hover .f3 { transform: translate(-80px, 100px) rotate(-10deg) scale(0.7); }
-        .flower-cluster:hover .f4 { transform: translate(100px, 80px) rotate(15deg) scale(0.8); }
-        .flower-cluster:hover .f5 { transform: translate(0px, -140px) rotate(45deg) scale(0.6); }
+        /* Las flores se alejan mucho más dramáticamente (como apartar maleza) */
+        .flower-cluster:hover .f1 { transform: translate(-140px, -100px) rotate(-45deg) scale(0.6); }
+        .flower-cluster:hover .f2 { transform: translate(140px, -80px) rotate(45deg) scale(0.8); }
+        .flower-cluster:hover .f3 { transform: translate(-100px, 120px) rotate(-20deg) scale(0.7); }
+        .flower-cluster:hover .f4 { transform: translate(120px, 100px) rotate(30deg) scale(0.6); }
+        .flower-cluster:hover .f5 { transform: translate(0px, -160px) rotate(90deg) scale(0.5); }
 
-        /* Colores Específicos */
-        #cluster-1 { color: #556b2f; } /* Verde Musgo (Frailejón) */
-        #cluster-2 { color: var(--terracotta); } /* Rojo (Heliconia) */
-        #cluster-3 { color: var(--deep-green); } /* Verde Oscuro (Selva) */
+        /* Colores por Cluster */
+        #cluster-1 { color: #4a5d23; } /* Verde Musgo */
+        #cluster-2 { color: var(--terracotta); } /* Rojo Arcilla */
+        #cluster-3 { color: #1a3c34; } /* Verde Selva Profunda */
 
-
-        /* --- 4. BASE UI (ALTIMETER & SCROLL) --- */
+        /* --- 6. UI ELEMENTS --- */
         .top-bar {
             position: fixed; top: 30px; left: 40px; right: 40px;
             display: flex; justify-content: space-between; align-items: flex-start;
@@ -137,7 +156,9 @@
             z-index: 100; mix-blend-mode: difference; color: white;
             text-transform: uppercase; letter-spacing: 1px;
         }
-        .nav-links a { text-decoration: none; color: inherit; margin-left: 20px; }
+        .nav-links a { text-decoration: none; color: inherit; margin-left: 20px; border-bottom: 1px solid transparent; transition: 0.3s; }
+        .nav-links a:hover { border-color: currentColor; }
+
         .altimeter {
             position: fixed; left: 40px; top: 50%; transform: translateY(-50%);
             font-family: var(--font-mono); font-size: 10px;
@@ -148,7 +169,7 @@
         .show-altimeter .altimeter { display: block; }
         .data-row { margin-bottom: 8px; }
 
-        /* SECCIONES Y PROYECTOS */
+        /* --- 7. CONTENT SECTIONS --- */
         .page { display: none; opacity: 0; transition: opacity 0.5s; }
         .page.active { display: block; opacity: 1; }
 
@@ -164,15 +185,17 @@
             font-family: var(--font-mono); font-size: 0.9rem; line-height: 1.6;
             border-top: 1px solid currentColor; padding-top: 30px;
         }
-
+        
+        /* PROJECTS GRID */
         #projects-page { padding: 150px 5vw; min-height: 100vh; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 60px; margin-top: 50px; }
         .card-img { height: 350px; background: #ccc; margin-bottom: 20px; border-radius: 4px; overflow: hidden; transition: 0.5s; }
         .card-img img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: 0.5s; }
-        .card:hover .card-img { border-radius: 50% 50% 0 0; }
+        .card:hover .card-img { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; transform: translateY(-10px); }
         .card:hover img { filter: grayscale(0%); transform: scale(1.1); }
         .card h3 { font-family: var(--font-serif); font-size: 2.2rem; margin: 0; }
 
+        /* MODAL */
         #modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #fff; z-index: 200; overflow-y: auto;
@@ -190,6 +213,12 @@
     <div class="noise"></div>
     <div id="cursor"></div>
 
+    <div class="liquid-bg">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
     <div class="top-bar">
         <div class="researcher-id">Maria Paula Ojeda<br><span style="opacity:0.6;">Critical Matter</span></div>
         <div class="nav-links">
@@ -206,46 +235,38 @@
     <div id="home-page" class="page active">
         
         <section class="hero-section">
-            <h1 class="hero-title">Materializing<br>Dissonance.</h1>
+            
+            <div class="hero-content">
+                <h1 class="hero-title">Materializing<br>Dissonance.</h1>
+                <div class="hero-subtitle">
+                    > From the silence of the Andes to the friction of the city. 
+                    Situated interfaces that translate social inequality.
+                </div>
+            </div>
 
             <div class="flower-cluster" id="cluster-1" onclick="document.getElementById('c2').scrollIntoView({behavior: 'smooth'})">
-                <div class="hidden-concept">
-                    <span>01. Sound</span>
-                    <h2>INQUIRY</h2>
-                </div>
-                
+                <div class="hidden-concept"><span>01. Sound</span><h2>INQUIRY</h2></div>
                 <svg class="flower f1" viewBox="0 0 100 100"><path d="M50 0 C60 20 80 20 50 50 C20 20 40 20 50 0 Z M85 15 C80 35 60 40 50 50 C40 40 20 35 15 15 Z M100 50 C80 60 80 80 50 50 C20 80 20 60 0 50 Z M85 85 C80 65 60 60 50 50 C40 60 20 65 15 85 Z M50 100 C40 80 20 80 50 50 C80 80 60 80 50 100 Z" /></svg>
-                <svg class="flower f2" viewBox="0 0 100 100" style="top:20px; left:40px;"><path d="M50 0 C60 20 80 20 50 50 C20 20 40 20 50 0 Z M100 50 C80 60 80 80 50 50 C20 80 20 60 0 50 Z M50 100 C40 80 20 80 50 50 C80 80 60 80 50 100 Z" /></svg>
-                <svg class="flower f3" viewBox="0 0 100 100" style="bottom:10px; right:10px;"><path d="M50 0 C60 20 80 20 50 50 C20 20 40 20 50 0 Z M85 15 C80 35 60 40 50 50 C40 40 20 35 15 15 Z M100 50 C80 60 80 80 50 50 C20 80 20 60 0 50 Z" /></svg>
-                <svg class="flower f4" viewBox="0 0 100 100" style="top:-20px; right:30px;"><path d="M50 50 L20 20 L80 20 Z M50 50 L80 80 L20 80 Z" /></svg>
+                <svg class="flower f2" viewBox="0 0 100 100" style="left:40px;"><path d="M50 0 C60 20 80 20 50 50 C20 20 40 20 50 0 Z M100 50 C80 60 80 80 50 50 C20 80 20 60 0 50 Z M50 100 C40 80 20 80 50 50 C80 80 60 80 50 100 Z" /></svg>
+                <svg class="flower f3" viewBox="0 0 100 100" style="top:50px; right:20px;"><path d="M50 0 C60 20 80 20 50 50 C20 20 40 20 50 0 Z M85 15 C80 35 60 40 50 50 C40 40 20 35 15 15 Z M100 50 C80 60 80 80 50 50 C20 80 20 60 0 50 Z" /></svg>
             </div>
 
             <div class="flower-cluster" id="cluster-2" onclick="document.getElementById('c4').scrollIntoView({behavior: 'smooth'})">
-                <div class="hidden-concept">
-                    <span>02. Tech</span>
-                    <h2>METHOD</h2>
-                </div>
-                
+                <div class="hidden-concept"><span>02. Tech</span><h2>METHOD</h2></div>
                 <svg class="flower f1" viewBox="0 0 100 100"><polygon points="50,0 60,40 100,50 60,60 50,100 40,60 0,50 40,40" /></svg>
                 <svg class="flower f2" viewBox="0 0 100 100" style="left:-30px;"><polygon points="50,0 70,30 100,20 80,60 100,90 50,80 0,90 20,60 0,20 30,30" /></svg>
-                <svg class="flower f3" viewBox="0 0 100 100" style="bottom:20px;"><polygon points="50,10 60,50 50,90 40,50" /></svg>
+                <svg class="flower f3" viewBox="0 0 100 100" style="bottom:20px; right:-20px;"><polygon points="50,10 60,50 50,90 40,50" /></svg>
                 <svg class="flower f4" viewBox="0 0 100 100" style="top:-30px; right:0;"><polygon points="20,20 80,20 50,80" /></svg>
-                <svg class="flower f5" viewBox="0 0 100 100" style="bottom:-20px; left:20px;"><polygon points="0,50 100,50 50,0" /></svg>
             </div>
 
             <div class="flower-cluster" id="cluster-3" onclick="document.getElementById('c2').scrollIntoView({behavior: 'smooth'})">
-                <div class="hidden-concept">
-                    <span>03. Bio</span>
-                    <h2>MATTER</h2>
-                </div>
-                
+                <div class="hidden-concept"><span>03. Bio</span><h2>MATTER</h2></div>
                 <svg class="flower f1" viewBox="0 0 100 100"><path d="M50 20 C70 20 80 40 80 50 C80 60 70 80 50 80 C30 80 20 60 20 50 C20 40 30 20 50 20 Z M50 0 C80 0 100 40 100 60 C100 90 70 100 50 100 C30 100 0 90 0 60 C0 40 20 0 50 0 Z" /></svg>
-                <svg class="flower f2" viewBox="0 0 100 100" style="top:30px; left:-20px;"><circle cx="50" cy="50" r="40" /></svg>
+                <svg class="flower f2" viewBox="0 0 100 100" style="top:30px; left:-30px;"><circle cx="50" cy="50" r="40" /></svg>
                 <svg class="flower f3" viewBox="0 0 100 100" style="top:-20px; right:10px;"><path d="M10,50 Q50,0 90,50 Q50,100 10,50" /></svg>
-                <svg class="flower f4" viewBox="0 0 100 100" style="bottom:-20px;"><path d="M50,10 Q90,50 50,90 Q10,50 50,10" /></svg>
             </div>
 
-            <div style="position: absolute; bottom: 40px; font-family: var(--font-mono); font-size: 0.7rem; opacity: 0.5;">
+            <div style="position: absolute; bottom: 40px; left: 8vw; font-family: var(--font-mono); font-size: 0.7rem; opacity: 0.5;">
                 DISPERSE TO REVEAL ↓
             </div>
         </section>
@@ -256,7 +277,7 @@
                 <div style="color:var(--terracotta); font-weight:bold;">01. INQUIRY</div>
                 <div>
                     <p><strong>ORIGIN: PÁRAMO [3,200 MASL]</strong></p>
-                    <p>My research begins in the silence of the high Andes. Here, I investigate how code can preserve the "small data" of biological decay. I use computer vision to analyze the fading chromatics of endangered flora, creating a digital archive that breathes.</p>
+                    <p>My research begins in the silence of the high Andes. Here, I investigate how code can preserve the "small data" of biological decay.</p>
                 </div>
             </div>
         </section>
@@ -267,7 +288,7 @@
                 <div style="color:var(--terracotta); font-weight:bold;">02. CONTEXT</div>
                 <div>
                     <p><strong>CONTEXT: BOGOTÁ [2,600 MASL]</strong></p>
-                    <p>Descending into the city, the silence breaks. This section documents "Ladrilludo", an acoustic probe disguised as a brick. By dragging sensors through the streets, I record the invisible weight of social stratification.</p>
+                    <p>Descending into the city, the silence breaks. This section documents "Ladrilludo", an acoustic probe disguised as a brick.</p>
                 </div>
             </div>
         </section>
@@ -278,7 +299,7 @@
                 <div style="color:var(--terracotta); font-weight:bold;">03. METHOD</div>
                 <div>
                     <p><strong>METHOD: MAGDALENA [100 MASL]</strong></p>
-                    <p>In the heat of the river valley, technology must adapt or die. This is "Recursividad": hacking scarcity to produce abundance. Here, I display interfaces that sweat, mutate, and survive.</p>
+                    <p>In the heat of the river valley, technology must adapt or die. This is "Recursividad": hacking scarcity to produce abundance.</p>
                 </div>
             </div>
         </section>
@@ -319,21 +340,61 @@
         function openModal(title, color) { document.getElementById('m-title').innerText = title; document.getElementById('m-hero').style.backgroundColor = color; document.getElementById('modal').classList.add('open'); }
         function closeModal() { document.getElementById('modal').classList.remove('open'); }
 
+        // SCROLL TRANSECT LOGIC
         const body = document.body;
+        const orb1 = document.querySelector('.orb-1');
+        const orb2 = document.querySelector('.orb-2');
+        
         window.addEventListener('scroll', () => {
             if(!document.getElementById('home-page').classList.contains('active')) return;
+
             const scrollPct = window.scrollY / (document.body.scrollHeight - window.innerHeight);
             const alt = Math.round(3200 - (scrollPct * 3150));
             document.getElementById('alt-val').innerText = alt;
 
-            if (scrollPct < 0.25) { body.style.backgroundColor = "var(--bg-paramo)"; body.style.color = "#111"; document.getElementById('zone-val').innerText = "PÁRAMO"; } 
-            else if (scrollPct >= 0.25 && scrollPct < 0.6) { body.style.backgroundColor = "var(--bg-bogota)"; body.style.color = "#000"; document.getElementById('zone-val').innerText = "BOGOTÁ"; } 
-            else { body.style.backgroundColor = "var(--bg-barranca)"; body.style.color = "#fff"; document.getElementById('zone-val').innerText = "MAGDALENA"; }
+            if (scrollPct < 0.25) { 
+                // PÁRAMO (Blanco Niebla)
+                body.style.backgroundColor = "var(--bg-paramo)"; 
+                body.style.color = "#111"; 
+                orb1.style.background = "#fff"; orb2.style.background = "#e0e0e0";
+                document.getElementById('zone-val').innerText = "PÁRAMO"; 
+            } 
+            else if (scrollPct >= 0.25 && scrollPct < 0.6) { 
+                // BOGOTÁ (Gris Urbano + Neón)
+                body.style.backgroundColor = "var(--bg-bogota)"; 
+                body.style.color = "#000"; 
+                orb1.style.background = "var(--neon-green)"; orb2.style.background = "#555";
+                document.getElementById('zone-val').innerText = "BOGOTÁ"; 
+            } 
+            else { 
+                // MAGDALENA (Rojo Tierra + Verde Selva)
+                body.style.backgroundColor = "var(--bg-barranca)"; 
+                body.style.color = "#fff"; 
+                orb1.style.background = "#ff5e00"; orb2.style.background = "#1a3c34";
+                document.getElementById('zone-val').innerText = "MAGDALENA"; 
+            }
         });
 
-        const cursor = document.getElementById('cursor');
-        document.addEventListener('mousemove', e => { cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px'; });
+        // INTERACCIÓN LIQUIDA DEL FONDO
+        // Los orbes siguen al mouse con un ligero retraso para dar sensación de agua
+        document.addEventListener('mousemove', e => {
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            // Orbe 1 se mueve opuesto
+            orb1.style.transform = `translate(${x * -30}px, ${y * -30}px)`;
+            // Orbe 2 se mueve a favor
+            orb2.style.transform = `translate(${x * 30}px, ${y * 30}px)`;
+            
+            // Cursor
+            const cursor = document.getElementById('cursor');
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        // Hover Effect
         document.querySelectorAll('a, .card, .flower-cluster').forEach(el => {
+            const cursor = document.getElementById('cursor');
             el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
             el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
         });
