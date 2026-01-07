@@ -50,7 +50,7 @@
         .orb {
             position: absolute; border-radius: 50%;
             filter: blur(90px); opacity: 0.5;
-            transition: transform 0.2s cubic-bezier(0.1, 0.7, 1.0, 0.1); /* Movimiento fluido pero con delay */
+            transition: transform 0.8s cubic-bezier(0.1, 0.7, 1.0, 0.1); /* Movimiento fluido con inercia */
         }
 
         .orb-1 { width: 70vw; height: 70vw; top: -20%; left: -20%; background: #fff; }
@@ -72,7 +72,7 @@
         .hero-section {
             height: 100vh; position: relative; overflow: hidden;
             display: flex; align-items: center; 
-            padding-left: 8vw; /* Margen izquierdo fuerte */
+            padding-left: 8vw; /* Margen izquierdo fuerte como en tus bocetos */
         }
 
         .hero-content {
@@ -93,7 +93,7 @@
         }
 
         /* --- 5. FLOWER CLUSTERS (INTERACCIÓN PRINCIPAL) --- */
-        /* Ahora ubicados a la DERECHA para equilibrar el título izquierdo */
+        /* Ubicados a la DERECHA para equilibrar el título izquierdo */
         
         .flower-cluster {
             position: absolute;
@@ -103,9 +103,9 @@
         }
 
         /* Posiciones estratégicas (Lado Derecho) */
-        #cluster-1 { top: 10%; right: 10%; } /* Inquiry (Arriba Derecha) */
-        #cluster-2 { top: 45%; right: 25%; } /* Method (Centro Derecha) */
-        #cluster-3 { bottom: 5%; right: 5%; }  /* Matter (Abajo Derecha) */
+        #cluster-1 { top: 15%; right: 15%; } /* Inquiry (Arriba Derecha) */
+        #cluster-2 { top: 45%; right: 5%; }  /* Method (Centro Derecha Extremo) */
+        #cluster-3 { bottom: 15%; right: 20%; } /* Matter (Abajo Derecha) */
 
         .hidden-concept {
             position: absolute; text-align: center;
@@ -125,23 +125,25 @@
             filter: drop-shadow(0px 10px 10px rgba(0,0,0,0.1));
         }
 
-        /* Animación pasiva (Respiración) */
+        /* Animación pasiva (Respiración/Tentacular) */
         @keyframes sway {
-            0%, 100% { transform: translate(0,0) rotate(0deg); }
-            50% { transform: translate(5px, -8px) rotate(3deg); }
+            0%, 100% { transform: translate(0,0) rotate(0deg) scale(1); }
+            50% { transform: translate(5px, -8px) rotate(5deg) scale(1.05); }
         }
-        .flower { animation: sway 8s ease-in-out infinite; }
-        .flower:nth-child(even) { animation-delay: 1s; animation-direction: reverse; }
+        .flower { animation: sway 6s ease-in-out infinite; }
+        .flower:nth-child(2) { animation-delay: 1.2s; animation-direction: reverse; }
+        .flower:nth-child(3) { animation-delay: 2.5s; }
+        .flower:nth-child(4) { animation-delay: 0.5s; }
 
         /* INTERACCIÓN HOVER: DISPERSIÓN ORGÁNICA */
         .flower-cluster:hover .hidden-concept { opacity: 1; transform: scale(1); }
 
-        /* Las flores se alejan mucho más dramáticamente (como apartar maleza) */
-        .flower-cluster:hover .f1 { transform: translate(-140px, -100px) rotate(-45deg) scale(0.6); }
-        .flower-cluster:hover .f2 { transform: translate(140px, -80px) rotate(45deg) scale(0.8); }
-        .flower-cluster:hover .f3 { transform: translate(-100px, 120px) rotate(-20deg) scale(0.7); }
-        .flower-cluster:hover .f4 { transform: translate(120px, 100px) rotate(30deg) scale(0.6); }
-        .flower-cluster:hover .f5 { transform: translate(0px, -160px) rotate(90deg) scale(0.5); }
+        /* Las flores se alejan dramáticamente y giran (Efecto Tentacular) */
+        .flower-cluster:hover .f1 { transform: translate(-150px, -110px) rotate(-60deg) scale(0.6); }
+        .flower-cluster:hover .f2 { transform: translate(150px, -90px) rotate(60deg) scale(0.8); }
+        .flower-cluster:hover .f3 { transform: translate(-90px, 140px) rotate(-30deg) scale(0.7); }
+        .flower-cluster:hover .f4 { transform: translate(130px, 110px) rotate(45deg) scale(0.6); }
+        .flower-cluster:hover .f5 { transform: translate(0px, -170px) rotate(120deg) scale(0.5); }
 
         /* Colores por Cluster */
         #cluster-1 { color: #4a5d23; } /* Verde Musgo */
@@ -360,7 +362,7 @@
                 document.getElementById('zone-val').innerText = "PÁRAMO"; 
             } 
             else if (scrollPct >= 0.25 && scrollPct < 0.6) { 
-                // BOGOTÁ (Gris Urbano + Neón)
+                // BOGOTA (Gris Urbano + Neón)
                 body.style.backgroundColor = "var(--bg-bogota)"; 
                 body.style.color = "#000"; 
                 orb1.style.background = "var(--neon-green)"; orb2.style.background = "#555";
