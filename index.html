@@ -331,25 +331,129 @@
     </div>
 
     <div id="projects-page" class="page">
-        <h1 style="font-size:4vw; font-weight:300; margin:0 0 40px 0;">Selected Inquiries</h1>
-        <div class="grid">
-            <div class="card" onclick="openModal('Ladrilludo', '#cc4422')">
-                <div class="card-img"><img src="https://via.placeholder.com/600x400" alt="Ladrilludo"></div>
-                <h3>Ladrilludo</h3>
-                <p>Sound / Territory</p>
-            </div>
-            <div class="card" onclick="openModal('Huésped Errante', '#d4e035')">
-                <div class="card-img"><img src="https://via.placeholder.com/600x400" alt="Huesped"></div>
-                <h3>Huésped Errante</h3>
-                <p>Bio-Interaction</p>
-            </div>
-            <div class="card" onclick="openModal('La Soledad Suena', '#1a2e1a')">
-                <div class="card-img"><img src="https://via.placeholder.com/600x400" alt="Soledad"></div>
-                <h3>La Soledad Suena</h3>
-                <p>Immersive Data</p>
+        
+        <div style="padding-bottom: 40px; border-bottom: 1px solid rgba(0,0,0,0.1); margin-bottom: 60px;">
+            <h1 style="font-size:4vw; font-weight:300; margin:0;">Research & Works</h1>
+            
+            <div class="filter-menu">
+                <button class="filter-btn active" onclick="filterSelection('all')">ALL</button>
+                <button class="filter-btn" onclick="filterSelection('narrative')">NARRATIVE / SOCIAL</button>
+                <button class="filter-btn" onclick="filterSelection('bio')">BIO / MATERIAL</button>
+                <button class="filter-btn" onclick="filterSelection('code')">CODE / EXP</button>
             </div>
         </div>
+
+        <div class="grid">
+            
+            <div class="card filter-item narrative" onclick="openModal('Ladrilludo', '#cc4422')">
+                <div class="card-img"><img src="https://via.placeholder.com/600x400" alt="Ladrilludo"></div>
+                <div class="card-tags">[ INQUIRY ]</div>
+                <h3>Ladrilludo</h3>
+                <p>Public Pedagogical Inquiry & Sound [cite: 190]</p>
+            </div>
+
+            <div class="card filter-item bio" onclick="openModal('Huésped Errante', '#d4e035')">
+                <div class="card-img"><img src="https://via.placeholder.com/600x400" alt="Huesped"></div>
+                <div class="card-tags">[ LIVING SCULPTURE ]</div>
+                <h3>Huésped Errante</h3>
+                <p>Circuits & Thermochromics [cite: 69]</p>
+            </div>
+
+            <div class="card filter-item code narrative" onclick="openModal('La Soledad Suena', '#1a2e1a')">
+                <div class="card-img"><img src="https://via.placeholder.com/600x400" alt="Soledad"></div>
+                <div class="card-tags">[ INSTALLATION ]</div>
+                <h3>La Soledad Suena</h3>
+                <p>TouchDesigner & Real-time Data [cite: 64]</p>
+            </div>
+
+            <div class="card filter-item code" onclick="openModal('Generative Flora', '#4a5d23')">
+                <div class="card-img" style="filter: grayscale(100%) contrast(1.2);"><img src="https://via.placeholder.com/600x400" alt="Flora"></div>
+                <div class="card-tags" style="color: var(--neon-green);">[ ONGOING ]</div>
+                <h3>Generative Flora</h3>
+                <p>Machine Learning on Endangered Species [cite: 140]</p>
+            </div>
+
+            <div class="card filter-item narrative" onclick="openModal('Magical Animation', '#cc4422')">
+                <div class="card-img"><img src="https://via.placeholder.com/600x400" alt="Workshop"></div>
+                <div class="card-tags">[ WORKSHOP ]</div>
+                <h3>Magical Animation</h3>
+                <p>Cinemateca de Bogotá Lab [cite: 22]</p>
+            </div>
+
+            </div>
     </div>
+
+    <style>
+        /* ESTILOS NUEVOS PARA FILTROS */
+        .filter-menu { margin-top: 30px; display: flex; gap: 20px; font-family: var(--font-mono); font-size: 0.8rem; }
+        .filter-btn { 
+            background: none; border: 1px solid transparent; cursor: pointer; 
+            padding: 5px 10px; text-transform: uppercase; transition: 0.3s; color: #666;
+        }
+        .filter-btn:hover, .filter-btn.active { border-color: #111; color: #111; }
+        
+        .card-tags { 
+            font-family: var(--font-mono); font-size: 0.65rem; color: #888; 
+            margin-bottom: 5px; letter-spacing: 1px;
+        }
+        
+        /* Animación de filtrado */
+        .filter-item { display: block; animation: fadeEffect 0.5s; }
+        .filter-item.hide { display: none; }
+        @keyframes fadeEffect { from {opacity: 0; transform: translateY(20px);} to {opacity: 1; transform: translateY(0);} }
+    </style>
+
+    <script>
+        // LÓGICA DE FILTRADO
+        filterSelection("all")
+        function filterSelection(c) {
+            var x, i;
+            x = document.getElementsByClassName("filter-item");
+            if (c == "all") c = "";
+            for (i = 0; i < x.length; i++) {
+                w3RemoveClass(x[i], "show");
+                if (x[i].className.indexOf(c) > -1) w3AddClass(x[i], "show");
+                else w3AddClass(x[i], "hide"); // Ocultar los que no coinciden
+                
+                // Lógica simple para mostrar/ocultar (display block/none)
+                if (c == "" || x[i].className.indexOf(c) > -1) {
+                    x[i].style.display = "block";
+                } else {
+                    x[i].style.display = "none";
+                }
+            }
+            
+            // Manejo de clase activa en botones
+            var btns = document.getElementsByClassName("filter-btn");
+            for (var j = 0; j < btns.length; j++) {
+                btns[j].classList.remove("active");
+            }
+            // (Nota: necesitarás pasar 'event' o manejar el active manualmente si quieres perfección, 
+            // pero por simplicidad esto resetea. Al hacer click, añade la clase visualmente).
+            event.target.classList.add("active");
+        }
+
+        function w3AddClass(element, name) {
+            var i, arr1, arr2;
+            arr1 = element.className.split(" ");
+            arr2 = name.split(" ");
+            for (i = 0; i < arr2.length; i++) {
+                if (arr1.indexOf(arr2[i]) == -1) {element.className += " " + arr2[i];}
+            }
+        }
+
+        function w3RemoveClass(element, name) {
+            var i, arr1, arr2;
+            arr1 = element.className.split(" ");
+            arr2 = name.split(" ");
+            for (i = 0; i < arr2.length; i++) {
+                while (arr1.indexOf(arr2[i]) > -1) {
+                    arr1.splice(arr1.indexOf(arr2[i]), 1);     
+                }
+            }
+            element.className = arr1.join(" ");
+        }
+    </script>
 
     <div id="about-page" class="page">
         <h1 style="font-size:4vw; font-weight:300; margin:0;">Trajectory</h1>
