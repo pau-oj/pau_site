@@ -10,24 +10,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
     <style>
-        /* --- 1. VARIABLES & PALETA HÍBRIDA --- */
+        /* --- 1. VARIABLES --- */
         :root {
-            /* Colores Base (Transiciones) */
             --bg-paramo: #f4f5f7;
             --bg-bogota: #8d949e;
-            --bg-barranca: #a83e28; /* Rojo arcilla más profundo */
+            --bg-barranca: #a83e28;
             
-            /* Acentos Moodboard */
-            --neon-green: #d4e035;
-            --deep-green: #1a2e1a;
-            --accent: #ff3300;
+            --neon-green: #d4e035; /* Acento Frailejón */
+            --deep-green: #1a2e1a; /* Verde Montaña Oscura */
+            --accent: #ff3300;     /* Rojo Heliconia */
 
-            /* Tipografía */
             --font-serif: 'Cormorant Garamond', serif;
             --font-mono: 'Space Mono', monospace;
         }
 
-        * { box-sizing: border-box; cursor: none; /* Cursor personalizado activado */ }
+        * { box-sizing: border-box; cursor: none; /* Cursor nativo oculto */ }
 
         body {
             margin: 0; padding: 0;
@@ -38,7 +35,7 @@
             transition: background-color 1.5s cubic-bezier(0.25, 1, 0.5, 1), color 1s ease;
         }
 
-        /* --- 2. FONDO FLUIDO (LOS ORBES) --- */
+        /* --- 2. FONDO Y RUIDO --- */
         .ambient-canvas {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1; overflow: hidden; pointer-events: none;
@@ -47,44 +44,130 @@
         .orb {
             position: absolute; border-radius: 50%;
             filter: blur(80px); opacity: 0.6;
-            transition: background-color 1.5s ease, transform 10s ease;
+            transition: background-color 1.5s ease;
             animation: breathe 10s infinite alternate;
         }
-
         .orb-1 { width: 60vw; height: 60vw; top: -20%; left: -10%; background: #fff; }
         .orb-2 { width: 50vw; height: 50vw; bottom: -10%; right: -20%; background: #e0e0e0; }
 
-        @keyframes breathe {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.1); }
-        }
+        @keyframes breathe { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
 
-        /* Ruido Textural */
         .noise {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: 50; opacity: 0.07;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
         }
 
-        /* --- 3. CURSOR MAGNÉTICO --- */
+        /* --- 3. CURSOR FLORAL (NUEVO) --- */
         #cursor {
-            position: fixed; top: 0; left: 0; width: 15px; height: 15px;
-            border: 1px solid currentColor; border-radius: 50%;
+            position: fixed; top: 0; left: 0; width: 40px; height: 40px;
             pointer-events: none; z-index: 9999;
-            transform: translate(-50%, -50%); mix-blend-mode: difference;
-            transition: width 0.3s, height 0.3s, background-color 0.3s;
+            transform: translate(-50%, -50%); 
+            mix-blend-mode: difference; /* Invierte colores para verse sobre fondo oscuro */
+            transition: transform 0.1s;
             display: flex; align-items: center; justify-content: center;
+            color: white; /* Color base del SVG */
         }
         
-        #cursor.hovered {
-            width: 80px; height: 80px;
-            background: var(--neon-green);
-            border-color: transparent;
-            mix-blend-mode: multiply; /* Efecto de transparencia sobre fotos */
-            opacity: 0.8;
+        #cursor svg {
+            width: 100%; height: 100%;
+            animation: spin 10s linear infinite; /* La flor gira suavemente */
         }
 
-        /* --- 4. UI: NAV & ALTIMETER --- */
+        #cursor.hovered {
+            transform: translate(-50%, -50%) scale(2.5); /* Crece al interactuar */
+            color: var(--neon-green); /* Cambia de color */
+            mix-blend-mode: normal;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* --- 4. TOPOGRAFÍA HERO (NUEVO) --- */
+        .hero-section {
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Título Principal Flotante */
+        .main-title-container {
+            position: absolute; top: 15%; left: 50%; transform: translateX(-50%);
+            text-align: center; z-index: 10; width: 100%; pointer-events: none;
+        }
+        
+        .main-title {
+            font-size: 8vw; line-height: 0.9; margin: 0; font-weight: 300;
+            color: #111; mix-blend-mode: overlay; /* Se fusiona con las montañas */
+        }
+
+        /* Contenedor de las Montañas */
+        .landscape-container {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 80%;
+            display: flex; align-items: flex-end;
+        }
+
+        /* Las Capas de Montañas (Ridges) */
+        .ridge {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            cursor: none; /* Mantiene tu cursor personalizado */
+        }
+
+        /* RIDGE 1 (FONDO - PÁRAMO) */
+        .ridge-1 {
+            height: 70%; z-index: 1;
+            background: #cbd5e1; /* Gris niebla */
+            clip-path: polygon(0% 100%, 0% 30%, 20% 45%, 40% 25%, 60% 40%, 80% 20%, 100% 50%, 100% 100%);
+        }
+
+        /* RIDGE 2 (MEDIO - BOSQUE) */
+        .ridge-2 {
+            height: 50%; z-index: 2;
+            background: #64748b; /* Gris azulado */
+            clip-path: polygon(0% 100%, 0% 60%, 15% 75%, 35% 50%, 55% 80%, 80% 40%, 100% 70%, 100% 100%);
+        }
+
+        /* RIDGE 3 (FRENTE - SELVA) */
+        .ridge-3 {
+            height: 35%; z-index: 3;
+            background: var(--deep-green); /* Verde oscuro */
+            clip-path: polygon(0% 100%, 0% 80%, 25% 40%, 50% 70%, 75% 50%, 100% 90%, 100% 100%);
+        }
+
+        /* TEXTO OCULTO EN LAS MONTAÑAS */
+        .ridge-content {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            opacity: 0; text-align: center; color: white;
+            transition: all 0.4s ease;
+            pointer-events: none;
+        }
+        
+        .ridge-label {
+            font-family: var(--font-mono); font-size: 0.8rem; color: var(--neon-green); margin-bottom: 10px; display: block;
+        }
+        .ridge-text {
+            font-family: var(--font-serif); font-size: 2.5rem; line-height: 1;
+        }
+
+        /* INTERACCIÓN HOVER EN MONTAÑAS */
+        .ridge:hover {
+            filter: brightness(1.2); /* Se ilumina */
+            transform: scaleY(1.05); /* Crece un poco */
+        }
+        
+        .ridge:hover .ridge-content {
+            opacity: 1; top: 40%; /* El texto sube y aparece */
+        }
+        
+        /* Modificamos el cursor cuando toca una montaña */
+        .ridge:hover ~ #cursor, .ridge:hover #cursor { 
+            mix-blend-mode: normal; 
+        }
+
+        /* --- 5. RESTO DE SECCIONES (IGUAL QUE ANTES) --- */
         .top-bar {
             position: fixed; top: 30px; left: 40px; right: 40px;
             display: flex; justify-content: space-between; align-items: flex-start;
@@ -107,45 +190,14 @@
         .show-altimeter .altimeter { display: block; }
         .data-row { margin-bottom: 8px; }
 
-        /* --- 5. SECTIONS & TYPOGRAPHY --- */
         .page { display: none; opacity: 0; transition: opacity 0.5s; }
         .page.active { display: block; opacity: 1; }
 
-        .hero-section, .concept-section {
+        .concept-section {
             min-height: 100vh; display: flex; flex-direction: column;
             justify-content: center; padding: 0 15vw;
-            position: relative; border-bottom: 1px solid rgba(0,0,0,0.05);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
         }
-
-        .hero-title {
-            font-size: 7vw; font-weight: 300; line-height: 0.9;
-            margin: 0 0 30px 0; letter-spacing: -0.03em;
-        }
-
-        .hero-title .highlight {
-            font-style: italic; position: relative; display: inline-block;
-        }
-        
-        /* Línea orgánica debajo del texto */
-        .hero-title .highlight::after {
-            content: ''; position: absolute; bottom: 5px; left: 0; width: 100%; height: 8px;
-            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 9' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2.00025 7.5C36.0002 7.5 45.0001 1.5 95.5001 4C143.5 6.38623 162.5 -1 198 2.5' stroke='%23d4e035' stroke-width='3' fill='none'/%3E%3C/svg%3E");
-            background-size: cover; opacity: 0.8;
-        }
-
-        .research-pillars {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 40px; border-top: 1px solid currentColor; padding-top: 30px; margin-top: 40px;
-        }
-
-        .pillar .p-label { font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent); font-weight: 700; margin-bottom: 5px; }
-        .pillar .p-content { font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.5; opacity: 0.8; }
-
-        .scroll-prompt {
-            position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
-            font-family: var(--font-mono); font-size: 0.7rem; animation: blink 2s infinite;
-        }
-        @keyframes blink { 50% { opacity: 0.3; } }
 
         .research-statement { font-size: 5.5vw; font-weight: 300; line-height: 0.95; margin-bottom: 40px; }
         .concept-meta {
@@ -154,34 +206,24 @@
         }
         .concept-number { font-weight: 700; color: var(--neon-green); }
 
-        /* --- 6. PROJECTS: TOPOGRAPHIC INTERACTION --- */
+        /* PROJECTS */
         #projects-page { padding: 150px 5vw; min-height: 100vh; }
-        
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 60px; margin-top: 50px; }
-        
-        .card { group: true; }
-        
         .card-img {
             height: 350px; background: #ccc; margin-bottom: 20px;
-            position: relative; overflow: hidden;
-            /* La forma base es rectangular */
-            border-radius: 4px; 
+            position: relative; overflow: hidden; border-radius: 4px; 
             transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
         }
-
         .card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s; filter: grayscale(100%); }
-
-        /* LA MAGIA TOPOGRÁFICA: Al hacer hover, la tarjeta se deforma como una montaña */
         .card:hover .card-img {
-            border-radius: 40% 60% 30% 70% / 60% 30% 70% 40%; /* Forma orgánica */
+            border-radius: 40% 60% 30% 70% / 60% 30% 70% 40%;
             transform: translateY(-10px);
         }
         .card:hover img { transform: scale(1.1); filter: grayscale(0%); }
-
         .card-meta { font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent); margin-bottom: 10px; }
         .card h3 { font-family: var(--font-serif); font-size: 2.2rem; font-weight: 400; margin: 0; }
 
-        /* --- 7. MODAL --- */
+        /* MODAL */
         #modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #fff; z-index: 200; overflow-y: auto;
@@ -201,7 +243,13 @@
         <div class="orb orb-2"></div>
     </div>
     <div class="noise"></div>
-    <div id="cursor"></div>
+    
+    <div id="cursor">
+        <svg viewBox="0 0 100 100" fill="currentColor">
+            <path d="M50 0 C60 30 70 30 100 50 C70 70 60 70 50 100 C40 70 30 70 0 50 C30 30 40 30 50 0 Z" />
+            <circle cx="50" cy="50" r="10" fill="transparent" stroke="currentColor" stroke-width="2"/>
+        </svg>
+    </div>
 
     <div class="top-bar">
         <div class="researcher-id">
@@ -223,29 +271,33 @@
     <div id="home-page" class="page active">
         
         <section class="hero-section">
-            <div class="hero-container">
-                <h1 class="hero-title">
-                    Materializing <br>
-                    <span class="highlight">Dissonance.</span>
-                </h1>
-                
-                <p class="hero-abstract" style="font-family: var(--font-mono); font-size: 1rem; max-width: 600px;">
-                    > From the silence of the Andes to the friction of the city. 
-                    I build situated interfaces that translate social inequality into physical weight.
-                </p>
+            <div class="main-title-container">
+                <h1 class="main-title">Materializing<br>Dissonance.</h1>
+            </div>
 
-                <div class="research-pillars">
-                    <div class="pillar">
-                        <span class="p-label">01. INQUIRY</span>
-                        <span class="p-content">Can a brick record the sound of inequality?</span>
-                    </div>
-                    <div class="pillar">
-                        <span class="p-label">02. METHOD</span>
-                        <span class="p-content"><b>Recursividad:</b> Hacking scarcity to produce high-fidelity interaction.</span>
+            <div class="landscape-container">
+                
+                <div class="ridge ridge-1">
+                    <div class="ridge-content">
+                        <span class="ridge-label">01. INQUIRY</span>
+                        <span class="ridge-text">The Sound of<br>Inequality</span>
                     </div>
                 </div>
 
-                <div class="scroll-prompt">BEGIN DESCENT ↓</div>
+                <div class="ridge ridge-2">
+                    <div class="ridge-content">
+                        <span class="ridge-label">02. METHOD</span>
+                        <span class="ridge-text">Recursividad &<br>Hacking Scarcity</span>
+                    </div>
+                </div>
+
+                <div class="ridge ridge-3">
+                    <div class="ridge-content">
+                        <span class="ridge-label">03. MATTER</span>
+                        <span class="ridge-text">Small Data &<br>Bio-Decay</span>
+                    </div>
+                </div>
+
             </div>
         </section>
 
@@ -286,25 +338,21 @@
     <div id="projects-page" class="page">
         <h1 style="font-size:4vw; font-weight:300; margin:0 0 40px 0;">Selected Inquiries</h1>
         <div class="grid">
-            
             <div class="card" onclick="openModal('Ladrilludo', '#8d949e')">
-                <div class="card-img"><img src="https://images.unsplash.com/photo-1591543620767-58268571c994?q=80&w=800&auto=format&fit=crop" alt="Brick texture"></div>
+                <div class="card-img"><img src="https://images.unsplash.com/photo-1591543620767-58268571c994?q=80&w=800&auto=format&fit=crop" alt="Brick"></div>
                 <div class="card-meta">SOUND / TERRITORY</div>
                 <h3>Ladrilludo</h3>
             </div>
-
             <div class="card" onclick="openModal('Huésped Errante', '#a83e28')">
-                <div class="card-img"><img src="https://images.unsplash.com/photo-1530906622080-12e0e5a59603?q=80&w=800&auto=format&fit=crop" alt="Organic texture"></div>
+                <div class="card-img"><img src="https://images.unsplash.com/photo-1530906622080-12e0e5a59603?q=80&w=800&auto=format&fit=crop" alt="Organic"></div>
                 <div class="card-meta">BIO-INTERACTION / HEAT</div>
                 <h3>Huésped Errante</h3>
             </div>
-
             <div class="card" onclick="openModal('La Soledad Suena', '#1a2e1a')">
-                <div class="card-img"><img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=800&auto=format&fit=crop" alt="Abstract data"></div>
+                <div class="card-img"><img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=800&auto=format&fit=crop" alt="Data"></div>
                 <div class="card-meta">IMMERSIVE DATA</div>
                 <h3>La Soledad Suena</h3>
             </div>
-            
         </div>
     </div>
 
@@ -314,12 +362,7 @@
             <h1 style="font-size:4rem; margin:0;" id="m-title">Project Name</h1>
         </div>
         <div class="modal-content">
-            <p style="font-family: var(--font-mono);">
-                > RESEARCH LOG:<br>
-                Full technical documentation, schematics, and code repositories will be loaded here.
-            </p>
-            <br>
-            <p>This space acts as the "Notebook" for the admission committee to see the process behind the finish.</p>
+            <p style="font-family: var(--font-mono);">RESEARCH LOG PENDING.</p>
         </div>
     </div>
 
@@ -330,12 +373,10 @@
             document.getElementById(id + '-page').classList.add('active');
             window.scrollTo(0,0);
             
-            // Logic for Altimeter Visibility & Background
             if(id === 'home') {
                 document.body.classList.add('show-altimeter');
             } else {
                 document.body.classList.remove('show-altimeter');
-                // Reset to neutral for project page
                 document.body.style.backgroundColor = "#f4f5f7";
                 document.body.style.color = "#111";
             }
@@ -351,7 +392,7 @@
             document.getElementById('modal').classList.remove('open');
         }
 
-        // SCROLL LOGIC: THE ATMOSPHERE ENGINE
+        // SCROLL LOGIC
         const orb1 = document.querySelector('.orb-1');
         const orb2 = document.querySelector('.orb-2');
         const body = document.body;
@@ -360,67 +401,43 @@
             if(!document.getElementById('home-page').classList.contains('active')) return;
 
             const scrollPct = window.scrollY / (document.body.scrollHeight - window.innerHeight);
-            
-            // 1. Altimeter Logic
             const alt = Math.round(3200 - (scrollPct * 3150));
             document.getElementById('alt-val').innerText = alt;
 
-            // 2. Atmospheric Logic (Colors & Orbs)
             if (scrollPct < 0.25) {
-                // PÁRAMO (White/Mist)
+                // PARAMO
                 body.style.backgroundColor = "var(--bg-paramo)";
                 body.style.color = "#111";
-                
                 orb1.style.background = "#fff";
-                orb1.style.transform = "translate(0,0) scale(1)";
-                
-                orb2.style.background = "#e0e0e0";
-                
                 document.getElementById('zone-val').innerText = "PÁRAMO";
-                document.getElementById('stat-val').innerText = "OBSERVING";
-
             } else if (scrollPct >= 0.25 && scrollPct < 0.6) {
-                // BOGOTA (Grey/Neon/Concrete)
+                // BOGOTA
                 body.style.backgroundColor = "var(--bg-bogota)";
-                body.style.color = "#000"; // Darker contrast
-                
-                orb1.style.background = "var(--neon-green)"; // El verde del gif
-                orb1.style.transform = "translate(20%, 20%) scale(1.2)";
-                
-                orb2.style.background = "#555";
-                
+                body.style.color = "#000"; 
+                orb1.style.background = "var(--neon-green)";
                 document.getElementById('zone-val').innerText = "BOGOTÁ";
-                document.getElementById('stat-val').innerText = "RECORDING";
-
             } else {
-                // BARRANCA (Heat/Red/Deep Green)
+                // BARRANCA
                 body.style.backgroundColor = "var(--bg-barranca)";
-                body.style.color = "#fff"; // Light contrast
-                
-                orb1.style.background = "#ff5e00"; // Heat
-                orb1.style.transform = "translate(-10%, 10%) scale(0.9)";
-
-                orb2.style.background = "var(--deep-green)"; // Jungle
-                
+                body.style.color = "#fff";
+                orb1.style.background = "#ff5e00";
                 document.getElementById('zone-val').innerText = "MAGDALENA";
-                document.getElementById('stat-val').innerText = "MUTATING";
             }
         });
 
-        // CURSOR LOGIC
+        // CURSOR LOGIC REFINADA
         const cursor = document.getElementById('cursor');
         document.addEventListener('mousemove', e => {
             cursor.style.left = e.clientX + 'px';
             cursor.style.top = e.clientY + 'px';
         });
         
-        // Add hover effect to all interactables
-        const interactables = document.querySelectorAll('a, .card, .pillar');
+        // El cursor crece en enlaces, tarjetas Y montañas
+        const interactables = document.querySelectorAll('a, .card, .ridge');
         interactables.forEach(el => {
             el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
             el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
         });
-
     </script>
 </body>
 </html>
