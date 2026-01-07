@@ -10,16 +10,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
     <style>
-        /* --- 1. VARIABLES --- */
+        /* --- VARIABLES --- */
         :root {
-            --bg-paramo: #f4f5f7;
-            --bg-bogota: #8d949e;
-            --bg-barranca: #a83e28;
-            
+            --bg-color: #f4f5f7;
+            --text-color: #111;
             --neon-green: #d4e035; 
             --deep-green: #1a2e1a; 
             --terracotta: #cc4422;
-
             --font-serif: 'Cormorant Garamond', serif;
             --font-mono: 'Space Mono', monospace;
         }
@@ -29,345 +26,209 @@
         body {
             margin: 0; padding: 0;
             font-family: var(--font-serif);
-            color: #111;
-            background-color: var(--bg-paramo);
+            background-color: var(--bg-color);
+            color: var(--text-color);
             overflow-x: hidden;
-            transition: background-color 1.5s cubic-bezier(0.25, 1, 0.5, 1), color 1s ease;
         }
 
-        .noise {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 50; opacity: 0.06;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-        }
-
-        /* --- 2. CURSOR --- */
+        /* --- CURSOR --- */
         #cursor {
             position: fixed; top: 0; left: 0; width: 20px; height: 20px;
             pointer-events: none; z-index: 9999;
             transform: translate(-50%, -50%); 
-            border: 1px solid currentColor; border-radius: 50%;
-            mix-blend-mode: difference; color: white;
+            border: 1px solid #000; border-radius: 50%;
             transition: width 0.3s, height 0.3s, background-color 0.3s;
         }
-        #cursor.hovered { width: 60px; height: 60px; background: var(--neon-green); mix-blend-mode: normal; border: none; opacity: 0.9; }
+        #cursor.hovered { width: 50px; height: 50px; background: var(--neon-green); border: none; opacity: 0.8; mix-blend-mode: multiply; }
 
-        /* --- 3. HERO SECTION: ESTRUCTURA DE TU DIBUJO --- */
+        /* --- HERO SECTION (LAYOUT DEL SKETCH) --- */
         .hero-section {
             height: 100vh;
             width: 100vw;
-            display: grid;
-            grid-template-columns: 50% 50%; /* DIVISIÓN EXACTA MITAD Y MITAD */
-            padding: 0 5vw;
             position: relative;
+            overflow: hidden;
         }
 
-        /* COLUMNA IZQUIERDA: EL TEXTO (TITULO) */
-        .hero-left {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: flex-start;
+        /* 1. TOP BAR (Como en el dibujo: Paula Ojeda --- Research works about) */
+        .top-header {
+            position: absolute; top: 40px; left: 40px; right: 40px;
+            display: flex; justify-content: space-between;
+            font-family: var(--font-mono); font-size: 0.9rem; z-index: 100;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        /* 2. TITULO (Abajo a la Izquierda, como en el dibujo) */
+        .hero-title-container {
+            position: absolute;
+            bottom: 10vh;
+            left: 5vw;
             z-index: 10;
+            pointer-events: none;
         }
 
         .hero-title {
-            font-size: 7.5vw; /* Gigante como en el dibujo */
+            font-size: 8vw;
             line-height: 0.85;
-            margin: 0;
             font-weight: 300;
-            color: #111;
-            letter-spacing: -0.03em;
+            margin: 0;
+        }
+        
+        .hero-squiggle {
+            width: 150px; height: 20px;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,10 Q25,20 50,10 T100,10' fill='none' stroke='%23111' stroke-width='2'/%3E%3C/svg%3E");
+            background-repeat: repeat-x;
+            margin-top: 20px;
+            opacity: 0.6;
         }
 
-        .hero-subtitle {
-            font-family: var(--font-mono);
-            font-size: 0.8rem;
-            margin-top: 40px;
-            max-width: 300px;
-            line-height: 1.6;
-            border-left: 1px solid #111;
-            padding-left: 20px;
-        }
-
-        /* COLUMNA DERECHA: EL JARDÍN FLOTANTE */
-        .hero-right {
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* CONTENEDOR DE LAS FORMAS ORGÁNICAS */
-        /* Usamos formas SVG complejas para imitar el "Liquido" de tu video */
-        .organic-shape {
+        /* 3. EL CLOUD DE FORMAS (Lado Derecho/Centro) */
+        .blob-cloud {
             position: absolute;
-            width: 300px; height: 300px;
-            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            top: 0; right: 0;
+            width: 80vw; /* Ocupa casi todo el ancho derecho */
+            height: 100vh;
+            z-index: 1;
+        }
+
+        /* ESTILO DE LAS "AMEBAS" (BLOBS) */
+        .blob {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.4); /* Transparente como vidrio/liquido */
+            border: 1px solid #333; /* Linea fina como en el dibujo */
+            border-radius: 50%;
             cursor: none;
+            transition: all 0.5s ease;
             display: flex; align-items: center; justify-content: center;
-        }
-        
-        .organic-shape svg {
-            width: 100%; height: 100%;
-            fill: currentColor;
-            filter: blur(1px);
-            opacity: 0.85;
-            animation: morph 8s ease-in-out infinite;
-            transform-origin: center;
-        }
-
-        /* ANIMACIÓN LÍQUIDA (Morphing) */
-        @keyframes morph {
-            0% { transform: scale(1) rotate(0deg); }
-            33% { transform: scale(1.1) rotate(5deg); }
-            66% { transform: scale(0.95) rotate(-5deg); }
-            100% { transform: scale(1) rotate(0deg); }
-        }
-
-        /* POSICIONES BASADAS EN TU DIBUJO (Dispersas a la derecha) */
-        .shape-1 { top: 20%; right: 40%; color: #4a5d23; } /* Inquiry */
-        .shape-2 { top: 45%; right: 10%; color: var(--terracotta); } /* Method */
-        .shape-3 { bottom: 15%; right: 45%; color: #1a3c34; } /* Matter */
-
-        /* TEXTO REVELADO */
-        .reveal-text {
-            position: absolute;
-            font-family: var(--font-mono);
             text-align: center;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.4s ease;
-            pointer-events: none;
-            z-index: 20;
-            color: #000;
-            background: rgba(255,255,255,0.8); /* Fondo suave para leer */
-            padding: 10px;
-            backdrop-filter: blur(5px);
         }
-        .reveal-text strong { display: block; font-family: var(--font-serif); font-size: 1.5rem; margin-bottom: 5px; }
 
-        /* INTERACCIÓN: LA DISPERSIÓN */
-        .organic-shape:hover { z-index: 50; }
-        .organic-shape:hover svg { transform: scale(1.3); opacity: 1; filter: blur(0); }
-        .organic-shape:hover .reveal-text { opacity: 1; transform: translateY(0); }
-
-        /* --- 4. UI ELEMENTS --- */
-        .top-bar {
-            position: fixed; top: 30px; left: 40px; right: 40px;
-            display: flex; justify-content: space-between; align-items: flex-start;
-            font-family: var(--font-mono); font-size: 0.75rem;
-            z-index: 100; mix-blend-mode: difference; color: white;
-            text-transform: uppercase; letter-spacing: 1px;
+        /* Animación de Morphing (Líquido) */
+        @keyframes morph {
+            0% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+            50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+            100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
         }
-        .nav-links a { text-decoration: none; color: inherit; margin-left: 20px; }
 
-        .altimeter {
-            position: fixed; left: 40px; top: 50%; transform: translateY(-50%);
-            font-family: var(--font-mono); font-size: 10px;
-            z-index: 100; mix-blend-mode: difference; color: white;
-            border-left: 1px solid currentColor; padding-left: 15px;
-            display: none; 
+        /* Animación de Flotación */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-20px); }
         }
-        .show-altimeter .altimeter { display: block; }
-        .data-row { margin-bottom: 8px; }
 
-        /* --- 5. SECCIONES DETALLE --- */
-        .page { display: none; opacity: 0; transition: opacity 0.5s; }
-        .page.active { display: block; opacity: 1; }
-
-        .concept-section {
-            min-height: 100vh; display: flex; flex-direction: column;
-            justify-content: center; padding: 0 15vw;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+        .blob-anim {
+            animation: morph 8s ease-in-out infinite, float 6s ease-in-out infinite alternate;
         }
-        .research-statement { font-size: 5vw; font-weight: 300; line-height: 1; margin-bottom: 40px; }
+
+        /* POSICIONAMIENTO MANUAL (Imitando tu dibujo de manchas dispersas) */
         
-        .concept-details {
-            display: grid; grid-template-columns: 100px 1fr; gap: 40px;
-            font-family: var(--font-mono); font-size: 0.9rem; line-height: 1.6;
-            border-top: 1px solid currentColor; padding-top: 30px;
-        }
+        /* Mancha 1: Grande Arriba */
+        .b1 { width: 300px; height: 280px; top: 10%; right: 15%; border-color: var(--terracotta); }
+        
+        /* Mancha 2: Centro (La que dice Inquiry en tu dibujo) */
+        .b2 { width: 350px; height: 320px; top: 40%; right: 35%; background: rgba(212, 224, 53, 0.1); }
+        
+        /* Mancha 3: Abajo Derecha (Grande) */
+        .b3 { width: 400px; height: 350px; bottom: 5%; right: 5%; border-color: var(--deep-green); }
+        
+        /* Mancha 4: Pequeña flotando (Decorativa) */
+        .b4 { width: 150px; height: 150px; top: 25%; right: 55%; animation-duration: 12s; opacity: 0.5; }
+        
+        /* Mancha 5: Otra decorativa */
+        .b5 { width: 180px; height: 200px; bottom: 30%; right: 20%; animation-duration: 9s; opacity: 0.6; }
 
-        /* PROJECTS */
-        #projects-page { padding: 150px 5vw; min-height: 100vh; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 60px; margin-top: 50px; }
-        .card-img { height: 350px; background: #ccc; margin-bottom: 20px; border-radius: 4px; overflow: hidden; transition: 0.5s; }
-        .card-img img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: 0.5s; }
-        .card:hover .card-img { border-radius: 50% 50% 0 0; transform: translateY(-10px); }
-        .card:hover img { filter: grayscale(0%); transform: scale(1.1); }
-        .card h3 { font-family: var(--font-serif); font-size: 2.2rem; margin: 0; }
-
-        /* MODAL */
-        #modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #fff; z-index: 200; overflow-y: auto;
-            transform: translateY(100%); transition: transform 0.6s cubic-bezier(0.7,0,0.3,1);
+        /* TEXTO OCULTO DENTRO DE LOS BLOBS */
+        .blob-content {
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.4s ease;
         }
-        #modal.open { transform: translateY(0); }
-        .close-btn { position: fixed; top: 30px; right: 40px; z-index: 201; font-family: var(--font-mono); cursor: pointer; mix-blend-mode: difference; color: white; }
-        .modal-hero { height: 50vh; display: flex; align-items: flex-end; padding: 5vw; color: white; }
-        .modal-content { padding: 5vw 20vw; max-width: 1200px; margin: 0 auto; }
+        .blob-label { font-family: var(--font-mono); font-size: 0.8rem; color: #555; display: block; margin-bottom: 5px; }
+        .blob-title { font-family: var(--font-serif); font-size: 2.5rem; line-height: 1; color: #000; }
+
+        /* INTERACCIÓN */
+        .blob:hover {
+            background: #fff; /* Se vuelve sólida al hover */
+            z-index: 50;
+            transform: scale(1.1); /* Crece un poco */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-width: 2px;
+        }
+        
+        .blob:hover .blob-content { opacity: 1; transform: scale(1); }
+
+        /* Colores específicos al hover */
+        .b1:hover { border-color: var(--terracotta); color: var(--terracotta); }
+        .b2:hover { border-color: #99a518; color: #556b2f; background: #fdfde0; }
+        .b3:hover { border-color: var(--deep-green); color: var(--deep-green); }
+
+        /* --- SECCIONES DE ABAJO (Solo para scroll) --- */
+        .content-buffer { height: 100vh; background: #fff; display: flex; align-items: center; justify-content: center; }
+
     </style>
 </head>
-<body class="show-altimeter">
+<body>
 
-    <div class="noise"></div>
     <div id="cursor"></div>
 
-    <div class="top-bar">
-        <div class="researcher-id">Maria Paula Ojeda<br><span style="opacity:0.6;">Critical Matter</span></div>
-        <div class="nav-links">
-            <a href="#" onclick="nav('home')">Transect</a>
-            <a href="#" onclick="nav('projects')">Works</a>
-        </div>
-    </div>
-
-    <div class="altimeter">
-        <div class="data-row"><span class="data-label">ZONE:</span><span id="zone-val">PÁRAMO</span></div>
-        <div class="data-row"><span class="data-label">ALT:</span><span id="alt-val">3200</span> M</div>
-    </div>
-
-    <div id="home-page" class="page active">
+    <section class="hero-section">
         
-        <section class="hero-section">
-            
-            <div class="hero-left">
-                <h1 class="hero-title">Materializing<br>Dissonance.</h1>
-                <div class="hero-subtitle">
-                    > From the silence of the Andes to the friction of the city. 
-                    Situated interfaces that translate social inequality.
-                </div>
-                <div style="font-family: var(--font-mono); font-size: 0.7rem; margin-top: 60px; opacity: 0.5;">
-                    SCROLL TO DESCEND ↓
-                </div>
-            </div>
-
-            <div class="hero-right">
-                
-                <div class="organic-shape shape-1" onclick="document.getElementById('c2').scrollIntoView({behavior: 'smooth'})">
-                    <svg viewBox="0 0 200 200">
-                        <path d="M45,-76C58,-69,68,-57,75,-44C82,-31,86,-17,84,-4C82,10,74,23,65,35C56,47,46,58,34,64C22,70,9,71,-4,70C-17,70,-29,67,-41,61C-52,55,-62,45,-70,33C-78,21,-83,7,-81,-6C-79,-20,-70,-33,-59,-45C-48,-57,-35,-68,-21,-71C-7,-75,8,-72,22,-76Z" transform="translate(100 100)" />
-                    </svg>
-                    <div class="reveal-text">
-                        <span>01. Sound</span>
-                        <strong>Inquiry</strong>
-                    </div>
-                </div>
-
-                <div class="organic-shape shape-2" onclick="document.getElementById('c4').scrollIntoView({behavior: 'smooth'})">
-                    <svg viewBox="0 0 200 200">
-                        <path d="M41,-72C53,-63,63,-52,70,-40C77,-28,81,-15,79,-3C77,10,69,22,60,32C51,43,41,52,29,60C17,68,3,75,-10,74C-23,74,-35,66,-46,57C-57,48,-67,38,-72,26C-77,14,-78,0,-74,-12C-70,-25,-61,-37,-50,-46C-39,-56,-27,-63,-14,-66C-1,-69,12,-68,25,-72Z" transform="translate(100 100)" />
-                    </svg>
-                    <div class="reveal-text">
-                        <span>02. Tech</span>
-                        <strong>Method</strong>
-                    </div>
-                </div>
-
-                <div class="organic-shape shape-3" onclick="document.getElementById('c2').scrollIntoView({behavior: 'smooth'})">
-                    <svg viewBox="0 0 200 200">
-                        <path d="M38,-65C49,-59,58,-49,66,-38C74,-27,81,-15,80,-3C79,9,70,22,61,33C52,44,43,53,32,60C21,67,8,72,-4,72C-16,72,-29,67,-40,60C-51,53,-60,43,-66,32C-72,21,-75,9,-74,-2C-73,-13,-68,-23,-60,-32C-52,-41,-41,-49,-30,-55C-19,-61,-8,-65,4,-66C16,-67,27,-65,38,-65Z" transform="translate(100 100)" />
-                    </svg>
-                    <div class="reveal-text">
-                        <span>03. Bio</span>
-                        <strong>Matter</strong>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <section class="concept-section" id="c2">
-            <h1 class="research-statement">The Silent Archive.</h1>
-            <div class="concept-details">
-                <div style="color:var(--terracotta); font-weight:bold;">01. INQUIRY</div>
-                <div>
-                    <p><strong>ORIGIN: PÁRAMO [3,200 MASL]</strong></p>
-                    <p>My research begins in the silence of the high Andes. Here, I investigate how code can preserve the "small data" of biological decay.</p>
-                </div>
-            </div>
-        </section>
-
-        <section class="concept-section" id="c3">
-            <h1 class="research-statement">The Physics of Inequality.</h1>
-            <div class="concept-details">
-                <div style="color:var(--terracotta); font-weight:bold;">02. CONTEXT</div>
-                <div>
-                    <p><strong>CONTEXT: BOGOTÁ [2,600 MASL]</strong></p>
-                    <p>Descending into the city, the silence breaks. This section documents "Ladrilludo", an acoustic probe disguised as a brick.</p>
-                </div>
-            </div>
-        </section>
-
-        <section class="concept-section" id="c4">
-            <h1 class="research-statement">Recursive Mutation.</h1>
-            <div class="concept-details">
-                <div style="color:var(--terracotta); font-weight:bold;">03. METHOD</div>
-                <div>
-                    <p><strong>METHOD: MAGDALENA [100 MASL]</strong></p>
-                    <p>In the heat of the river valley, technology must adapt or die. This is "Recursividad": hacking scarcity to produce abundance.</p>
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <div id="projects-page" class="page">
-        <h1 style="font-size:4vw; font-weight:300; margin:0 0 40px 0;">Selected Inquiries</h1>
-        <div class="grid">
-            <div class="card" onclick="openModal('Ladrilludo', '#cc4422')">
-                <div class="card-img"><img src="https://images.unsplash.com/photo-1591543620767-58268571c994?q=80&w=800&auto=format&fit=crop" alt=""></div>
-                <h3>Ladrilludo</h3>
-            </div>
-            <div class="card" onclick="openModal('Huésped Errante', '#d4e035')">
-                <div class="card-img"><img src="https://images.unsplash.com/photo-1530906622080-12e0e5a59603?q=80&w=800&auto=format&fit=crop" alt=""></div>
-                <h3>Huésped Errante</h3>
-            </div>
-            <div class="card" onclick="openModal('La Soledad Suena', '#1a2e1a')">
-                <div class="card-img"><img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=800&auto=format&fit=crop" alt=""></div>
-                <h3>La Soledad Suena</h3>
-            </div>
+        <div class="top-header">
+            <div>Paula Ojeda</div>
+            <div>Research works about ↓</div>
         </div>
-    </div>
 
-    <div id="modal">
-        <div class="close-btn" onclick="closeModal()">CLOSE [X]</div>
-        <div class="modal-hero" id="m-hero"><h1 style="font-size:4rem; margin:0;" id="m-title">Project</h1></div>
-        <div class="modal-content"><p style="font-family: var(--font-mono);">FULL DOCUMENTATION PENDING.</p></div>
+        <div class="hero-title-container">
+            <h1 class="hero-title">
+                Materializing<br>
+                Dissonance.
+            </h1>
+            <div class="hero-squiggle"></div>
+        </div>
+
+        <div class="blob-cloud">
+            
+            <div class="blob blob-anim b2" onclick="alert('Go to Inquiry')">
+                <div class="blob-content">
+                    <span class="blob-label">01. SOUND</span>
+                    <span class="blob-title">Inquiry</span>
+                    <div style="font-size:2rem; margin-top:10px;">?</div>
+                </div>
+            </div>
+
+            <div class="blob blob-anim b1" onclick="alert('Go to Method')">
+                <div class="blob-content">
+                    <span class="blob-label">02. TECH</span>
+                    <span class="blob-title">Method</span>
+                </div>
+            </div>
+
+            <div class="blob blob-anim b3" onclick="alert('Go to Matter')">
+                <div class="blob-content">
+                    <span class="blob-label">03. BIO</span>
+                    <span class="blob-title">Matter</span>
+                </div>
+            </div>
+
+            <div class="blob blob-anim b4"></div>
+            <div class="blob blob-anim b5"></div>
+
+        </div>
+
+    </section>
+
+    <div class="content-buffer">
+        <p style="font-family: 'Space Mono'; opacity: 0.5;">[ SCROLL FOR DETAILED WORKS ]</p>
     </div>
 
     <script>
-        function nav(id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id + '-page').classList.add('active');
-            window.scrollTo(0,0);
-            if(id === 'home') document.body.classList.add('show-altimeter');
-            else { document.body.classList.remove('show-altimeter'); document.body.style.backgroundColor = "#f4f5f7"; document.body.style.color = "#111"; }
-        }
-        function openModal(title, color) { document.getElementById('m-title').innerText = title; document.getElementById('m-hero').style.backgroundColor = color; document.getElementById('modal').classList.add('open'); }
-        function closeModal() { document.getElementById('modal').classList.remove('open'); }
-
-        // SCROLL TRANSECT LOGIC
-        const body = document.body;
-        window.addEventListener('scroll', () => {
-            if(!document.getElementById('home-page').classList.contains('active')) return;
-            const scrollPct = window.scrollY / (document.body.scrollHeight - window.innerHeight);
-            const alt = Math.round(3200 - (scrollPct * 3150));
-            document.getElementById('alt-val').innerText = alt;
-
-            if (scrollPct < 0.25) { 
-                body.style.backgroundColor = "var(--bg-paramo)"; body.style.color = "#111"; document.getElementById('zone-val').innerText = "PÁRAMO"; 
-            } else if (scrollPct >= 0.25 && scrollPct < 0.6) { 
-                body.style.backgroundColor = "var(--bg-bogota)"; body.style.color = "#000"; document.getElementById('zone-val').innerText = "BOGOTÁ"; 
-            } else { 
-                body.style.backgroundColor = "var(--bg-barranca)"; body.style.color = "#fff"; document.getElementById('zone-val').innerText = "MAGDALENA"; 
-            }
-        });
-
         // CURSOR
         const cursor = document.getElementById('cursor');
-        document.addEventListener('mousemove', e => { cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px'; });
-        document.querySelectorAll('a, .card, .organic-shape').forEach(el => {
+        document.addEventListener('mousemove', e => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+        
+        document.querySelectorAll('.blob').forEach(el => {
             el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
             el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
         });
