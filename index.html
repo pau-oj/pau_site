@@ -3,467 +3,325 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maria Paula Ojeda | Critical Technologist</title>
+    <title>Paula Ojeda | Critical Technologist</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 
     <style>
-        /* --- VARIABLES --- */
+        /* --- 1. PALETA BASADA EN TU MOODBOARD --- */
         :root {
-            --bg-paramo: #f4f5f7;
-            --bg-bogota: #8d949e;
-            --bg-barranca: #d6492c;
-            --text-main: #111;
-            --accent: #ff3300;
+            --bg-color: #f2f3ef; /* Un blanco roto, como niebla de páramo */
+            --text-main: #1a2e1a; /* Verde muy oscuro (casi negro) */
+            --green-andes: #2d5a27; /* El verde de las montañas */
+            --green-neon: #d4e035; /* El amarillo/verde de las líneas del gif */
+            --red-flower: #e04f35; /* El rojo de la Heliconia/Pasiflora */
+            --blur-glass: rgba(242, 243, 239, 0.7);
         }
 
-        /* CORRECCIÓN: Quitamos 'cursor: none' para ver la flecha normal */
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; cursor: none; /* Ocultamos cursor nativo */ }
 
         body {
             margin: 0; padding: 0;
-            font-family: 'Cormorant Garamond', serif;
+            background-color: var(--bg-color);
             color: var(--text-main);
-            background-color: var(--bg-paramo);
+            font-family: 'Inter', sans-serif;
             overflow-x: hidden;
-            transition: background-color 1.2s ease, color 1.2s ease;
+            width: 100vw;
         }
 
-        /* --- UI ELEMENTS --- */
-        
-        /* Opcional: Si quieres quitar la bolita, descomenta la linea 'display: none' abajo */
-        #cursor {
-            position: fixed; top: 0; left: 0; width: 12px; height: 12px;
-            border: 1px solid currentColor; border-radius: 50%;
-            pointer-events: none; z-index: 9999;
-            transform: translate(-50%, -50%); mix-blend-mode: difference;
-            transition: transform 0.1s; display: flex; align-items: center; justify-content: center;
-            /* display: none; <--- QUITA LAS BARRAS SI QUIERES BORRAR LA BOLITA */
-        }
-        #cursor.hovered { transform: translate(-50%, -50%) scale(4); background: #fff; mix-blend-mode: normal; color: black; border: none; }
-        
-        .noise {
+        /* --- 2. FONDO FLUIDO (LAS VIBRAS DEL GIF) --- */
+        .ambient-canvas {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 50; opacity: 0.08;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            z-index: -1; overflow: hidden;
         }
 
-        /* --- NAVIGATION & HEADER --- */
-        .top-bar {
-            position: fixed; top: 30px; left: 40px; right: 40px;
-            display: flex; justify-content: space-between; align-items: flex-start;
-            font-family: 'Space Mono', monospace; font-size: 0.75rem;
-            z-index: 100; mix-blend-mode: difference; color: white;
-            text-transform: uppercase; letter-spacing: 1px;
+        /* Los "Orbes" que flotan y se mezclan */
+        .orb {
+            position: absolute; border-radius: 50%;
+            filter: blur(60px); opacity: 0.6;
+            animation: float 20s infinite ease-in-out;
+        }
+        
+        .orb-1 {
+            width: 60vw; height: 60vw;
+            background: var(--green-neon);
+            top: -20%; left: -10%;
+            animation-delay: 0s;
+        }
+        
+        .orb-2 {
+            width: 50vw; height: 50vw;
+            background: var(--green-andes);
+            bottom: -10%; right: -10%;
+            animation-delay: -5s;
         }
 
-        .researcher-id { text-align: left; line-height: 1.4; }
-        .nav-links { display: flex; gap: 30px; }
-        .nav-links a { text-decoration: none; color: inherit; position: relative; }
-        .nav-links a::after { content: ''; display: block; width: 0; height: 1px; background: currentColor; transition: width 0.3s; }
-        .nav-links a:hover::after { width: 100%; }
-
-        /* --- ALTIMETER (LEFT SIDE) --- */
-        .altimeter {
-            position: fixed; left: 40px; top: 50%; transform: translateY(-50%);
-            font-family: 'Space Mono', monospace; font-size: 10px;
-            z-index: 100; mix-blend-mode: difference; color: white;
-            border-left: 1px solid currentColor; padding-left: 15px;
-            display: none; 
-        }
-        .show-altimeter .altimeter { display: block; }
-        .data-row { margin-bottom: 8px; }
-        .data-label { opacity: 0.6; margin-right: 5px; }
-
-        /* --- HERO SECTION --- */
-        .hero-section {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 0 15vw;
-            position: relative;
-            border-bottom: 1px solid rgba(0,0,0,0.1);
+        .orb-3 {
+            width: 30vw; height: 30vw;
+            background: var(--red-flower);
+            top: 40%; left: 40%;
+            opacity: 0.4;
+            animation-delay: -10s;
         }
 
-        .hero-meta {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.7rem;
-            letter-spacing: 1px;
-            margin-bottom: 30px;
-            display: flex;
-            gap: 40px;
-            opacity: 0.6;
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0, 0) scale(1); }
         }
 
-        .hero-title {
-            font-size: 7vw;
-            font-weight: 300;
-            line-height: 0.9;
-            margin: 0 0 30px 0;
-            letter-spacing: -0.03em;
+        /* Textura de ruido para darle tacto (como papel) */
+        .noise-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://grainy-gradients.vercel.app/noise.svg');
+            opacity: 0.05; z-index: -1; pointer-events: none;
         }
 
-        .hero-title .highlight {
-            font-style: italic;
-            font-weight: 400;
-            border-bottom: 3px solid var(--accent); 
+        /* --- 3. CURSOR PERSONALIZADO (INTERACCIÓN) --- */
+        #cursor {
+            position: fixed; top: 0; left: 0;
+            width: 20px; height: 20px;
+            border: 1px solid var(--text-main);
+            border-radius: 50%;
+            pointer-events: none; z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, background-color 0.3s;
+            mix-blend-mode: difference; /* Invierte colores al pasar por encima */
         }
-
-        .hero-abstract {
-            font-size: 1.4rem;
-            line-height: 1.5;
-            max-width: 700px;
-            margin-bottom: 60px;
-            font-weight: 300;
-        }
-
-        .research-pillars {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 40px;
-            border-top: 1px solid currentColor;
-            padding-top: 30px;
-        }
-
-        .pillar {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .p-label {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: var(--accent);
-        }
-
-        .p-content {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.8rem;
-            line-height: 1.6;
+        
+        #cursor.hovered {
+            width: 80px; height: 80px;
+            background-color: var(--green-neon);
+            border-color: transparent;
+            mix-blend-mode: multiply;
             opacity: 0.8;
         }
 
-        .scroll-prompt {
-            position: absolute;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-family: 'Space Mono', monospace;
-            font-size: 0.7rem;
-            animation: blink 2s infinite;
+        /* --- 4. CONTENIDO --- */
+        nav {
+            display: flex; justify-content: space-between; padding: 40px;
+            font-size: 0.9rem; letter-spacing: 0.05em;
+            position: relative; z-index: 10;
         }
 
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
+        .logo { font-weight: 700; text-transform: uppercase; }
+        .coords { font-family: 'Playfair Display', serif; font-style: italic; }
+
+        /* HERO SECTION */
+        .hero {
+            height: 80vh; display: flex; flex-direction: column;
+            justify-content: center; padding: 0 10vw;
+            position: relative; z-index: 2;
         }
 
-        /* --- HOME (CONCEPTUAL SCROLL) --- */
-        .page { display: none; padding-top: 0; min-height: 100vh; opacity: 0; transition: opacity 0.5s; }
-        .page.active { display: block; opacity: 1; }
-
-        .concept-section {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 0 15vw;
-            position: relative;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 6vw; line-height: 0.95;
+            margin: 0; color: var(--text-main);
+            font-weight: 400;
         }
 
-        .research-statement {
-            font-size: 5.5vw;
-            font-weight: 300;
-            line-height: 0.95;
-            margin: 0 0 40px 0;
-            letter-spacing: -0.02em;
+        h1 span { display: block; }
+        h1 .indent { margin-left: 15vw; color: var(--green-andes); font-style: italic; }
+
+        .tagline {
+            margin-top: 40px; max-width: 500px;
+            font-size: 1.1rem; line-height: 1.6;
+            border-left: 2px solid var(--red-flower);
+            padding-left: 20px;
         }
 
-        .concept-meta {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.85rem;
-            max-width: 450px;
-            line-height: 1.6;
-            border-top: 1px solid currentColor;
-            padding-top: 20px;
-            display: flex; gap: 20px;
+        /* PROJECTS SECTION - ESTILO HERBARIO */
+        .projects-grid {
+            padding: 100px 10vw;
+            display: grid; grid-template-columns: 1fr; gap: 80px;
         }
 
-        .concept-number { font-weight: 700; margin-right: 10px; }
+        .project-card {
+            position: relative; border-top: 1px solid rgba(0,0,0,0.1);
+            padding-top: 40px; transition: transform 0.5s ease;
+        }
 
-        /* --- PROJECTS GRID --- */
-        #projects-page { padding: 150px 5vw; background: #f4f5f7; color: #111; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 40px; margin-top: 50px; }
-        .card { cursor: pointer; } /* CORRECCION: Pointer normal */
-        .card-img { height: 280px; background: #ccc; margin-bottom: 15px; position: relative; overflow: hidden; }
-        .card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s; }
-        .card:hover img { transform: scale(1.05); }
-        .card-meta { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: #666; margin-bottom: 5px; }
-        .card h3 { margin: 0; font-size: 1.8rem; font-weight: 400; }
+        .project-card:hover { transform: translateY(-10px); }
 
-        /* --- ABOUT --- */
-        #about-page { padding: 150px 20vw; background: #e0e0e0; color: #111; }
-        .bio-text { font-size: 1.5rem; line-height: 1.5; margin-bottom: 40px; }
+        .p-meta {
+            font-family: 'Inter', sans-serif; font-size: 0.8rem;
+            color: var(--red-flower); margin-bottom: 10px; text-transform: uppercase;
+        }
+
+        .p-title {
+            font-family: 'Playfair Display', serif; font-size: 3.5rem;
+            margin: 0; cursor: pointer;
+        }
+
+        .p-desc {
+            max-width: 600px; margin-top: 20px; font-size: 1.2rem; color: #555;
+            opacity: 0.8;
+        }
+
+        /* Efecto de imagen al hacer hover (revelado) */
+        .hover-reveal {
+            position: fixed; pointer-events: none;
+            width: 300px; height: 400px;
+            background-size: cover; background-position: center;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0; z-index: 1; border-radius: 100px 100px 0 0; /* Forma orgánica */
+            transition: all 0.4s cubic-bezier(0.1, 0.7, 0.1, 1);
+            filter: grayscale(100%);
+        }
         
-        /* --- MODAL --- */
-        #modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #fff; z-index: 200; overflow-y: auto;
-            transform: translateY(100%); transition: transform 0.6s cubic-bezier(0.7,0,0.3,1);
+        /* Cuando haces hover en el título, aparece la imagen */
+        .project-card:hover .hover-reveal {
+            opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(5deg);
         }
-        #modal.open { transform: translateY(0); }
-        .close-btn { position: fixed; top: 30px; right: 40px; z-index: 201; font-family: 'Space Mono', monospace; cursor: pointer; mix-blend-mode: difference; color: white; }
-        .modal-hero { height: 50vh; background: #000; display: flex; align-items: flex-end; padding: 5vw; color: white; }
-        .modal-content { padding: 5vw 20vw; }
+        
+        /* Coloreamos la imagen activa */
+        .project-card:hover .p-title { color: var(--green-andes); }
+
+        /* --- 5. MODAL DETALLE --- */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-color); z-index: 100;
+            display: flex; flex-direction: column;
+            transform: translateY(100%); transition: transform 0.8s cubic-bezier(0.7,0,0.3,1);
+        }
+
+        .modal.active { transform: translateY(0); }
+
+        .modal-header {
+            padding: 40px; display: flex; justify-content: flex-end;
+        }
+
+        .close-btn {
+            font-family: 'Inter', sans-serif; text-transform: uppercase;
+            border: 1px solid var(--text-main); padding: 10px 20px;
+            border-radius: 20px; transition: all 0.3s;
+        }
+        .close-btn:hover { background: var(--text-main); color: white; }
+
+        .modal-content {
+            flex-grow: 1; padding: 5vw 15vw; overflow-y: auto;
+        }
+        
+        .modal-hero-title {
+            font-family: 'Playfair Display', serif; font-size: 5rem;
+            color: var(--green-andes); margin-bottom: 20px;
+        }
+
+        .modal-body {
+            font-size: 1.3rem; line-height: 1.6; max-width: 800px;
+        }
+
+        footer {
+            padding: 50px; text-align: center; font-size: 0.9rem;
+            opacity: 0.6;
+        }
 
     </style>
 </head>
-<body class="show-altimeter">
+<body>
 
-    <div class="noise"></div>
+    <div class="ambient-canvas">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+    <div class="noise-overlay"></div>
+    
     <div id="cursor"></div>
 
-    <div class="top-bar">
-        <div class="researcher-id">
-            Maria Paula Ojeda<br>
-            <span style="opacity:0.6;">M.D.A. Candidate 2025</span>
-        </div>
-        <div class="nav-links">
-            <a href="#" onclick="nav('home')">Research</a>
-            <a href="#" onclick="nav('projects')">Works</a>
-            <a href="#" onclick="nav('about')">About</a>
-        </div>
-    </div>
+    <nav>
+        <div class="logo">Paula Ojeda</div>
+        <div class="coords">Lat 4.71° N — Bogotá</div>
+        <div>M.D.A. 2026</div>
+    </nav>
 
-    <div class="altimeter">
-        <div class="data-row"><span class="data-label">ZONE:</span><span id="zone-val">PÁRAMO</span></div>
-        <div class="data-row"><span class="data-label">ALT:</span><span id="alt-val">3200</span> M</div>
-        <div class="data-row"><span class="data-label">STATUS:</span><span id="stat-val">OBSERVING</span></div>
-    </div>
+    <section class="hero">
+        <h1>
+            <span>Materializing</span>
+            <span class="indent">Dissonance.</span>
+        </h1>
+        <div class="tagline">
+            Bridging high-fidelity technology with the organic friction of the Global South. A portfolio of critical matter and situated interfaces.
+        </div>
+    </section>
 
-    <div id="home-page" class="page active">
+    <section class="projects-grid">
         
-        <section class="hero-section">
-            <div class="hero-container">
-                <div class="hero-meta">
-                    <span>ROLE: CRITICAL TECHNOLOGIST</span>
-                    <span>LOC: BOGOTÁ, CO (3,600 MASL)</span>
-                </div>
-
-                <h1 class="hero-title">
-                    I engineer <br>
-                    <span class="highlight">dissonance.</span>
-                </h1>
-
-                <p class="hero-abstract">
-                    Bridging the gap between the ancestral and the computational. 
-                    I build <b>situated interfaces</b> that expose the invisible codes of 
-                    social friction in the Global South.
-                </p>
-
-                <div class="research-pillars">
-                    <div class="pillar">
-                        <span class="p-label">01. INQUIRY</span>
-                        <span class="p-content">How does inequality sound? Transducing social stratification into sonic environments.</span>
-                    </div>
-                    <div class="pillar">
-                        <span class="p-label">02. METHOD</span>
-                        <span class="p-content"><b>Recursividad:</b> Hacking scarcity to produce high-fidelity interaction from low-fidelity contexts.</span>
-                    </div>
-                    <div class="pillar">
-                        <span class="p-label">03. MATTER</span>
-                        <span class="p-content">Computing with <b>Small Data</b>: Extracting signals from biological decay and rural silence.</span>
-                    </div>
-                </div>
-
-                <div class="scroll-prompt">
-                    BEGIN TRANSECT ↓
-                </div>
-            </div>
-        </section>
-
-        <section class="concept-section" id="c1">
-            <h1 class="research-statement">
-                Materializing<br>
-                <i>Dissonance</i>.
-            </h1>
-            <div class="concept-meta">
-                <span class="concept-number">00</span>
-                <div>
-                    INVESTIGATION STATEMENT<br><br>
-                    Researching the intersection of critical design, tangible interfaces, and body-space narratives in the Global South.
-                </div>
-            </div>
-        </section>
-
-        <section class="concept-section" id="c2">
-            <h1 class="research-statement">
-                The Silent<br>Archive.
-            </h1>
-            <div class="concept-meta">
-                <span class="concept-number">01</span>
-                <div>
-                    ORIGIN: PÁRAMO<br><br>
-                    How can code preserve the "small data" of biological decay? Extracting signals from the silence of the Andes.
-                    <br><br>
-                    <a href="#" onclick="nav('projects')" style="color:inherit;">→ SEE: GENERATIVE FLORA</a>
-                </div>
-            </div>
-        </section>
-
-        <section class="concept-section" id="c3">
-            <h1 class="research-statement">
-                The Physics of<br>Inequality.
-            </h1>
-            <div class="concept-meta">
-                <span class="concept-number">02</span>
-                <div>
-                    CONTEXT: BOGOTÁ<br><br>
-                    Dragging sensors through the city to record the invisible weight of social stratification.
-                    <br><br>
-                    <a href="#" onclick="nav('projects')" style="color:inherit;">→ SEE: LADRILLUDO</a>
-                </div>
-            </div>
-        </section>
-
-        <section class="concept-section" id="c4">
-            <h1 class="research-statement">
-                Recursive<br><i>Adaptation</i>.
-            </h1>
-            <div class="concept-meta">
-                <span class="concept-number">03</span>
-                <div>
-                    METHOD: RECURSIVIDAD<br><br>
-                    Hacking scarcity to produce abundance. Designing interfaces that sweat, mutate, and survive.
-                    <br><br>
-                    <a href="#" onclick="nav('projects')" style="color:inherit;">→ SEE: HUÉSPED ERRANTE</a>
-                </div>
-            </div>
-        </section>
-
-    </div>
-
-    <div id="projects-page" class="page">
-        <h1 style="font-size:4vw; font-weight:300; margin:0;">Selected Works</h1>
-        <div class="grid">
-            <div class="card" onclick="openModal('Ladrilludo', '#9ca3af')">
-                <div class="card-img"><img src="https://via.placeholder.com/600x400/555/fff?text=LADRILLUDO" alt=""></div>
-                <div class="card-meta">CRITICAL MATTER / SOUND</div>
-                <h3>Ladrilludo</h3>
-            </div>
-            <div class="card" onclick="openModal('Huésped Errante', '#d6492c')">
-                <div class="card-img"><img src="https://via.placeholder.com/600x400/a33/fff?text=HUESPED" alt=""></div>
-                <div class="card-meta">TANGIBLE MEDIA / BIO</div>
-                <h3>Huésped Errante</h3>
-            </div>
-            <div class="card" onclick="openModal('La Soledad Suena', '#333')">
-                <div class="card-img"><img src="https://via.placeholder.com/600x400/111/fff?text=SOLEDAD" alt=""></div>
-                <div class="card-meta">FUTURE SKETCHES / AV</div>
-                <h3>La Soledad Suena</h3>
-            </div>
+        <div class="project-card" onclick="openModal('Ladrilludo', 'An acoustic probe disguised as debris...')">
+            <div class="hover-reveal" style="background-image: url('https://images.unsplash.com/photo-1591543620767-58268571c994?q=80&w=800&auto=format&fit=crop');"></div>
+            
+            <div class="p-meta">01. Sound / Territory</div>
+            <h2 class="p-title">Ladrilludo</h2>
+            <div class="p-desc">Can a brick record the sound of inequality? Dragging a sensor through Bogotá.</div>
         </div>
-    </div>
 
-    <div id="about-page" class="page">
-        <div style="font-family:'Space Mono'; margin-bottom:30px;">[ APPLICANT MANIFESTO ]</div>
-        <div class="bio-text">
-            "I come from a landscape defined by extreme contrast. My family roots are grounded in the silence of the countryside, yet I grew up navigating the chaotic friction of the city. This duality wired my brain to be a compulsive observer."
-        </div>
-        <div class="bio-text" style="font-style:italic; border-left:2px solid var(--accent); padding-left:20px;">
-            "In the Global South, innovation is rarely about having the newest tool; it is about survival. It is the concept of <b>Recursividad</b>."
-        </div>
-        <div style="margin-top:50px; font-family:'Space Mono'; font-size:0.8rem;">
-            CONTACT: mariapaulaojedagomez@gmail.com<br>
-            GITHUB: github.com/sbleeyouk (placeholder)
-        </div>
-    </div>
+        <div class="project-card" onclick="openModal('Huésped Errante', 'Circuits mimicking biology...')">
+            <div class="hover-reveal" style="background-image: url('https://images.unsplash.com/photo-1530906622080-12e0e5a59603?q=80&w=800&auto=format&fit=crop');"></div>
 
-    <div id="modal">
-        <div class="close-btn" onclick="closeModal()">CLOSE [X]</div>
-        <div class="modal-hero" id="m-hero">
-            <h1 style="font-size:4rem; margin:0;" id="m-title">Project Name</h1>
+            <div class="p-meta">02. Bio-Interaction</div>
+            <h2 class="p-title">Huésped Errante</h2>
+            <div class="p-desc">Living Sculpture. Using circuits to mimic mutating biological patterns.</div>
+        </div>
+
+        <div class="project-card" onclick="openModal('La Soledad Suena', 'Translating silence into data...')">
+            <div class="hover-reveal" style="background-image: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=800&auto=format&fit=crop');"></div>
+
+            <div class="p-meta">03. Installation</div>
+            <h2 class="p-title">La Soledad Suena</h2>
+            <div class="p-desc">Translating the phenomenology of isolation into immersive data.</div>
+        </div>
+
+    </section>
+
+    <div id="modal" class="modal">
+        <div class="modal-header">
+            <div class="close-btn" onclick="closeModal()">Close Project</div>
         </div>
         <div class="modal-content">
-            <p style="font-family:'Space Mono';">FULL DOCUMENTATION COMING SOON.</p>
+            <h1 id="m-title" class="modal-hero-title">Project Name</h1>
+            <p id="m-desc" class="modal-body">Description goes here...</p>
+            <br>
+            <div style="width:100%; height:400px; background:#ddd; border-radius:20px; display:flex; align-items:center; justify-content:center;">
+                [ INSERT VISUAL DOCUMENTATION HERE ]
+            </div>
         </div>
     </div>
 
+    <footer>
+        Designed with friction in Bogotá.
+    </footer>
+
     <script>
-        // NAVIGATION SYSTEM
-        function nav(id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id + '-page').classList.add('active');
-            window.scrollTo(0,0);
-            
-            // Toggle Altimeter
-            if(id === 'home') document.body.classList.add('show-altimeter');
-            else {
-                document.body.classList.remove('show-altimeter');
-                document.body.style.backgroundColor = '#f4f5f7';
-                document.body.style.color = '#111';
-            }
-        }
-
-        // MODAL SYSTEM
-        function openModal(title, color) {
-            document.getElementById('m-title').innerText = title;
-            document.getElementById('m-hero').style.backgroundColor = color;
-            document.getElementById('modal').classList.add('open');
-        }
-        function closeModal() {
-            document.getElementById('modal').classList.remove('open');
-        }
-
-        // SCROLL & COLOR LOGIC (THE TRANSECT)
-        window.addEventListener('scroll', () => {
-            if(!document.getElementById('home-page').classList.contains('active')) return;
-
-            const scrollPct = window.scrollY / (document.body.scrollHeight - window.innerHeight);
-            const body = document.body;
-            
-            // Update Altimeter
-            const alt = Math.round(3200 - (scrollPct * 3150));
-            document.getElementById('alt-val').innerText = alt;
-
-            // Update Zones
-            if (scrollPct < 0.25) {
-                // INTRO / PARAMO
-                body.style.backgroundColor = "var(--bg-paramo)";
-                body.style.color = "#111";
-                document.getElementById('zone-val').innerText = "PÁRAMO";
-                document.getElementById('stat-val').innerText = "OBSERVING";
-            } else if (scrollPct >= 0.25 && scrollPct < 0.6) {
-                // BOGOTA
-                body.style.backgroundColor = "var(--bg-bogota)";
-                body.style.color = "#000";
-                document.getElementById('zone-val').innerText = "BOGOTÁ";
-                document.getElementById('stat-val').innerText = "RECORDING";
-            } else {
-                // BARRANCA
-                body.style.backgroundColor = "var(--bg-barranca)";
-                body.style.color = "#fff";
-                document.getElementById('zone-val').innerText = "MAGDALENA";
-                document.getElementById('stat-val').innerText = "MUTATING";
-            }
-        });
-
-        // CURSOR
+        // 1. CURSOR LOGIC
         const cursor = document.getElementById('cursor');
-        document.addEventListener('mousemove', e => {
+        
+        document.addEventListener('mousemove', (e) => {
             cursor.style.left = e.clientX + 'px';
             cursor.style.top = e.clientY + 'px';
         });
-        document.querySelectorAll('a, .card').forEach(el => {
+
+        // Efecto hover magnético
+        const hoverables = document.querySelectorAll('.p-title, .close-btn, a');
+        hoverables.forEach(el => {
             el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
             el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
         });
 
+        // 2. MODAL LOGIC
+        function openModal(title, desc) {
+            document.getElementById('m-title').innerText = title;
+            document.getElementById('m-desc').innerText = desc;
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
     </script>
 </body>
 </html>
