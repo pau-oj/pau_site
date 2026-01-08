@@ -3,28 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paula Ojeda</title>
+    <title>Maria Paula Ojeda | Critical Technologist</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
     <style>
-        /* --- 1. VARIABLES (Tu Moodboard) --- */
+        /* =========================================
+           1. VARIABLES & RESET
+           ========================================= */
         :root {
+            /* Paleta de Color (Transecto) */
             --bg-paramo: #f4f5f7;
             --bg-bogota: #8d949e;
             --bg-barranca: #a83e28;
             
+            /* Acentos */
             --neon-green: #d4e035; 
             --deep-green: #1a2e1a; 
             --terracotta: #cc4422;
 
+            /* Tipografía */
             --font-serif: 'Cormorant Garamond', serif;
             --font-mono: 'Space Mono', monospace;
         }
 
-        * { box-sizing: border-box; cursor: none; }
+        * { box-sizing: border-box; cursor: none; /* Cursor nativo oculto */ }
 
         body {
             margin: 0; padding: 0;
@@ -35,11 +40,22 @@
             transition: background-color 1.5s cubic-bezier(0.25, 1, 0.5, 1), color 1s ease;
         }
 
-        /* --- 2. AMBIENTE --- */
+        a { text-decoration: none; color: inherit; cursor: none; }
+
+        /* =========================================
+           2. AMBIENTE (Fondo, Ruido, Cursor)
+           ========================================= */
+        .noise {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 50; opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+
         .liquid-bg {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1; overflow: hidden; pointer-events: none;
         }
+        
         .orb {
             position: absolute; border-radius: 50%;
             filter: blur(80px); opacity: 0.5;
@@ -47,14 +63,7 @@
         }
         .orb-1 { width: 70vw; height: 70vw; top: -20%; left: -20%; background: #fff; }
         .orb-2 { width: 60vw; height: 60vw; bottom: -20%; right: -20%; background: #dcdcdc; }
-        
-        .noise {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 50; opacity: 0.05;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-        }
 
-        /* --- 3. CURSOR --- */
         #cursor {
             position: fixed; top: 0; left: 0; width: 20px; height: 20px;
             pointer-events: none; z-index: 9999;
@@ -65,7 +74,33 @@
         }
         #cursor.hovered { width: 50px; height: 50px; background: var(--neon-green); mix-blend-mode: normal; border: none; opacity: 0.9; }
 
-        /* --- 4. HERO SECTION (Asimétrico: Texto Izq / Flores Der) --- */
+        /* =========================================
+           3. UI (Nav, Altimeter)
+           ========================================= */
+        .top-bar {
+            position: fixed; top: 30px; left: 40px; right: 40px;
+            display: flex; justify-content: space-between; align-items: flex-start;
+            font-family: var(--font-mono); font-size: 0.75rem;
+            z-index: 100; mix-blend-mode: difference; color: white;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        
+        .nav-links a { margin-left: 20px; border-bottom: 1px solid transparent; transition: 0.3s; }
+        .nav-links a:hover { border-color: currentColor; }
+
+        .altimeter {
+            position: fixed; left: 40px; top: 50%; transform: translateY(-50%);
+            font-family: var(--font-mono); font-size: 10px;
+            z-index: 100; mix-blend-mode: difference; color: white;
+            border-left: 1px solid currentColor; padding-left: 15px;
+            display: none; 
+        }
+        .show-altimeter .altimeter { display: block; }
+        .data-row { margin-bottom: 8px; }
+
+        /* =========================================
+           4. HERO SECTION (Asimétrico + Flores)
+           ========================================= */
         .hero-section {
             height: 100vh; position: relative; overflow: hidden;
             display: flex; align-items: center; padding-left: 5vw;
@@ -88,7 +123,7 @@
             opacity: 0.8;
         }
 
-        /* --- 5. FLOWER CLUSTERS --- */
+        /* --- Flower Clusters --- */
         .flower-cluster {
             position: absolute;
             width: 350px; height: 350px;
@@ -96,12 +131,10 @@
             cursor: none; z-index: 20;
         }
 
-        /* Posiciones */
         #cluster-1 { top: 15%; right: 20%; color: #4a5d23; } /* Inquiry */
         #cluster-2 { top: 50%; right: 5%; color: var(--terracotta); } /* Method */
         #cluster-3 { bottom: 10%; right: 30%; color: #1a3c34; } /* Matter */
 
-        /* Texto Oculto */
         .hidden-concept {
             position: absolute; text-align: center;
             opacity: 0; transform: scale(0.8);
@@ -111,16 +144,13 @@
         .hidden-concept h2 { margin: 0; font-size: 2.5rem; font-family: var(--font-serif); font-style: italic; }
         .hidden-concept span { font-family: var(--font-mono); font-size: 0.8rem; text-transform: uppercase; font-weight: bold; }
 
-        /* Flores SVG */
         .flower {
             position: absolute; width: 100px; height: 100px;
             fill: currentColor; opacity: 0.95;
             transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
-            z-index: 5;
-            filter: drop-shadow(0px 10px 10px rgba(0,0,0,0.1));
+            z-index: 5; filter: drop-shadow(0px 10px 10px rgba(0,0,0,0.1));
         }
 
-        /* Animación "Alive" */
         @keyframes sway {
             0%, 100% { transform: translate(0,0) rotate(0deg) scale(1); }
             50% { transform: translate(5px, -8px) rotate(5deg) scale(1.05); }
@@ -137,27 +167,9 @@
         .flower-cluster:hover .f4 { transform: translate(120px, 100px) rotate(30deg) scale(0.6); }
         .flower-cluster:hover .f5 { transform: translate(0px, -160px) rotate(90deg) scale(0.5); }
 
-        /* --- 6. UI --- */
-        .top-bar {
-            position: fixed; top: 30px; left: 40px; right: 40px;
-            display: flex; justify-content: space-between; align-items: flex-start;
-            font-family: var(--font-mono); font-size: 0.75rem;
-            z-index: 100; mix-blend-mode: difference; color: white;
-            text-transform: uppercase; letter-spacing: 1px;
-        }
-        .nav-links a { text-decoration: none; color: inherit; margin-left: 20px; }
-
-        .altimeter {
-            position: fixed; left: 40px; top: 50%; transform: translateY(-50%);
-            font-family: var(--font-mono); font-size: 10px;
-            z-index: 100; mix-blend-mode: difference; color: white;
-            border-left: 1px solid currentColor; padding-left: 15px;
-            display: none; 
-        }
-        .show-altimeter .altimeter { display: block; }
-        .data-row { margin-bottom: 8px; }
-
-        /* --- 7. CONTENT (SCROLL & GRID) --- */
+        /* =========================================
+           5. SECCIONES DE CONTENIDO (Scroll)
+           ========================================= */
         .page { display: none; opacity: 0; transition: opacity 0.5s; }
         .page.active { display: block; opacity: 1; }
 
@@ -174,23 +186,56 @@
             border-top: 1px solid currentColor; padding-top: 30px;
         }
 
+        /* =========================================
+           6. PROJECTS PAGE (Filtros & Grid)
+           ========================================= */
         #projects-page { padding: 150px 5vw; min-height: 100vh; }
+
+        /* Header de Proyectos */
+        .works-header {
+            margin-bottom: 60px; border-bottom: 1px solid currentColor; padding-bottom: 20px;
+        }
+        .works-title { font-size: 4vw; font-weight: 300; margin: 0 0 40px 0; }
+        
+        .filter-container {
+            display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 30px;
+        }
+        .filter-menu { display: flex; gap: 25px; font-family: var(--font-mono); font-size: 0.75rem; }
+        
+        .filter-btn { 
+            background: none; border: none; cursor: pointer; padding: 0; 
+            font-family: inherit; text-transform: uppercase; color: #888; transition: 0.3s; position: relative;
+        }
+        .filter-btn:hover, .filter-btn.active { color: currentColor; }
+        .filter-btn.active::before { content: '●'; color: var(--terracotta); position: absolute; left: -12px; top: 0px; font-size: 0.6rem; }
+
+        .filter-description {
+            font-family: var(--font-mono); font-size: 0.75rem; color: var(--terracotta);
+            text-align: right; max-width: 400px; opacity: 0.8; border-left: 1px solid #ddd; padding-left: 20px;
+        }
+
+        /* Grilla */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 60px; margin-top: 50px; }
+        
+        .card { cursor: pointer; display: block; animation: fadeEffect 0.5s; }
+        @keyframes fadeEffect { from {opacity: 0; transform: translateY(20px);} to {opacity: 1; transform: translateY(0);} }
+
         .card-img { height: 350px; background: #ccc; margin-bottom: 20px; border-radius: 4px; overflow: hidden; transition: 0.5s; }
         .card-img img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: 0.5s; }
         .card:hover .card-img { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; transform: translateY(-10px); }
         .card:hover img { filter: grayscale(0%); transform: scale(1.1); }
-        .card h3 { font-family: var(--font-serif); font-size: 2.2rem; margin: 0; }
-
-        /* --- 8. ABOUT PAGE (NUEVO) --- */
-        #about-page { padding: 150px 5vw; min-height: 100vh; background: var(--bg-paramo); color: #111; }
         
-        .about-layout {
-            display: grid; grid-template-columns: 40% 55%; gap: 5%;
-            margin-top: 50px;
-        }
+        .card-tags { font-family: var(--font-mono); font-size: 0.65rem; color: var(--terracotta); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
+        .card h3 { font-family: var(--font-serif); font-size: 2.2rem; margin: 0; }
+        .card p { font-family: var(--font-mono); font-size: 0.8rem; color: #555; margin-top: 5px; }
 
-        /* Columna Bio */
+        /* =========================================
+           7. ABOUT PAGE (Trajectory & CV)
+           ========================================= */
+        #about-page { padding: 150px 5vw; min-height: 100vh; background: var(--bg-paramo) !important; color: #111 !important; }
+        
+        .about-layout { display: grid; grid-template-columns: 40% 55%; gap: 5%; margin-top: 50px; }
+
         .bio-text { font-size: 1.6rem; line-height: 1.4; font-weight: 300; }
         .bio-highlight { color: var(--terracotta); font-style: italic; }
         .bio-manifesto { 
@@ -198,17 +243,12 @@
             border-left: 2px solid var(--neon-green); padding-left: 20px; color: #555;
         }
 
-        /* Columna CV */
         .cv-section { margin-bottom: 50px; }
         .cv-header { 
             font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 2px; 
             color: var(--terracotta); border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom: 20px;
         }
-        
-        .cv-item { 
-            display: grid; grid-template-columns: 120px 1fr; gap: 20px; margin-bottom: 25px; 
-            transition: transform 0.3s;
-        }
+        .cv-item { display: grid; grid-template-columns: 120px 1fr; gap: 20px; margin-bottom: 25px; transition: transform 0.3s; cursor: default; }
         .cv-item:hover { transform: translateX(10px); }
         
         .cv-date { font-family: var(--font-mono); font-size: 0.8rem; color: #666; }
@@ -223,7 +263,9 @@
         }
         .btn-download:hover { background: var(--terracotta); border-color: var(--terracotta); color: white; }
 
-        /* --- 9. MODAL --- */
+        /* =========================================
+           8. MODAL
+           ========================================= */
         #modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #fff; z-index: 200; overflow-y: auto;
@@ -233,7 +275,6 @@
         .close-btn { position: fixed; top: 30px; right: 40px; z-index: 201; font-family: var(--font-mono); cursor: pointer; mix-blend-mode: difference; color: white; }
         .modal-hero { height: 50vh; display: flex; align-items: flex-end; padding: 5vw; color: white; }
         .modal-content { padding: 5vw 20vw; max-width: 1200px; margin: 0 auto; margin-bottom: 100px; }
-        
         .modal-gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 40px; }
         .gallery-img { width: 100%; height: auto; background: #eee; }
 
@@ -250,11 +291,12 @@
     </div>
 
     <div class="top-bar">
-        <div class="researcher-id">Paula Ojeda<br><span style="opacity:0.6;"></span></div>
+        <div class="researcher-id">Maria Paula Ojeda<br><span style="opacity:0.6;">Critical Matter</span></div>
         <div class="nav-links">
             <a href="#" onclick="nav('home')">Transect</a>
             <a href="#" onclick="nav('projects')">Works</a>
-            <a href="#" onclick="nav('about')">About</a> </div>
+            <a href="#" onclick="nav('about')">About</a>
+        </div>
     </div>
 
     <div class="altimeter">
@@ -302,7 +344,7 @@
                 <div style="color:var(--terracotta); font-weight:bold;">01. INQUIRY</div>
                 <div>
                     <p><strong>ORIGIN: PÁRAMO [3,200 MASL]</strong></p>
-                    <p>My research begins in the silence of the high Andes...</p>
+                    <p>My research begins in the silence of the high Andes. [cite_start]Here, I investigate how code can preserve the "small data" of biological decay[cite: 92].</p>
                 </div>
             </div>
         </section>
@@ -313,7 +355,7 @@
                 <div style="color:var(--terracotta); font-weight:bold;">02. CONTEXT</div>
                 <div>
                     <p><strong>CONTEXT: BOGOTÁ [2,600 MASL]</strong></p>
-                    <p>Descending into the city, the silence breaks...</p>
+                    <p>Descending into the city, the silence breaks. This section documents "Ladrilludo", an acoustic probe disguised as a brick. [cite_start]By dragging sensors through the streets, I record the invisible weight of social stratification[cite: 56, 133].</p>
                 </div>
             </div>
         </section>
@@ -324,7 +366,7 @@
                 <div style="color:var(--terracotta); font-weight:bold;">03. METHOD</div>
                 <div>
                     <p><strong>METHOD: MAGDALENA [100 MASL]</strong></p>
-                    <p>In the heat of the river valley, technology must adapt...</p>
+                    <p>In the heat of the river valley, technology must adapt or die. [cite_start]This is "Recursividad": hacking scarcity to produce abundance[cite: 104, 126].</p>
                 </div>
             </div>
         </section>
@@ -332,38 +374,42 @@
 
     <div id="projects-page" class="page">
         
-        <div style="padding-bottom: 40px; border-bottom: 1px solid rgba(0,0,0,0.1); margin-bottom: 60px;">
-            <h1 style="font-size:4vw; font-weight:300; margin:0;">Research & Works</h1>
+        <div class="works-header">
+            <h1 class="works-title">Research & Works</h1>
             
-            <div class="filter-menu">
-                <button class="filter-btn active" onclick="filterSelection('all')">ALL WORKS</button>
-                <button class="filter-btn" onclick="filterSelection('tangible')">TANGIBLE FRICTION</button>
-                <button class="filter-btn" onclick="filterSelection('body')">BODY NARRATIVES</button>
-                <button class="filter-btn" onclick="filterSelection('systems')">LIVING SYSTEMS</button>
+            <div class="filter-container">
+                <div class="filter-menu">
+                    <button class="filter-btn active" onclick="filterSelection('all', 'ARCHIVE OVERVIEW: Chronological display of all inquiries.')">ALL WORKS</button>
+                    <button class="filter-btn" onclick="filterSelection('tangible', 'TANGIBLE FRICTION: Prototyping resistance in public space.')">TANGIBLE FRICTION</button>
+                    <button class="filter-btn" onclick="filterSelection('body', 'BODY NARRATIVES: Visual essays on identity and performance.')">BODY NARRATIVES</button>
+                    <button class="filter-btn" onclick="filterSelection('systems', 'LIVING SYSTEMS: Code, biology, and digital ecologies.')">LIVING SYSTEMS</button>
+                </div>
+                <div class="filter-description">
+                    <span id="desc-text">[ ARCHIVE OVERVIEW: Chronological display of all inquiries. ]</span>
+                </div>
             </div>
         </div>
 
         <div class="grid">
-            
             <div class="card filter-item tangible" onclick="openModal('Ladrilludo', '#cc4422')">
                 <div class="card-img"><img src="https://via.placeholder.com/600x400" alt="Ladrilludo"></div>
                 <div class="card-tags">[ PUBLIC INQUIRY ]</div>
                 <h3>Ladrilludo</h3>
-                <p>Walking-with a brick in Bogotá</p>
+                [cite_start]<p>Walking-with a brick in Bogotá [cite: 56, 190]</p>
             </div>
 
             <div class="card filter-item systems" onclick="openModal('Huésped Errante', '#d4e035')">
                 <div class="card-img"><img src="https://via.placeholder.com/600x400" alt="Huesped"></div>
                 <div class="card-tags">[ BIO-INTERACTION ]</div>
                 <h3>Huésped Errante</h3>
-                <p>Circuits mimicking biological decay</p>
+                [cite_start]<p>Circuits mimicking biological decay [cite: 65]</p>
             </div>
 
             <div class="card filter-item systems" onclick="openModal('La Soledad Suena', '#1a2e1a')">
                 <div class="card-img"><img src="https://via.placeholder.com/600x400" alt="Soledad"></div>
                 <div class="card-tags">[ IMMERSIVE DATA ]</div>
                 <h3>La Soledad Suena</h3>
-                <p>Translating silence into sound</p>
+                [cite_start]<p>Translating silence into sound [cite: 61]</p>
             </div>
 
             <div class="card filter-item body" onclick="openModal('Identity Archives', '#a83e28')">
@@ -386,34 +432,150 @@
                 <h3>Retazos</h3>
                 <p>Material reconstruction of memory</p>
             </div>
-
         </div>
     </div>
 
-    <style>
-        .filter-menu { margin-top: 30px; display: flex; gap: 30px; font-family: var(--font-mono); font-size: 0.8rem; flex-wrap: wrap; }
-        .filter-btn { 
-            background: none; border: none; cursor: pointer; 
-            padding: 0; text-transform: uppercase; transition: 0.3s; color: #888;
-            position: relative;
-        }
-        .filter-btn:hover, .filter-btn.active { color: #111; }
-        .filter-btn.active::after { content:''; display:block; width:100%; height:1px; background:#111; margin-top:5px; }
+    <div id="about-page" class="page">
+        <h1 style="font-size:4vw; font-weight:300; margin:0;">Trajectory</h1>
         
-        .card-tags { 
-            font-family: var(--font-mono); font-size: 0.65rem; color: var(--terracotta);
-            margin-bottom: 5px; letter-spacing: 1px; text-transform: uppercase;
-        }
-        
-        .filter-item { display: block; animation: fadeEffect 0.5s; }
-        .filter-item.hide { display: none; }
-        @keyframes fadeEffect { from {opacity: 0; transform: translateY(20px);} to {opacity: 1; transform: translateY(0);} }
-    </style>
+        <div class="about-layout">
+            <div>
+                <p class="bio-text">
+                    [cite_start]I come from a landscape defined by extreme contrast. <span class="bio-highlight">Roots in the silent countryside, life in the friction of the city.</span> [cite: 92]
+                </p>
+                <br>
+                <p class="bio-text">
+                    This duality wired my brain. I became a compulsive observer of the invisible codes of society. I realized that observing was no longer enough; [cite_start]I needed to build tools to reshape it[cite: 94, 101].
+                </p>
+                <div class="bio-manifesto">
+                    > [cite_start]"I define myself as a maker who thinks with her hands, bridging the gap between high-fidelity technology and the low-fidelity reality of the Global South." [cite: 107]
+                </div>
+                <a href="#" class="btn-download">Download Full CV [PDF]</a>
+            </div>
+
+            <div>
+                <div class="cv-section">
+                    <div class="cv-header">EDUCATION</div>
+                    <div class="cv-item">
+                        <div class="cv-date">2026 (Exp)</div>
+                        <div>
+                            <div class="cv-role">Master in Design & Applied Arts</div>
+                            [cite_start]<div class="cv-place">Universidad de los Andes [cite: 5, 6, 16]</div>
+                        </div>
+                    </div>
+                    <div class="cv-item">
+                        <div class="cv-date">2022</div>
+                        <div>
+                            <div class="cv-role">B.A. in Visual Arts</div>
+                            [cite_start]<div class="cv-place">Universidad de los Andes [cite: 7, 8]</div>
+                            <div class="cv-desc">Minors: Visual Computation, Design Creation.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cv-section">
+                    <div class="cv-header">PROFESSIONAL EXPERIENCE</div>
+                    <div class="cv-item">
+                        <div class="cv-date">2025 - Pres</div>
+                        <div>
+                            <div class="cv-role">Co-Founder & Tech Director</div>
+                            [cite_start]<div class="cv-place">Sintopía Lab [cite: 11, 12]</div>
+                            <div class="cv-desc">Leading interactive modules and creative tech solutions.</div>
+                        </div>
+                    </div>
+                    <div class="cv-item">
+                        <div class="cv-date">2025</div>
+                        <div>
+                            <div class="cv-role">Workshop Facilitator</div>
+                            [cite_start]<div class="cv-place">Cinemateca de Bogotá [cite: 20, 21]</div>
+                            <div class="cv-desc">"Magical Animation" lab facilitation.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cv-section">
+                    <div class="cv-header">RESEARCH & LEADERSHIP</div>
+                    <div class="cv-item">
+                        <div class="cv-date">Current</div>
+                        <div>
+                            <div class="cv-role">Visual Computing Research Group</div>
+                            [cite_start]<div class="cv-place">Active Member [cite: 35-37]</div>
+                        </div>
+                    </div>
+                    <div class="cv-item">
+                        <div class="cv-date">2025</div>
+                        <div>
+                            <div class="cv-role">Secretary General</div>
+                            [cite_start]<div class="cv-place">Student Council (CEU) [cite: 50-52]</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cv-section">
+                    <div class="cv-header">SKILLS</div>
+                    <div class="cv-item">
+                        <div class="cv-date">Tech</div>
+                        [cite_start]<div class="cv-desc">TouchDesigner, Arduino, Python, Creative Coding [cite: 85]</div>
+                    </div>
+                    <div class="cv-item">
+                        <div class="cv-date">Fab</div>
+                        [cite_start]<div class="cv-desc">Circuit Design, Sensors, Analog Photography [cite: 86]</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="modal">
+        <div class="close-btn" onclick="closeModal()">CLOSE [X]</div>
+        <div class="modal-hero" id="m-hero"><h1 style="font-size:4rem; margin:0;" id="m-title">Project</h1></div>
+        <div class="modal-content">
+            <div style="font-family: var(--font-mono); font-size: 1.2rem; margin-bottom: 30px;">
+                <p>Full documentation regarding this project.</p>
+                <p>Include technical specs, circuit diagrams, and conceptual framework here.</p>
+            </div>
+            <div class="modal-gallery">
+                <img src="https://via.placeholder.com/600x400" class="gallery-img">
+                <img src="https://via.placeholder.com/600x400" class="gallery-img">
+            </div>
+        </div>
+    </div>
 
     <script>
-        // LOGICA DE FILTRADO
-        filterSelection("all")
-        function filterSelection(c) {
+        // --- 1. NAVEGACIÓN ---
+        function nav(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id + '-page').classList.add('active');
+            window.scrollTo(0,0);
+            
+            if(id === 'home') {
+                document.body.classList.add('show-altimeter');
+                document.body.style.backgroundColor = "var(--bg-paramo)";
+                document.body.style.color = "#111";
+            } else if (id === 'about') {
+                document.body.classList.remove('show-altimeter');
+                document.body.style.backgroundColor = "#f4f5f7";
+                document.body.style.color = "#111";
+            } else { 
+                document.body.classList.remove('show-altimeter'); 
+                document.body.style.backgroundColor = "#f4f5f7"; 
+                document.body.style.color = "#111"; 
+            }
+        }
+
+        // --- 2. MODAL LOGIC ---
+        function openModal(title, color) { 
+            document.getElementById('m-title').innerText = title; 
+            document.getElementById('m-hero').style.backgroundColor = color; 
+            document.getElementById('modal').classList.add('open'); 
+        }
+        function closeModal() { document.getElementById('modal').classList.remove('open'); }
+
+        // --- 3. FILTROS PROYECTOS (The Dynamic Index) ---
+        filterSelection("all", "ARCHIVE OVERVIEW: Chronological display of all inquiries.")
+        
+        function filterSelection(c, desc) {
             var x, i;
             x = document.getElementsByClassName("filter-item");
             if (c == "all") c = "";
@@ -428,12 +590,16 @@
                     x[i].style.display = "none";
                 }
             }
-            // Update active class
+            
             var btns = document.getElementsByClassName("filter-btn");
             for (var j = 0; j < btns.length; j++) {
                 btns[j].classList.remove("active");
             }
-            event.target.classList.add("active");
+            if(event) event.target.classList.add("active");
+
+            if(desc) {
+                document.getElementById("desc-text").innerText = "[ " + desc + " ]";
+            }
         }
 
         function w3AddClass(element, name) {
@@ -456,143 +622,8 @@
             }
             element.className = arr1.join(" ");
         }
-    </script>
 
-
-    <div id="about-page" class="page">
-        <h1 style="font-size:4vw; font-weight:300; margin:0;">Trajectory</h1>
-        
-        <div class="about-layout">
-            <div>
-                <p class="bio-text">
-                    I come from a landscape defined by extreme contrast. <span class="bio-highlight">Roots in the silent countryside, life in the friction of the city.</span>
-                </p>
-                <br>
-                <p class="bio-text">
-                    This duality wired my brain. I became a compulsive observer of the invisible codes of society. I realized that observing was no longer enough; I needed to build tools to reshape it.
-                </p>
-                <div class="bio-manifesto">
-                    > "I define myself as a maker who thinks with her hands, bridging the gap between high-fidelity technology and the low-fidelity reality of the Global South." [cite: 107]
-                </div>
-                <a href="#" class="btn-download">Download Full CV [PDF]</a>
-            </div>
-
-            <div>
-                <div class="cv-section">
-                    <div class="cv-header">EDUCATION</div>
-                    <div class="cv-item">
-                        <div class="cv-date">2026 (Exp)</div>
-                        <div>
-                            <div class="cv-role">Master in Design & Applied Arts</div>
-                            <div class="cv-place">Universidad de los Andes [cite: 5-6]</div>
-                        </div>
-                    </div>
-                    <div class="cv-item">
-                        <div class="cv-date">2022</div>
-                        <div>
-                            <div class="cv-role">B.A. in Visual Arts</div>
-                            <div class="cv-place">Universidad de los Andes [cite: 7-8]</div>
-                            <div class="cv-desc">Minors: Visual Computation, Design Creation.</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="cv-section">
-                    <div class="cv-header">PROFESSIONAL EXPERIENCE</div>
-                    <div class="cv-item">
-                        <div class="cv-date">2025 - Pres</div>
-                        <div>
-                            <div class="cv-role">Co-Founder & Tech Director</div>
-                            <div class="cv-place">Sintopía Lab [cite: 11-12]</div>
-                            <div class="cv-desc">Leading interactive modules and creative tech solutions.</div>
-                        </div>
-                    </div>
-                    <div class="cv-item">
-                        <div class="cv-date">2025</div>
-                        <div>
-                            <div class="cv-role">Workshop Facilitator</div>
-                            <div class="cv-place">Cinemateca de Bogotá [cite: 20-21]</div>
-                            <div class="cv-desc">"Magical Animation" lab facilitation.</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="cv-section">
-                    <div class="cv-header">RESEARCH & LEADERSHIP</div>
-                    <div class="cv-item">
-                        <div class="cv-date">Current</div>
-                        <div>
-                            <div class="cv-role">Visual Computing Research Group</div>
-                            <div class="cv-place">Active Member [cite: 35-37]</div>
-                        </div>
-                    </div>
-                    <div class="cv-item">
-                        <div class="cv-date">2025</div>
-                        <div>
-                            <div class="cv-role">Secretary General</div>
-                            <div class="cv-place">Student Council (CEU) [cite: 50-52]</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="cv-section">
-                    <div class="cv-header">SKILLS</div>
-                    <div class="cv-item">
-                        <div class="cv-date">Tech</div>
-                        <div class="cv-desc">TouchDesigner, Arduino, Python, Creative Coding [cite: 85]</div>
-                    </div>
-                    <div class="cv-item">
-                        <div class="cv-date">Fab</div>
-                        <div class="cv-desc">Circuit Design, Sensors, Analog Photography [cite: 86]</div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <div id="modal">
-        <div class="close-btn" onclick="closeModal()">CLOSE [X]</div>
-        <div class="modal-hero" id="m-hero"><h1 style="font-size:4rem; margin:0;" id="m-title">Project</h1></div>
-        <div class="modal-content">
-            <div style="font-family: var(--font-mono); font-size: 1.2rem; margin-bottom: 30px;">
-                <p>Full documentation regarding this project.</p>
-            </div>
-            <div class="modal-gallery">
-                <img src="https://via.placeholder.com/600x400" class="gallery-img">
-                <img src="https://via.placeholder.com/600x400" class="gallery-img">
-            </div>
-        </div>
-    </div>
-
-    <script>
-        function nav(id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id + '-page').classList.add('active');
-            window.scrollTo(0,0);
-            
-            // Lógica de colores según la página
-            if(id === 'home') {
-                document.body.classList.add('show-altimeter');
-            } else if (id === 'about') {
-                document.body.classList.remove('show-altimeter');
-                document.body.style.backgroundColor = "#f4f5f7"; // Fondo claro para leer
-                document.body.style.color = "#111";
-            } else { 
-                document.body.classList.remove('show-altimeter'); 
-                document.body.style.backgroundColor = "#f4f5f7"; 
-                document.body.style.color = "#111"; 
-            }
-        }
-
-        function openModal(title, color) { 
-            document.getElementById('m-title').innerText = title; 
-            document.getElementById('m-hero').style.backgroundColor = color; 
-            document.getElementById('modal').classList.add('open'); 
-        }
-        function closeModal() { document.getElementById('modal').classList.remove('open'); }
-
-        // SCROLL TRANSECT
+        // --- 4. SCROLL TRANSECT (Cambio de Colores en Home) ---
         const body = document.body;
         const orb1 = document.querySelector('.orb-1');
         const orb2 = document.querySelector('.orb-2');
@@ -618,7 +649,7 @@
             }
         });
 
-        // CURSOR
+        // --- 5. CURSOR & INTERACCIÓN LÍQUIDA ---
         const cursor = document.getElementById('cursor');
         document.addEventListener('mousemove', e => {
             const x = e.clientX / window.innerWidth;
@@ -629,7 +660,7 @@
             orb2.style.transform = `translate(${x * 40}px, ${y * 40}px)`;
         });
 
-        document.querySelectorAll('a, .card, .flower-cluster, .cv-item').forEach(el => {
+        document.querySelectorAll('a, .card, .flower-cluster, .cv-item, .filter-btn').forEach(el => {
             el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
             el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
         });
