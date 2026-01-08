@@ -336,12 +336,127 @@
             <h1 style="font-size:4vw; font-weight:300; margin:0;">Research & Works</h1>
             
             <div class="filter-menu">
-                <button class="filter-btn active" onclick="filterSelection('all')">ALL</button>
-                <button class="filter-btn" onclick="filterSelection('narrative')">NARRATIVE / SOCIAL</button>
-                <button class="filter-btn" onclick="filterSelection('bio')">BIO / MATERIAL</button>
-                <button class="filter-btn" onclick="filterSelection('code')">CODE / EXP</button>
+                <button class="filter-btn active" onclick="filterSelection('all')">ALL WORKS</button>
+                <button class="filter-btn" onclick="filterSelection('tangible')">TANGIBLE FRICTION</button>
+                <button class="filter-btn" onclick="filterSelection('body')">BODY NARRATIVES</button>
+                <button class="filter-btn" onclick="filterSelection('systems')">LIVING SYSTEMS</button>
             </div>
         </div>
+
+        <div class="grid">
+            
+            <div class="card filter-item tangible" onclick="openModal('Ladrilludo', '#cc4422')">
+                <div class="card-img"><img src="https://via.placeholder.com/600x400" alt="Ladrilludo"></div>
+                <div class="card-tags">[ PUBLIC INQUIRY ]</div>
+                <h3>Ladrilludo</h3>
+                <p>Walking-with a brick in Bogotá</p>
+            </div>
+
+            <div class="card filter-item systems" onclick="openModal('Huésped Errante', '#d4e035')">
+                <div class="card-img"><img src="https://via.placeholder.com/600x400" alt="Huesped"></div>
+                <div class="card-tags">[ BIO-INTERACTION ]</div>
+                <h3>Huésped Errante</h3>
+                <p>Circuits mimicking biological decay</p>
+            </div>
+
+            <div class="card filter-item systems" onclick="openModal('La Soledad Suena', '#1a2e1a')">
+                <div class="card-img"><img src="https://via.placeholder.com/600x400" alt="Soledad"></div>
+                <div class="card-tags">[ IMMERSIVE DATA ]</div>
+                <h3>La Soledad Suena</h3>
+                <p>Translating silence into sound</p>
+            </div>
+
+            <div class="card filter-item body" onclick="openModal('Identity Archives', '#a83e28')">
+                <div class="card-img"><img src="https://via.placeholder.com/600x400" alt="Photography"></div>
+                <div class="card-tags">[ VISUAL ESSAYS ]</div>
+                <h3>Identity Archives</h3>
+                <p>Selected works on body & territory (2022-2025)</p>
+            </div>
+
+            <div class="card filter-item systems" onclick="openModal('Artificial Nature', '#4a5d23')">
+                <div class="card-img"><img src="https://via.placeholder.com/600x400" alt="3D Art"></div>
+                <div class="card-tags">[ DIGITAL ECOLOGIES ]</div>
+                <h3>Artificial Nature</h3>
+                <p>Speculative biological simulations</p>
+            </div>
+
+            <div class="card filter-item tangible body" onclick="openModal('Retazos', '#cc4422')">
+                <div class="card-img"><img src="https://via.placeholder.com/600x400" alt="Retazos"></div>
+                <div class="card-tags">[ MEMORY ]</div>
+                <h3>Retazos</h3>
+                <p>Material reconstruction of memory</p>
+            </div>
+
+        </div>
+    </div>
+
+    <style>
+        .filter-menu { margin-top: 30px; display: flex; gap: 30px; font-family: var(--font-mono); font-size: 0.8rem; flex-wrap: wrap; }
+        .filter-btn { 
+            background: none; border: none; cursor: pointer; 
+            padding: 0; text-transform: uppercase; transition: 0.3s; color: #888;
+            position: relative;
+        }
+        .filter-btn:hover, .filter-btn.active { color: #111; }
+        .filter-btn.active::after { content:''; display:block; width:100%; height:1px; background:#111; margin-top:5px; }
+        
+        .card-tags { 
+            font-family: var(--font-mono); font-size: 0.65rem; color: var(--terracotta);
+            margin-bottom: 5px; letter-spacing: 1px; text-transform: uppercase;
+        }
+        
+        .filter-item { display: block; animation: fadeEffect 0.5s; }
+        .filter-item.hide { display: none; }
+        @keyframes fadeEffect { from {opacity: 0; transform: translateY(20px);} to {opacity: 1; transform: translateY(0);} }
+    </style>
+
+    <script>
+        // LOGICA DE FILTRADO
+        filterSelection("all")
+        function filterSelection(c) {
+            var x, i;
+            x = document.getElementsByClassName("filter-item");
+            if (c == "all") c = "";
+            for (i = 0; i < x.length; i++) {
+                w3RemoveClass(x[i], "show");
+                if (x[i].className.indexOf(c) > -1) w3AddClass(x[i], "show");
+                else w3AddClass(x[i], "hide");
+                
+                if (c == "" || x[i].className.indexOf(c) > -1) {
+                    x[i].style.display = "block";
+                } else {
+                    x[i].style.display = "none";
+                }
+            }
+            // Update active class
+            var btns = document.getElementsByClassName("filter-btn");
+            for (var j = 0; j < btns.length; j++) {
+                btns[j].classList.remove("active");
+            }
+            event.target.classList.add("active");
+        }
+
+        function w3AddClass(element, name) {
+            var i, arr1, arr2;
+            arr1 = element.className.split(" ");
+            arr2 = name.split(" ");
+            for (i = 0; i < arr2.length; i++) {
+                if (arr1.indexOf(arr2[i]) == -1) {element.className += " " + arr2[i];}
+            }
+        }
+
+        function w3RemoveClass(element, name) {
+            var i, arr1, arr2;
+            arr1 = element.className.split(" ");
+            arr2 = name.split(" ");
+            for (i = 0; i < arr2.length; i++) {
+                while (arr1.indexOf(arr2[i]) > -1) {
+                    arr1.splice(arr1.indexOf(arr2[i]), 1);     
+                }
+            }
+            element.className = arr1.join(" ");
+        }
+    </script>
 
         <div class="grid">
             
