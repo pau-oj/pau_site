@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paula Ojeda</title>
+    <title>Paula Ojeda | Research Portfolio</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -54,11 +54,11 @@
         .orb-1 { width: 70vw; height: 70vw; top: -20%; left: -20%; background: #fff; }
         .orb-2 { width: 60vw; height: 60vw; bottom: -20%; right: -20%; background: #dcdcdc; }
 
-        /* Canvas para partículas sutiles (Detrás de todo el contenido interactivo) */
-        #defaultCanvas0 {
+        /* Canvas p5.js */
+        canvas {
             position: fixed; top: 0; left: 0; 
-            z-index: 0; 
-            pointer-events: none;
+            z-index: 15; /* Importante: Encima del fondo, debajo del texto */
+            pointer-events: auto; /* Permite click en las flores */
         }
 
         #cursor {
@@ -96,28 +96,16 @@
         /* =========================================
            4. HERO SECTION
            ========================================= */
-        .hero-section { height: 100vh; position: relative; overflow: hidden; display: flex; align-items: center; padding-left: 5vw; }
-        .hero-left { z-index: 10; pointer-events: none; max-width: 50vw; text-align: left; }
+        .hero-section { height: 100vh; position: relative; overflow: hidden; display: flex; align-items: center; padding-left: 5vw; z-index: 20; pointer-events: none; }
+        .hero-left { z-index: 25; pointer-events: auto; max-width: 50vw; text-align: left; }
         .hero-title { font-size: 8vw; line-height: 0.85; margin: 0; font-weight: 300; color: #111; letter-spacing: -0.02em; }
         .hero-subtitle { font-family: var(--font-mono); font-size: 0.9rem; margin-top: 30px; line-height: 1.5; max-width: 400px; border-left: 2px solid var(--terracotta); padding-left: 20px; opacity: 0.8; }
 
-        /* TUS CLUSTERS ORIGINALES (SVGs) */
-        
-        .hidden-concept { position: absolute; text-align: center; opacity: 0; transform: scale(0.8); transition: all 0.5s ease; z-index: 1; pointer-events: none; }
-        .hidden-concept h2 { margin: 0; font-size: 2.5rem; font-family: var(--font-serif); font-style: italic; }
-        .hidden-concept span { font-family: var(--font-mono); font-size: 0.8rem; text-transform: uppercase; font-weight: bold; }
-        .hidden-concept.active { opacity: 1; transform: scale(1); pointer-events: auto; }
-        @keyframes sway { 0%, 100% { transform: translate(0,0) rotate(0deg) scale(1); } 50% { transform: translate(5px, -8px) rotate(5deg) scale(1.05); } }
-        .flower { animation: sway 6s ease-in-out infinite; }
-        .flower:nth-child(2) { animation-delay: 1.2s; animation-direction: reverse; }
-        .flower:nth-child(3) { animation-delay: 2.5s; }
-
-        
-        /* SCROLL INDICATOR (Booster UX) */
+        /* Scroll Indicator */
         .scroll-indicator {
             position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
             text-align: center; z-index: 20; opacity: 0.7;
-            animation: bounce 2s infinite; color: inherit;
+            animation: bounce 2s infinite; color: inherit; pointer-events: auto;
         }
         .scroll-indicator span { display: block; font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 2px; margin-bottom: 5px; }
         .arrow-down { font-size: 1.2rem; }
@@ -138,7 +126,7 @@
         .concept-details { display: grid; grid-template-columns: 100px 1fr; gap: 40px; font-family: var(--font-mono); font-size: 0.9rem; line-height: 1.6; border-top: 1px solid currentColor; padding-top: 30px; }
 
         /* =========================================
-           6. PROJECTS PAGE (CORREGIDO: SIN FONDO BLANCO)
+           6. PROJECTS PAGE
            ========================================= */
         #projects-page { padding: 150px 5vw; min-height: 100vh; }
 
@@ -156,14 +144,13 @@
 
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 60px; margin-top: 50px; }
         
-        /* CORRECCIÓN: ELIMINADO EL FONDO BLANCO Y SOMBRAS */
         .card { 
             cursor: pointer; 
             display: block; 
             animation: fadeEffect 0.5s; 
-            background: transparent; /* Antes white */
-            box-shadow: none; /* Antes con sombra */
-            padding: 0; /* Antes 15px */
+            background: transparent;
+            box-shadow: none;
+            padding: 0; 
             transition: transform 0.3s; 
         }
         @keyframes fadeEffect { from {opacity: 0; transform: translateY(20px);} to {opacity: 1; transform: translateY(0);} }
@@ -264,7 +251,7 @@
     </div>
 
     <div class="top-bar">
-        <div class="researcher-id">Paula Ojeda<br><span style="opacity:0.6;">Visual Artist / Designer</span></div>
+        <div class="researcher-id">Paula Ojeda<br><span style="opacity:0.6;">Critical Matter / MIT 2026</span></div>
         <div class="nav-links">
             <a href="#" onclick="nav('home')">Transect</a>
             <a href="#" onclick="nav('projects')">Works</a>
@@ -287,11 +274,12 @@
                 </div>
             </div>
 
-            <div class="scroll-indicator">
+            <div class="scroll-indicator" onclick="document.getElementById('c2').scrollIntoView({behavior: 'smooth'})">
                 <span>EXPLORE THE TRANSECT</span>
                 <div class="arrow-down">↓</div>
             </div>
-        </section>
+            
+            </section>
 
         <section class="concept-section" id="c2">
             <h1 class="research-statement">The Silent Archive.</h1>
@@ -562,35 +550,121 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <script>
+    // --- LÓGICA UI & NAVEGACIÓN (Restaurada) ---
+    
+    function nav(id) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(id + '-page').classList.add('active');
+        window.scrollTo(0,0);
+        
+        if(id === 'home') {
+            document.body.classList.add('show-altimeter');
+            document.body.style.backgroundColor = "var(--bg-paramo)";
+            document.body.style.color = "#111";
+        } else { 
+            document.body.classList.remove('show-altimeter'); 
+            document.body.style.backgroundColor = "#f4f5f7"; 
+            document.body.style.color = "#111"; 
+        }
+    }
+
+    function openModal(title, color) { document.getElementById('modal').classList.add('open'); }
+    function closeModal() { document.getElementById('modal').classList.remove('open'); }
+
+    // Filtros de Proyectos
+    function filterSelection(c, desc) {
+        var x = document.getElementsByClassName("filter-item");
+        if (c == "all") c = "";
+        for (var i = 0; i < x.length; i++) {
+            if (x[i].className.indexOf(c) > -1) x[i].style.display = "block";
+            else x[i].style.display = "none";
+        }
+        var btns = document.getElementsByClassName("filter-btn");
+        for (var j = 0; j < btns.length; j++) { btns[j].classList.remove("active"); }
+        if(event) event.target.classList.add("active");
+        if(desc) { document.getElementById("desc-text").innerText = "[ " + desc + " ]"; }
+    }
+    // Inicializar filtro
+    filterSelection("all", "ARCHIVE OVERVIEW: Chronological display of all inquiries.");
+
+    // Scroll & Altimeter Logic
+    const body = document.body;
+    const orb1 = document.querySelector('.orb-1');
+    const orb2 = document.querySelector('.orb-2');
+    
+    window.addEventListener('scroll', () => {
+        if(!document.getElementById('home-page').classList.contains('active')) return;
+        const scrollPct = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+        const alt = Math.round(3200 - (scrollPct * 3150));
+        document.getElementById('alt-val').innerText = alt;
+        
+        if (scrollPct < 0.25) { 
+            body.style.backgroundColor = "var(--bg-paramo)"; 
+            body.style.color = "#111"; 
+            orb1.style.background = "#fff"; 
+            orb2.style.background = "#e0e0e0"; 
+            document.getElementById('zone-val').innerText = "PÁRAMO"; 
+        } 
+        else if (scrollPct >= 0.25 && scrollPct < 0.6) { 
+            body.style.backgroundColor = "var(--bg-bogota)"; 
+            body.style.color = "#000"; 
+            orb1.style.background = "var(--neon-green)"; 
+            orb2.style.background = "#555"; 
+            document.getElementById('zone-val').innerText = "BOGOTÁ"; 
+        } 
+        else { 
+            body.style.backgroundColor = "var(--bg-barranca)"; 
+            body.style.color = "#fff"; 
+            orb1.style.background = "#ff5e00"; 
+            orb2.style.background = "#1a3c34"; 
+            document.getElementById('zone-val').innerText = "MAGDALENA"; 
+        }
+    });
+
+    // Cursor Logic
+    const cursor = document.getElementById('cursor');
+    document.addEventListener('mousemove', e => {
+        const x = e.clientX / window.innerWidth;
+        const y = e.clientY / window.innerHeight;
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+        orb1.style.transform = `translate(${x * -40}px, ${y * -40}px)`;
+        orb2.style.transform = `translate(${x * 40}px, ${y * 40}px)`;
+    });
+    
+    // Add hover effect listeners dynamically
+    document.querySelectorAll('a, .card, button, .close-btn').forEach(el => {
+        el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+        el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+    });
+
+
+    // --- LÓGICA P5.JS GENERATIVA (Flores) ---
+    
     let flowers = [];
     let canvas;
 
-    // Paleta de colores extraída de tu CSS (Terracotta, Neon, Deep Green, White)
-    const PALETTE = ['#cc4422', '#d4e035', '#1a2e1a', '#f4f5f7'];
-
     function setup() {
-        // Creamos un canvas que cubra toda la ventana pero viva en el fondo
+        // Canvas ocupa toda la pantalla pero con z-index controlado
         canvas = createCanvas(windowWidth, windowHeight);
-        canvas.position(0, 0);
-        canvas.style('z-index', '15'); // Encima del fondo, debajo del texto
-        canvas.style('pointer-events', 'none'); // Permite hacer clic en el texto a través del canvas
         
-        // Inicializamos las "Flores" en posiciones relativas (simulando tus clusters)
-        // Posiciones basadas en % del ancho/alto para ser responsivo
-        flowers.push(new BioFlower(width * 0.8, height * 0.15, 60, '#4a5d23')); // Cluster 1
-        flowers.push(new BioFlower(width * 0.9, height * 0.5, 80, '#cc4422')); // Cluster 2
-        flowers.push(new BioFlower(width * 0.7, height * 0.85, 70, '#1a3c34')); // Cluster 3
+        // Inicializamos las Flores para coincidir con las secciones de texto
+        // Cluster 1 (Inquiry - Arriba derecha)
+        flowers.push(new BioFlower(width * 0.8, height * 0.2, 60, '#4a5d23', 'c2')); 
+        // Cluster 2 (Context - Centro derecha/abajo)
+        flowers.push(new BioFlower(width * 0.85, height * 0.6, 80, '#cc4422', 'c3')); 
+        // Cluster 3 (Method - Abajo)
+        flowers.push(new BioFlower(width * 0.6, height * 0.85, 70, '#1a3c34', 'c4')); 
         
-        // Añadimos algunas flores más pequeñas para "ruido" visual
-        flowers.push(new BioFlower(width * 0.15, height * 0.8, 30, '#d4e035')); 
+        // Flor pequeña decorativa
+        flowers.push(new BioFlower(width * 0.15, height * 0.8, 30, '#d4e035', null)); 
     }
 
     function draw() {
-        clear(); // Limpia el canvas cada frame (fondo transparente)
+        clear(); // Limpia el canvas
         
-        // Solo renderizar si estamos en la página de inicio (optimización)
+        // Solo renderizar si estamos en HOME
         if(document.getElementById('home-page').classList.contains('active')){
             for (let f of flowers) {
                 f.update();
@@ -600,97 +674,97 @@
         }
     }
 
+    function mousePressed() {
+        // Permitir click en flores para navegar
+        if(document.getElementById('home-page').classList.contains('active')){
+            for (let f of flowers) {
+                if (f.isHovered() && f.targetId) {
+                    document.getElementById(f.targetId).scrollIntoView({behavior: 'smooth'});
+                }
+            }
+        }
+    }
+
     function windowResized() {
         resizeCanvas(windowWidth, windowHeight);
-        // Recalcular posiciones al cambiar tamaño de ventana
-        flowers[0].pos.set(width * 0.8, height * 0.15);
-        flowers[1].pos.set(width * 0.9, height * 0.5);
-        flowers[2].pos.set(width * 0.7, height * 0.85);
+        // Recalcular posiciones responsive
+        flowers[0].pos.set(width * 0.8, height * 0.2);
+        flowers[1].pos.set(width * 0.85, height * 0.6);
+        flowers[2].pos.set(width * 0.6, height * 0.85);
         flowers[3].pos.set(width * 0.15, height * 0.8);
     }
 
-    // --- CLASE: BIOFLOWER (La Entidad) ---
+    // Clase Flor
     class BioFlower {
-        constructor(x, y, r, col) {
+        constructor(x, y, r, col, targetId) {
             this.pos = createVector(x, y);
-            this.r = r; // Radio base
+            this.r = r; 
             this.col = color(col);
-            this.noiseOffset = random(1000); // Semilla única para cada flor
-            this.petals = floor(random(5, 8)); 
-            this.agitation = 0; // Nivel de estrés de la flor
+            this.noiseOffset = random(1000); 
+            this.agitation = 0;
+            this.targetId = targetId; // ID de la sección a la que scrollea
         }
 
         update() {
-            // Calculamos la distancia del mouse a la flor
             let d = dist(mouseX, mouseY, this.pos.x, this.pos.y);
-            
-            // Si el mouse está cerca (< 200px), la flor se "agita"
-            if (d < 250) {
-                this.agitation = lerp(this.agitation, 2.0, 0.05); // Transición suave a estrés
+            if (d < 200) {
+                this.agitation = lerp(this.agitation, 2.0, 0.05); 
+                // Cambiar cursor si es interactivo
+                if(this.targetId && d < this.r) cursor.classList.add('hovered');
             } else {
-                this.agitation = lerp(this.agitation, 0.2, 0.02); // Vuelta a la calma
+                this.agitation = lerp(this.agitation, 0.2, 0.02);
             }
+        }
+        
+        isHovered() {
+            return dist(mouseX, mouseY, this.pos.x, this.pos.y) < this.r + 20;
         }
 
         interact() {
             let d = dist(mouseX, mouseY, this.pos.x, this.pos.y);
-            
-            // VISUALIZACIÓN DE DATOS (Conexión)
-            // Si el observador está cerca, dibujar una línea de "tensión"
-            if (d < 250) {
+            if (d < 200) {
                 stroke(this.col);
                 strokeWeight(1);
-                // La opacidad depende de la distancia (más cerca = más visible)
-                let alphaVal = map(d, 0, 250, 255, 0);
+                let alphaVal = map(d, 0, 200, 255, 0);
                 this.col.setAlpha(alphaVal);
                 stroke(this.col);
-                
-                // Línea punteada simulada o directa
                 line(this.pos.x, this.pos.y, mouseX, mouseY);
                 
-                // Pequeños datos numéricos flotantes (estética sci-fi/lab)
                 noStroke();
                 fill(50);
                 textSize(8);
                 text("DATA_IN: " + floor(d), this.pos.x + 10, this.pos.y);
+                
+                if(this.targetId) {
+                    text("LINK_TO: [" + this.targetId.toUpperCase() + "]", this.pos.x + 10, this.pos.y + 12);
+                }
             }
         }
 
         display() {
             push();
             translate(this.pos.x, this.pos.y);
-            
             noStroke();
-            // El color cambia ligeramente según la agitación (se vuelve más "eléctrico")
             let displayCol = this.col;
             displayCol.setAlpha(200);
             fill(displayCol);
 
             beginShape();
-            // Dibujamos los pétalos usando ruido polar
             for (let a = 0; a < TWO_PI; a += 0.05) {
-                // RUIDO DE PERLIN: La clave de la estética orgánica
-                // map(noise) convierte el caos numérico en coordenadas suaves
                 let xoff = map(cos(a), -1, 1, 0, this.agitation);
                 let yoff = map(sin(a), -1, 1, 0, this.agitation);
-                
-                // El radio varía con el tiempo (frameCount) y la posición angular
                 let r = this.r + map(noise(xoff, yoff, frameCount * (0.01 * this.agitation) + this.noiseOffset), 0, 1, -this.r/2, this.r/2);
-                
                 let x = r * cos(a);
                 let y = r * sin(a);
                 vertex(x, y);
             }
             endShape(CLOSE);
             
-            // Centro de la flor (núcleo)
             fill(255, 50);
             ellipse(0, 0, 10, 10);
-            
             pop();
         }
     }
-</script>
+    </script>
 </body>
 </html>
-        .proj-meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 30px; margin-bottom: 30px; }
