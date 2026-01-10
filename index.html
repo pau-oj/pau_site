@@ -14,17 +14,12 @@
            1. VARIABLES & RESET
            ========================================= */
         :root {
-            /* Paleta de Color */
             --bg-paramo: #f4f5f7;
             --bg-bogota: #8d949e;
             --bg-barranca: #a83e28;
-            
-            /* Acentos */
             --neon-green: #d4e035; 
             --deep-green: #1a2e1a; 
             --terracotta: #cc4422;
-
-            /* Tipografía */
             --font-serif: 'Cormorant Garamond', serif;
             --font-mono: 'Space Mono', monospace;
         }
@@ -132,7 +127,7 @@
         .concept-details { display: grid; grid-template-columns: 100px 1fr; gap: 40px; font-family: var(--font-mono); font-size: 0.9rem; line-height: 1.6; border-top: 1px solid currentColor; padding-top: 30px; }
 
         /* =========================================
-           6. PROJECTS PAGE (FILTERS & GRID)
+           6. PROJECTS PAGE
            ========================================= */
         #projects-page { padding: 150px 5vw; min-height: 100vh; }
 
@@ -179,7 +174,7 @@
         .btn-download:hover { background: var(--terracotta); border-color: var(--terracotta); color: white; }
 
         /* =========================================
-           8. MODAL PROYECTO (Estilos Internos - NUEVO)
+           8. MODAL (STYLES & CONTENT)
            ========================================= */
         #modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -192,9 +187,8 @@
 
         .modal-content { padding: 100px 10vw; max-width: 1400px; margin: 0 auto; color: #111; }
 
-        /* Estilos Internos del Proyecto (Academic Style) */
+        /* ESTILOS INTERNOS PROYECTO (Paper-like) */
         .project-detail-container { font-family: var(--font-mono); color: #333; animation: fadeIn 1s ease; }
-        
         .proj-header { margin-bottom: 60px; border-bottom: 2px solid var(--terracotta); padding-bottom: 40px; }
         .proj-meta-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
         .meta-label { display: block; font-size: 0.65rem; color: #999; letter-spacing: 1px; margin-bottom: 5px; }
@@ -208,19 +202,16 @@
         .lead-text { font-family: var(--font-serif); font-size: 1.4rem; line-height: 1.4; margin-bottom: 20px; color: #111; }
         .proj-divider { border: 0; border-top: 1px solid #ddd; margin: 60px 0; }
 
-        /* Technical Grid */
         .technical h3, .proj-section h3 { font-size: 1.2rem; margin-bottom: 30px; border-left: 4px solid var(--neon-green); padding-left: 15px; text-transform: uppercase; letter-spacing: 1px; }
         .tech-specs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; }
         .tech-label { display: block; font-size: 0.7rem; color: var(--terracotta); font-weight: bold; margin-bottom: 5px; }
         .spec-item p { font-size: 0.8rem; line-height: 1.4; }
 
-        /* Media */
         .proj-img { width: 100%; height: auto; display: block; border-radius: 2px; }
         .caption { display: block; font-size: 0.7rem; color: #888; margin-top: 8px; font-style: italic; }
         .full-width-media { width: 100%; margin-bottom: 40px; background: #f4f4f4; padding: 20px; }
         .proj-grid-2 { display: grid; grid-template-columns: 40% 55%; gap: 5%; align-items: center; }
 
-        /* Credits */
         .credits-section { background: #f0f0f0; padding: 40px; border-left: 4px solid #111; }
         .credits-box h4 { margin: 0 0 20px 0; font-size: 0.8rem; letter-spacing: 2px; }
         .credits-box ul { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; list-style: none; font-size: 0.8rem; }
@@ -230,7 +221,6 @@
             .proj-grid-text-img, .proj-grid-2, .tech-specs-grid, .proj-meta-grid { grid-template-columns: 1fr; gap: 20px; }
             .proj-title { font-size: 3rem; }
         }
-        
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
     </style>
@@ -309,7 +299,7 @@
                 <div style="color:var(--terracotta); font-weight:bold;">02. CONTEXT</div>
                 <div>
                     <p><strong>CONTEXT: BOGOTÁ [2,600 MASL]</strong></p>
-                    <p>Descending into the city, the silence breaks. This section documents "Ladrilludo", an acoustic probe disguised as a brick.</p>
+                    <p>Descending into the city, the silence breaks. This section documents "Ladrilludo", an acoustic probe disguised as a brick. By dragging sensors through the streets, I record the invisible weight of social stratification.</p>
                 </div>
             </div>
         </section>
@@ -344,28 +334,25 @@
 
         <div class="grid">
             <div class="card filter-item tangible" onclick="openModal('Ladrilludo', '#cc4422')">
-                <div class="card-img"><img src="https://via.placeholder.com/600x400" alt="Ladrilludo"></div>
+                <div class="card-img"><img src="https://images.unsplash.com/photo-1591543620767-58268571c994?q=80&w=800&auto=format&fit=crop" alt="Ladrilludo"></div>
                 <div class="card-tags">[ PUBLIC INQUIRY ]</div>
                 <h3>Ladrilludo</h3>
                 <p>Walking-with a brick in Bogotá</p>
             </div>
-
             <div class="card filter-item systems" onclick="openModal('Huésped Errante', '#d4e035')">
-                <div class="card-img"><img src="https://via.placeholder.com/600x400" alt="Huesped"></div>
+                <div class="card-img"><img src="https://images.unsplash.com/photo-1530906622080-12e0e5a59603?q=80&w=800&auto=format&fit=crop" alt="Huesped"></div>
                 <div class="card-tags">[ BIO-INTERACTION ]</div>
                 <h3>Huésped Errante</h3>
                 <p>Circuits mimicking biological decay</p>
             </div>
-
             <div class="card filter-item systems" onclick="openModal('La Soledad Suena', '#1a2e1a')">
-                <div class="card-img"><img src="https://via.placeholder.com/600x400" alt="Soledad"></div>
+                <div class="card-img"><img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=800&auto=format&fit=crop" alt="Soledad"></div>
                 <div class="card-tags">[ IMMERSIVE DATA ]</div>
                 <h3>La Soledad Suena</h3>
                 <p>Translating silence into sound</p>
             </div>
-
             <div class="card filter-item body" onclick="openModal('Identity Archives', '#a83e28')">
-                <div class="card-img"><img src="https://via.placeholder.com/600x400" alt="Photography"></div>
+                <div class="card-img"><img src="https://images.unsplash.com/photo-1515462277126-2dd0c162007a?q=80&w=800&auto=format&fit=crop" alt="Photography"></div>
                 <div class="card-tags">[ VISUAL ESSAYS ]</div>
                 <h3>Identity Archives</h3>
                 <p>Selected works on body & territory</p>
@@ -420,12 +407,12 @@
                 <header class="proj-header">
                     <div class="proj-meta-grid">
                         <div>
-                            <span class="meta-label">COURSE</span>
-                            <span class="meta-value">EDCP 585: Walking with Public Art</span>
+                            <span class="meta-label">PUBLICATION (EXP. 2027)</span>
+                            <span class="meta-value">Chapter in "Worlding Education Differently"</span>
                         </div>
                         <div>
-                            <span class="meta-label">ROLE</span>
-                            <span class="meta-value">Co-Researcher & Prototyper</span>
+                            <span class="meta-label">CONTEXT</span>
+                            <span class="meta-value">Walking Global Dialogues Residency</span>
                         </div>
                         <div>
                             <span class="meta-label">METHODOLOGY</span>
@@ -444,7 +431,7 @@
                                 By removing a clay brick from its static context and dragging it through the streets, the object transforms into a <strong>"stylus"</strong>—a sensitive indicator tracing the topography and registering the frequencies of the city's surface.
                             </p>
                             <p>
-                                Grounded in <em>Pluriversal Thinking</em> and <em>Object-Oriented Inquiry (OOI)</em>, this performance does not simply document the city; it interrogates the friction of mobility. The brick, tethered like a pet or a child, became a "dialogue artifact", provoking spontaneous interactions (<em>mamadera de gallo</em>) and uncovering the silenced industrial history of the <em>Las Aguas</em> neighborhood.
+                                Grounded in <em>Pluriversal Thinking</em> and <em>Object-Oriented Inquiry (OOI)</em>, this performance does not simply document the city; it interrogates the friction of mobility. [cite_start]The brick, tethered like a pet, became a "dialogue artifact", provoking spontaneous interactions (<em>mamadera de gallo</em>) and uncovering the silenced industrial history of the <em>Las Aguas</em> neighborhood [cite: 337-342].
                             </p>
                         </div>
                         <div class="image-block">
@@ -459,7 +446,7 @@
                 <section class="proj-section technical">
                     <h3>01. DECONSTRUCTING THE INTERFACE</h3>
                     <p style="margin-bottom: 30px; max-width: 800px;">
-                        The transformation from debris to device involved drilling the ceramic body to embed a lavalier microphone deep within its core. This allowed the object to record the internal resonance of the friction, translating physical texture into a sonic record of inequality.
+                        The transformation from debris to device involved drilling the ceramic body to embed a <strong>lavalier microphone</strong> deep within its core. This allowed the object to record the internal resonance of the friction, translating physical texture into a sonic record of inequality.
                     </p>
                     
                     <div class="tech-specs-grid">
@@ -483,7 +470,7 @@
 
                     <div class="full-width-media">
                         <img src="https://via.placeholder.com/1200x600/333/fff?text=INSERT+DRILLING+PROCESS+PHOTO" alt="Fabrication Process" class="proj-img">
-                        <span class="caption">Fig 2. Preparing the artifact: Drilling the brick to accommodate the lavalier sensor.</span>
+                        <span class="caption">Fig 2. Preparing the artifact: Drilling the brick to accommodate the sensor.</span>
                     </div>
                 </section>
 
@@ -500,7 +487,7 @@
                                 Midway through the walk, the interface failed. The brick split under the physical stress of the city. Instead of replacing the object, we engaged in a <strong>ritual of repair</strong> using duct tape. 
                             </p>
                             <p>
-                                This moment of rupture became central to the inquiry. The repaired brick ceased to be just a sensor and became a carrier of wounds—mirroring the human resilience required to navigate the hostile architecture of Bogotá. It transformed the walk into a pedagogy of care and memory.
+                                This moment of rupture became central to the inquiry. The repaired brick ceased to be just a sensor and became a carrier of wounds—mirroring the human resilience required to navigate the hostile architecture of Bogotá. [cite_start]It transformed the walk into a pedagogy of care and memory [cite: 346-348].
                             </p>
                         </div>
                     </div>
@@ -520,7 +507,7 @@
 
                 <section class="credits-section">
                     <div class="credits-box">
-                        [cite_start]<h4>RESEARCH TEAM [cite: 237, 479-481]</h4>
+                        [cite_start]<h4>RESEARCH TEAM [cite: 357-360]</h4>
                         <ul>
                             <li><strong>Scott Massey</strong> (University of British Columbia)</li>
                             <li><strong>Morgan Hollemans</strong> (University of British Columbia)</li>
@@ -531,13 +518,15 @@
                             <li><strong>Natalia Avila</strong> (Universidad de los Andes)</li>
                         </ul>
                         <p class="citation-note" style="margin-top:20px;">
-                            *Paper: "Ladrilludo: Walking the Public Pedagogical Pulse through Bogotá’s Urban Fabric" (June 2025).<br>
-                            *Course: EDCP 585, Dr. Anita Sinner.
+                            *Selected for publication as a book chapter in <em>"Worlding Education Differently"</em> (Eds. Osler & Sinner), expected 2027.<br>
+                            *Developed during the "Walking Global Dialogues" Residency.
                         </p>
                     </div>
                 </section>
 
             </div>
+
+        </div>
     </div>
 
     <script>
@@ -561,11 +550,10 @@
             }
         }
 
-        // MODAL
         function openModal(title, color) { document.getElementById('modal').classList.add('open'); }
         function closeModal() { document.getElementById('modal').classList.remove('open'); }
 
-        // FILTROS
+        // Filtros
         filterSelection("all", "ARCHIVE OVERVIEW: Chronological display of all inquiries.")
         function filterSelection(c, desc) {
             var x, i;
@@ -585,7 +573,7 @@
         function w3AddClass(element, name) { var i, arr1, arr2; arr1 = element.className.split(" "); arr2 = name.split(" "); for (i = 0; i < arr2.length; i++) { if (arr1.indexOf(arr2[i]) == -1) {element.className += " " + arr2[i];} } }
         function w3RemoveClass(element, name) { var i, arr1, arr2; arr1 = element.className.split(" "); arr2 = name.split(" "); for (i = 0; i < arr2.length; i++) { while (arr1.indexOf(arr2[i]) > -1) { arr1.splice(arr1.indexOf(arr2[i]), 1); } } element.className = arr1.join(" "); }
 
-        // SCROLL
+        // Scroll
         const body = document.body;
         const orb1 = document.querySelector('.orb-1');
         const orb2 = document.querySelector('.orb-2');
@@ -599,7 +587,7 @@
             else { body.style.backgroundColor = "var(--bg-barranca)"; body.style.color = "#fff"; orb1.style.background = "#ff5e00"; orb2.style.background = "#1a3c34"; document.getElementById('zone-val').innerText = "MAGDALENA"; }
         });
 
-        // CURSOR
+        // Cursor
         const cursor = document.getElementById('cursor');
         document.addEventListener('mousemove', e => {
             const x = e.clientX / window.innerWidth;
