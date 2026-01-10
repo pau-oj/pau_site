@@ -8,6 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
 
     <style>
         /* =========================================
@@ -39,7 +41,7 @@
         ul { list-style: none; padding: 0; }
 
         /* =========================================
-           2. AMBIENTE (Fondo, Cursor)
+           2. AMBIENTE (Fondo, Cursor, Canvas Generativo)
            ========================================= */
         .noise {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -47,10 +49,19 @@
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
         }
 
-        .liquid-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; pointer-events: none; }
+        .liquid-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; overflow: hidden; pointer-events: none; }
         .orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.5; transition: transform 0.8s cubic-bezier(0.1, 0.7, 1.0, 0.1); }
         .orb-1 { width: 70vw; height: 70vw; top: -20%; left: -20%; background: #fff; }
         .orb-2 { width: 60vw; height: 60vw; bottom: -20%; right: -20%; background: #dcdcdc; }
+
+        /* Lienzo p5.js */
+        #defaultCanvas0 {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 15; /* Delante del fondo líquido, detrás de los textos */
+            pointer-events: none;
+        }
 
         #cursor {
             position: fixed; top: 0; left: 0; width: 20px; height: 20px;
@@ -92,29 +103,17 @@
         .hero-title { font-size: 8vw; line-height: 0.85; margin: 0; font-weight: 300; color: #111; letter-spacing: -0.02em; }
         .hero-subtitle { font-family: var(--font-mono); font-size: 0.9rem; margin-top: 30px; line-height: 1.5; max-width: 400px; border-left: 2px solid var(--terracotta); padding-left: 20px; opacity: 0.8; }
 
-        /* Flower Clusters */
+        /* Flower Clusters (Contenedores Interactivos) */
         .flower-cluster { position: absolute; width: 350px; height: 350px; display: flex; align-items: center; justify-content: center; cursor: none; z-index: 20; }
-        #cluster-1 { top: 15%; right: 20%; color: #4a5d23; }
-        #cluster-2 { top: 50%; right: 5%; color: var(--terracotta); }
-        #cluster-3 { bottom: 10%; right: 30%; color: #1a3c34; }
+        #cluster-1 { top: 15%; right: 20%; }
+        #cluster-2 { top: 50%; right: 5%; }
+        #cluster-3 { bottom: 10%; right: 30%; }
 
-        .hidden-concept { position: absolute; text-align: center; opacity: 0; transform: scale(0.8); transition: all 0.5s ease; z-index: 1; pointer-events: none; }
-        .hidden-concept h2 { margin: 0; font-size: 2.5rem; font-family: var(--font-serif); font-style: italic; }
-        .hidden-concept span { font-family: var(--font-mono); font-size: 0.8rem; text-transform: uppercase; font-weight: bold; }
-
-        .flower { position: absolute; width: 100px; height: 100px; fill: currentColor; opacity: 0.95; transition: all 1s cubic-bezier(0.19, 1, 0.22, 1); z-index: 5; filter: drop-shadow(0px 10px 10px rgba(0,0,0,0.1)); }
-        
-        @keyframes sway { 0%, 100% { transform: translate(0,0) rotate(0deg) scale(1); } 50% { transform: translate(5px, -8px) rotate(5deg) scale(1.05); } }
-        .flower { animation: sway 6s ease-in-out infinite; }
-        .flower:nth-child(2) { animation-delay: 1.2s; animation-direction: reverse; }
-        .flower:nth-child(3) { animation-delay: 2.5s; }
+        .hidden-concept { position: absolute; text-align: center; opacity: 0; transform: scale(0.8); transition: all 0.5s ease; z-index: 25; pointer-events: none; }
+        .hidden-concept h2 { margin: 0; font-size: 2.5rem; font-family: var(--font-serif); font-style: italic; color: #111; }
+        .hidden-concept span { font-family: var(--font-mono); font-size: 0.8rem; text-transform: uppercase; font-weight: bold; color: #111; }
 
         .flower-cluster:hover .hidden-concept { opacity: 1; transform: scale(1); }
-        .flower-cluster:hover .f1 { transform: translate(-140px, -100px) rotate(-60deg) scale(0.6); }
-        .flower-cluster:hover .f2 { transform: translate(140px, -80px) rotate(45deg) scale(0.8); }
-        .flower-cluster:hover .f3 { transform: translate(-90px, 140px) rotate(-30deg) scale(0.7); }
-        .flower-cluster:hover .f4 { transform: translate(120px, 100px) rotate(30deg) scale(0.6); }
-        .flower-cluster:hover .f5 { transform: translate(0px, -160px) rotate(90deg) scale(0.5); }
 
         /* =========================================
            5. CONTENT SECTIONS
@@ -143,13 +142,15 @@
 
         .filter-description { font-family: var(--font-mono); font-size: 0.75rem; color: var(--terracotta); text-align: right; max-width: 400px; opacity: 0.8; border-left: 1px solid #ddd; padding-left: 20px; }
 
+        /* Grid Correction */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 60px; margin-top: 50px; }
         
-        .card { cursor: pointer; display: block; animation: fadeEffect 0.5s; }
+        .card { cursor: pointer; display: block; animation: fadeEffect 0.5s; background: white; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 15px; transition: transform 0.3s, box-shadow 0.3s; }
         @keyframes fadeEffect { from {opacity: 0; transform: translateY(20px);} to {opacity: 1; transform: translateY(0);} }
 
         .card-img { height: 350px; background: #ccc; margin-bottom: 20px; border-radius: 4px; overflow: hidden; transition: 0.5s; }
-        .card-img img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: 0.5s; }
+        .card-img img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: 0.5s; border-radius: 2px; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
         .card:hover .card-img { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; transform: translateY(-10px); }
         .card:hover img { filter: grayscale(0%); transform: scale(1.1); }
         
@@ -162,16 +163,22 @@
            ========================================= */
         #about-page { padding: 150px 5vw; min-height: 100vh; background: var(--bg-paramo) !important; color: #111 !important; }
         
-        .about-layout { display: grid; grid-template-columns: 40% 55%; gap: 5%; margin-top: 50px; }
+        .about-container { max-width: 1400px; margin: 0 auto; }
+        .about-layout { display: grid; grid-template-columns: 35% 60%; gap: 5%; align-items: start; margin-top: 50px; }
         .bio-text { font-size: 1.6rem; line-height: 1.4; font-weight: 300; }
         .bio-highlight { color: var(--terracotta); font-style: italic; }
         .bio-manifesto { margin-top: 40px; font-family: var(--font-mono); font-size: 0.85rem; border-left: 2px solid var(--neon-green); padding-left: 20px; color: #555; }
+
+        .philosophy-box { margin-top: 50px; padding: 30px; border: 1px solid #111; background: rgba(255,255,255,0.5); }
+        .philosophy-box p { font-size: 0.85rem; margin-bottom: 15px; line-height: 1.6; }
 
         .cv-header { font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 2px; color: var(--terracotta); border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom: 20px; }
         .cv-item { display: grid; grid-template-columns: 120px 1fr; gap: 20px; margin-bottom: 25px; }
         .cv-role { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 600; }
         .btn-download { display: inline-block; padding: 15px 30px; border: 1px solid #111; font-family: var(--font-mono); font-size: 0.8rem; text-transform: uppercase; margin-top: 40px; transition: all 0.3s; }
         .btn-download:hover { background: var(--terracotta); border-color: var(--terracotta); color: white; }
+        
+        @media (max-width: 900px) { .about-layout { grid-template-columns: 1fr; gap: 60px; } }
 
         /* =========================================
            8. MODAL (STYLES & CONTENT)
@@ -261,24 +268,14 @@
 
             <div class="flower-cluster" id="cluster-1" onclick="document.getElementById('c2').scrollIntoView({behavior: 'smooth'})">
                 <div class="hidden-concept"><span>01. Sound</span><h2>INQUIRY</h2></div>
-                <svg class="flower f1" viewBox="0 0 100 100"><path d="M50 0 C60 20 80 20 50 50 C20 20 40 20 50 0 Z M85 15 C80 35 60 40 50 50 C40 40 20 35 15 15 Z M100 50 C80 60 80 80 50 50 C20 80 20 60 0 50 Z M85 85 C80 65 60 60 50 50 C40 60 20 65 15 85 Z M50 100 C40 80 20 80 50 50 C80 80 60 80 50 100 Z" /></svg>
-                <svg class="flower f2" viewBox="0 0 100 100" style="left:40px;"><path d="M50 0 C60 20 80 20 50 50 C20 20 40 20 50 0 Z M100 50 C80 60 80 80 50 50 C20 80 20 60 0 50 Z M50 100 C40 80 20 80 50 50 C80 80 60 80 50 100 Z" /></svg>
-                <svg class="flower f3" viewBox="0 0 100 100" style="top:50px; right:20px;"><path d="M50 0 C60 20 80 20 50 50 C20 20 40 20 50 0 Z M85 15 C80 35 60 40 50 50 C40 40 20 35 15 15 Z M100 50 C80 60 80 80 50 50 C20 80 20 60 0 50 Z" /></svg>
             </div>
 
             <div class="flower-cluster" id="cluster-2" onclick="document.getElementById('c4').scrollIntoView({behavior: 'smooth'})">
                 <div class="hidden-concept"><span>02. Tech</span><h2>METHOD</h2></div>
-                <svg class="flower f1" viewBox="0 0 100 100"><polygon points="50,0 60,40 100,50 60,60 50,100 40,60 0,50 40,40" /></svg>
-                <svg class="flower f2" viewBox="0 0 100 100" style="left:-30px;"><polygon points="50,0 70,30 100,20 80,60 100,90 50,80 0,90 20,60 0,20 30,30" /></svg>
-                <svg class="flower f3" viewBox="0 0 100 100" style="bottom:20px; right:-20px;"><polygon points="50,10 60,50 50,90 40,50" /></svg>
-                <svg class="flower f4" viewBox="0 0 100 100" style="top:-30px; right:0;"><polygon points="20,20 80,20 50,80" /></svg>
             </div>
 
             <div class="flower-cluster" id="cluster-3" onclick="document.getElementById('c2').scrollIntoView({behavior: 'smooth'})">
                 <div class="hidden-concept"><span>03. Bio</span><h2>MATTER</h2></div>
-                <svg class="flower f1" viewBox="0 0 100 100"><path d="M50 20 C70 20 80 40 80 50 C80 60 70 80 50 80 C30 80 20 60 20 50 C20 40 30 20 50 20 Z M50 0 C80 0 100 40 100 60 C100 90 70 100 50 100 C30 100 0 90 0 60 C0 40 20 0 50 0 Z" /></svg>
-                <svg class="flower f2" viewBox="0 0 100 100" style="top:30px; left:-30px;"><circle cx="50" cy="50" r="40" /></svg>
-                <svg class="flower f3" viewBox="0 0 100 100" style="top:-20px; right:10px;"><path d="M10,50 Q50,0 90,50 Q50,100 10,50" /></svg>
             </div>
         </section>
 
@@ -360,13 +357,10 @@
         </div>
     </div>
 
-<div id="about-page" class="page">
+    <div id="about-page" class="page">
         <div class="about-container">
-            
             <h1 style="font-size:4vw; font-weight:300; margin:0 0 60px 0;">Trajectory & Thought</h1>
-            
             <div class="about-layout">
-                
                 <div class="bio-column">
                     <p class="bio-text">
                         I define myself as a critical technologist navigating the tension between <span class="bio-highlight">high-fidelity engineering and the low-fidelity reality of the Global South.</span>
@@ -374,19 +368,16 @@
                     <p class="bio-text">
                         My work does not seek to "solve" problems through accelerationism, but to stay with the trouble—using code, circuits, and biology to visualize the invisible frictions of territory, identity, and social inequality.
                     </p>
-                    
                     <div class="philosophy-box">
                         <h4 style="font-size: 0.9rem; letter-spacing: 2px; margin-bottom: 20px;">CORE INQUIRIES</h4>
-                        <p><strong>01. Pluriversal Tech:</strong> How can we design technologies that embrace multiple worlds instead of imposing a universal standard? [cite: 349]</p>
-                        <p><strong>02. Material Agency:</strong> Moving beyond "using" tools to "collaborating" with matter (OOI). [cite: 343]</p>
-                        <p><strong>03. Public Pedagogy:</strong> The street as a classroom; the artifact as a teacher. [cite: 335]</p>
+                        <p><strong>01. Pluriversal Tech:</strong> How can we design technologies that embrace multiple worlds instead of imposing a universal standard?</p>
+                        <p><strong>02. Material Agency:</strong> Moving beyond "using" tools to "collaborating" with matter (OOI).</p>
+                        <p><strong>03. Public Pedagogy:</strong> The street as a classroom; the artifact as a teacher.</p>
                     </div>
-
                     <a href="#" class="btn-download">Download Full CV [PDF]</a>
                 </div>
 
                 <div class="cv-column">
-                    
                     <div class="cv-section">
                         <div class="cv-header">EDUCATION</div>
                         <div class="cv-item">
@@ -406,95 +397,15 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="cv-section">
-                        <div class="cv-header">SELECTED PUBLICATIONS & RESIDENCIES</div>
-                        <div class="cv-item">
-                            <div class="cv-date">2027 (Exp)</div>
-                            <div>
-                                <div class="cv-role">Book Chapter: "Ladrilludo"</div>
-                                <div class="cv-place">In: "Worlding Education Differently" (Eds. Osler & Sinner)</div>
-                                <div class="cv-desc">Co-authored research on public pedagogy and object-oriented inquiry. [cite: 364-365]</div>
-                            </div>
-                        </div>
-                        <div class="cv-item">
-                            <div class="cv-date">2025</div>
-                            <div>
-                                <div class="cv-role">Walking Global Dialogues Residency</div>
-                                <div class="cv-place">Bogotá, Colombia</div>
-                                <div class="cv-desc">International research-creation residency (UBC, Helwan, Uniandes). [cite: 52-54]</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="cv-section">
-                        <div class="cv-header">PROFESSIONAL PRACTICE</div>
-                        <div class="cv-item">
-                            <div class="cv-date">2025 - Pres</div>
-                            <div>
-                                <div class="cv-role">Co-Founder & Tech Director</div>
-                                <div class="cv-place">Sintopía Lab</div>
-                                <div class="cv-desc">Leading interactive installations and creative coding solutions.</div>
-                            </div>
-                        </div>
-                        <div class="cv-item">
-                            <div class="cv-date">2025</div>
-                            <div>
-                                <div class="cv-role">Workshop Facilitator</div>
-                                <div class="cv-place">Cinemateca de Bogotá</div>
-                                <div class="cv-desc">Facilitated "Magical Animation" lab for diverse publics.</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="cv-section">
-                        <div class="cv-header">TOOLKIT</div>
-                        <div class="cv-item">
-                            <div class="cv-date">Code/Soft</div>
-                            <div class="cv-desc">TouchDesigner, Python, Arduino, Unreal Engine, Adobe Suite.</div>
-                        </div>
-                        <div class="cv-item">
-                            <div class="cv-date">Fab/Hard</div>
-                            <div class="cv-desc">Circuit Design, Soldering, Bioplastics, Analog Photography, Field Recording.</div>
-                        </div>
-                    </div>
-
                 </div>
             </div>
         </div>
     </div>
 
-    <style>
-        .about-container { max-width: 1400px; margin: 0 auto; }
-        
-        .about-layout { 
-            display: grid; 
-            grid-template-columns: 35% 60%; /* Proporción fija */
-            gap: 5%; 
-            align-items: start; 
-        }
-
-        .philosophy-box {
-            margin-top: 50px;
-            padding: 30px;
-            border: 1px solid #111;
-            background: rgba(255,255,255,0.5);
-        }
-        .philosophy-box p { font-size: 0.85rem; margin-bottom: 15px; line-height: 1.6; }
-
-        /* Ajuste para móviles para que no quede "abajo" mal */
-        @media (max-width: 900px) {
-            .about-layout { grid-template-columns: 1fr; gap: 60px; }
-        }
-    </style>
-
     <div id="modal">
         <div class="close-btn" onclick="closeModal()">CLOSE [X]</div>
-        
         <div class="modal-content">
-            
             <div class="project-detail-container">
-
                 <header class="proj-header">
                     <div class="proj-meta-grid">
                         <div>
@@ -510,10 +421,8 @@
                             <span class="meta-value">Arts-Based Research / OOI</span>
                         </div>
                     </div>
-                    
                     <h1 class="proj-title">Ladrilludo</h1>
                     <h2 class="proj-subtitle">Walking the Public Pedagogical Pulse through Bogotá’s Urban Fabric.</h2>
-                    
                     <div style="margin-top: 30px;">
                         <a href="https://docs.google.com/document/d/17dKbyyroR0N3V8CRuY6XiJ6v5otDF8Hmk7aJtmvI8u8/edit?usp=sharing" target="_blank" class="btn-download" style="margin-top:0;">
                             📄 READ FULL RESEARCH PAPER [Google Doc]
@@ -529,7 +438,7 @@
                                 By removing a clay brick from its static context and dragging it through the streets, the object transforms into a <strong>"stylus"</strong>—a sensitive indicator tracing the topography and registering the frequencies of the city's surface.
                             </p>
                             <p>
-                                Grounded in <em>Pluriversal Thinking</em> and <em>Object-Oriented Inquiry (OOI)</em>, this performance actively interrogates the "smooth" narratives of urban renewal. [cite_start]The brick, tethered like a pet, became a "dialogue artifact", provoking spontaneous interactions (<em>mamadera de gallo</em>) and uncovering the silenced industrial history of the <em>Las Aguas</em> neighborhood[cite: 417].
+                                Grounded in <em>Pluriversal Thinking</em> and <em>Object-Oriented Inquiry (OOI)</em>, this performance actively interrogates the "smooth" narratives of urban renewal. The brick, tethered like a pet, became a "dialogue artifact", provoking spontaneous interactions and uncovering silenced industrial histories.
                             </p>
                         </div>
                         <div class="image-block">
@@ -544,80 +453,40 @@
                 <section class="proj-section technical">
                     <h3>01. DECONSTRUCTING THE INTERFACE</h3>
                     <p style="margin-bottom: 30px; max-width: 800px;">
-                        The transformation from debris to device involved drilling the ceramic body to embed a <strong>lavalier microphone</strong> deep within its core. This allowed the object to record the internal resonance of the friction, translating physical texture into a sonic record of inequality.
+                        The transformation from debris to device involved drilling the ceramic body to embed a <strong>lavalier microphone</strong> deep within its core. This allowed the object to record the internal resonance of the friction.
                     </p>
-                    
                     <div class="tech-specs-grid">
                         <div class="spec-item">
                             <span class="tech-label">INPUT</span>
-                            <p><strong>Lavalier Microphone</strong><br>Inserted into the center of the brick to capture internal acoustics.</p>
+                            <p><strong>Lavalier Microphone</strong><br>Embedded for internal acoustic resonance.</p>
                         </div>
                         <div class="spec-item">
                             <span class="tech-label">FABRICATION</span>
-                            <p><strong>Masonry Drilling</strong><br>Modified vernacular clay brick from the Sabana de Bogotá.</p>
+                            <p><strong>Masonry Drilling</strong><br>Modified vernacular clay brick.</p>
                         </div>
                         <div class="spec-item">
                             <span class="tech-label">INTERFACE</span>
-                            <p><strong>Natural Cotton Harness</strong><br>100% Colombian braided cotton thread (Beige).</p>
-                        </div>
-                        <div class="spec-item">
-                            <span class="tech-label">OUTPUT</span>
-                            <p><strong>Sonic Topography</strong><br>A raw wav recording of the city's surfaces.</p>
+                            <p><strong>Natural Cotton Harness</strong><br>Hand-braided tether.</p>
                         </div>
                     </div>
-
                     <div class="full-width-media">
                         <img src="https://via.placeholder.com/1200x600/333/fff?text=INSERT+DRILLING+PROCESS+PHOTO" alt="Fabrication Process" class="proj-img">
                         <span class="caption">Fig 2. Preparing the artifact: Drilling the brick to accommodate the sensor.</span>
                     </div>
                 </section>
 
-                <section class="proj-section">
-                    <h3>02. RUPTURE & REPAIR</h3>
-                    <div class="proj-grid-2">
-                        <div class="image-block">
-                            <img src="https://via.placeholder.com/800x1000/cc4422/fff?text=PHOTO+BROKEN+BRICK+REPAIR" alt="Repaired Brick" class="proj-img">
-                            <span class="caption">Fig 3. The brick split mid-performance and was repaired with duct tape.</span>
-                        </div>
-                        <div class="text-block">
-                            <p class="lead-text">"The brick wears down, breaks, and is patched."</p>
-                            <p>
-                                Midway through the walk, the interface failed. The brick split under the physical stress of the city. Instead of replacing the object, we engaged in a <strong>ritual of repair</strong> using duct tape. 
-                            </p>
-                            <p>
-                                This moment of rupture became central to the inquiry. The repaired brick ceased to be just a sensor and became a carrier of wounds—mirroring the human resilience required to navigate the hostile architecture of Bogotá. [cite_start]It transformed the walk into a pedagogy of care and memory[cite: 417].
-                            </p>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="proj-section">
-                    <h3>03. FIELD DOCUMENTATION</h3>
-                    <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; background: #000; margin-top:20px;">
-                        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" 
-                                src="https://www.youtube.com/embed/ulWG0LUPL2g?si=OGy7KYCRPdztIiI9" 
-                                title="Ladrilludo Documentation" frameborder="0" 
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                allowfullscreen></iframe>
-                    </div>
-                    <span class="caption">Watch the full interaction: "Walking with Ladrilludo".</span>
-                </section>
-
                 <section class="credits-section">
                     <div class="credits-box">
-                        [cite_start]<h4>RESEARCH TEAM [cite: 417]</h4>
+                        <h4>RESEARCH TEAM & ROLES</h4>
                         <ul>
-                            <li><strong>Scott Massey</strong> (UBC)</li>
-                            <li><strong>Morgan Hollemans</strong> (UBC)</li>
-                            <li><strong>Pei-Jung Tsai</strong> (UBC)</li>
-                            <li><strong>Ahmed Alaa Lotfy</strong> (Helwan University)</li>
-                            <li><strong>Paula Ojeda</strong> (Universidad de los Andes)</li>
-                            <li><strong>Tatiana Hernández</strong> (Universidad de los Andes)</li>
-                            <li><strong>Natalia Avila</strong> (Universidad de los Andes)</li>
+                            <li style="grid-column: 1 / -1; margin-bottom: 10px; color: var(--terracotta);"><strong>Paula Ojeda:</strong> Lead Interaction Designer & Hardware Prototyping (Drilled the brick, soldered audio components, managed field recording).</li>
+                            <li><strong>Scott Massey:</strong> Co-Researcher</li>
+                            <li><strong>Morgan Hollemans:</strong> Co-Researcher</li>
+                            <li><strong>Pei-Jung Tsai:</strong> Co-Researcher</li>
+                            <li><strong>Ahmed Alaa Lotfy:</strong> Co-Researcher</li>
                         </ul>
                         <p class="citation-note" style="margin-top:20px;">
-                            *Selected for publication as a book chapter in <em>"Worlding Education Differently"</em> (Eds. Osler & Sinner), expected 2027.<br>
-                            *Developed during the "Walking Global Dialogues" Residency.
+                            *Selected for publication as a book chapter in <em>"Worlding Education Differently"</em> (Eds. Osler & Sinner), expected 2027.
                         </p>
                     </div>
                 </section>
@@ -627,6 +496,101 @@
     </div>
 
     <script>
+        // --- 1. CONFIGURACIÓN P5.JS (Arte Generativo) ---
+        let systems = [];
+        let canvas;
+
+        function setup() {
+            canvas = createCanvas(windowWidth, windowHeight);
+            canvas.id('defaultCanvas0'); // Asegura que el CSS lo capture
+            
+            // Creamos 3 sistemas florales alineados con tus clusters de HTML
+            systems.push(new BioSystem(width * 0.8, height * 0.25, "#4a5d23")); // Cluster 1 (Páramo)
+            systems.push(new BioSystem(width * 0.9, height * 0.55, "#cc4422")); // Cluster 2 (Bogotá)
+            systems.push(new BioSystem(width * 0.7, height * 0.85, "#1a3c34")); // Cluster 3 (Magdalena)
+        }
+
+        function draw() {
+            clear(); // Fondo transparente
+            
+            // Cálculo del scroll (0.0 = Arriba, 1.0 = Abajo)
+            let h = document.documentElement.scrollHeight - window.innerHeight;
+            let scrollPct = window.scrollY / h;
+            scrollPct = constrain(scrollPct, 0, 1);
+
+            for (let sys of systems) {
+                sys.update(scrollPct);
+                sys.display();
+            }
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+            systems[0].setPosition(width * 0.8, height * 0.25);
+            systems[1].setPosition(width * 0.9, height * 0.55);
+            systems[2].setPosition(width * 0.7, height * 0.85);
+        }
+
+        class BioSystem {
+            constructor(x, y, col) {
+                this.originX = x;
+                this.originY = y;
+                this.color = col;
+                this.currentScroll = 0;
+            }
+
+            setPosition(x, y) {
+                this.originX = x;
+                this.originY = y;
+            }
+
+            update(scrollPct) {
+                this.currentScroll = scrollPct;
+            }
+
+            display() {
+                noStroke();
+                let c = color(this.color);
+                c.setAlpha(200); 
+                fill(c);
+
+                push();
+                translate(this.originX, this.originY);
+
+                beginShape();
+                for (let a = 0; a < TWO_PI; a += 0.1) {
+                    // Lógica Narrativa:
+                    // Páramo (Arriba): Noise alto (rugoso), tamaño pequeño.
+                    // Magdalena (Abajo): Noise bajo (suave), tamaño grande.
+                    
+                    let noiseScale = map(this.currentScroll, 0, 1, 1.8, 0.3);
+                    let sizeMult = map(this.currentScroll, 0, 1, 1, 2.5);
+                    
+                    let xoff = map(cos(a), -1, 1, 0, noiseScale);
+                    let yoff = map(sin(a), -1, 1, 0, noiseScale);
+                    let time = frameCount * 0.01;
+                    
+                    let r = map(noise(xoff, yoff, time), 0, 1, 40, 80) * sizeMult;
+                    
+                    // Efecto "Temblor" en el Páramo (frío)
+                    if (this.currentScroll < 0.3) {
+                        r += sin(a * 20 + time * 10) * 3; 
+                    }
+
+                    let x = r * cos(a);
+                    let y = r * sin(a);
+                    vertex(x, y);
+                }
+                endShape(CLOSE);
+                
+                // Núcleo
+                fill(255, 50);
+                ellipse(0,0, 10 * (this.currentScroll + 1));
+                pop();
+            }
+        }
+
+        // --- 2. INTERFAZ Y NAVEGACIÓN ---
         function nav(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id + '-page').classList.add('active');
@@ -635,10 +599,6 @@
             if(id === 'home') {
                 document.body.classList.add('show-altimeter');
                 document.body.style.backgroundColor = "var(--bg-paramo)";
-                document.body.style.color = "#111";
-            } else if (id === 'about') {
-                document.body.classList.remove('show-altimeter');
-                document.body.style.backgroundColor = "#f4f5f7";
                 document.body.style.color = "#111";
             } else { 
                 document.body.classList.remove('show-altimeter'); 
@@ -650,7 +610,6 @@
         function openModal(title, color) { document.getElementById('modal').classList.add('open'); }
         function closeModal() { document.getElementById('modal').classList.remove('open'); }
 
-        // Filtros
         filterSelection("all", "ARCHIVE OVERVIEW: Chronological display of all inquiries.")
         function filterSelection(c, desc) {
             var x, i;
@@ -670,21 +629,40 @@
         function w3AddClass(element, name) { var i, arr1, arr2; arr1 = element.className.split(" "); arr2 = name.split(" "); for (i = 0; i < arr2.length; i++) { if (arr1.indexOf(arr2[i]) == -1) {element.className += " " + arr2[i];} } }
         function w3RemoveClass(element, name) { var i, arr1, arr2; arr1 = element.className.split(" "); arr2 = name.split(" "); for (i = 0; i < arr2.length; i++) { while (arr1.indexOf(arr2[i]) > -1) { arr1.splice(arr1.indexOf(arr2[i]), 1); } } element.className = arr1.join(" "); }
 
-        // Scroll
+        // --- 3. SCROLL & AMBIENTE ---
         const body = document.body;
         const orb1 = document.querySelector('.orb-1');
         const orb2 = document.querySelector('.orb-2');
+        
         window.addEventListener('scroll', () => {
             if(!document.getElementById('home-page').classList.contains('active')) return;
             const scrollPct = window.scrollY / (document.body.scrollHeight - window.innerHeight);
             const alt = Math.round(3200 - (scrollPct * 3150));
             document.getElementById('alt-val').innerText = alt;
-            if (scrollPct < 0.25) { body.style.backgroundColor = "var(--bg-paramo)"; body.style.color = "#111"; orb1.style.background = "#fff"; orb2.style.background = "#e0e0e0"; document.getElementById('zone-val').innerText = "PÁRAMO"; } 
-            else if (scrollPct >= 0.25 && scrollPct < 0.6) { body.style.backgroundColor = "var(--bg-bogota)"; body.style.color = "#000"; orb1.style.background = "var(--neon-green)"; orb2.style.background = "#555"; document.getElementById('zone-val').innerText = "BOGOTÁ"; } 
-            else { body.style.backgroundColor = "var(--bg-barranca)"; body.style.color = "#fff"; orb1.style.background = "#ff5e00"; orb2.style.background = "#1a3c34"; document.getElementById('zone-val').innerText = "MAGDALENA"; }
+            
+            if (scrollPct < 0.25) { 
+                body.style.backgroundColor = "var(--bg-paramo)"; 
+                body.style.color = "#111"; 
+                orb1.style.background = "#fff"; 
+                orb2.style.background = "#e0e0e0"; 
+                document.getElementById('zone-val').innerText = "PÁRAMO"; 
+            } 
+            else if (scrollPct >= 0.25 && scrollPct < 0.6) { 
+                body.style.backgroundColor = "var(--bg-bogota)"; 
+                body.style.color = "#000"; 
+                orb1.style.background = "var(--neon-green)"; 
+                orb2.style.background = "#555"; 
+                document.getElementById('zone-val').innerText = "BOGOTÁ"; 
+            } 
+            else { 
+                body.style.backgroundColor = "var(--bg-barranca)"; 
+                body.style.color = "#fff"; 
+                orb1.style.background = "#ff5e00"; 
+                orb2.style.background = "#1a3c34"; 
+                document.getElementById('zone-val').innerText = "MAGDALENA"; 
+            }
         });
 
-        // Cursor
         const cursor = document.getElementById('cursor');
         document.addEventListener('mousemove', e => {
             const x = e.clientX / window.innerWidth;
@@ -701,8 +679,3 @@
     </script>
 </body>
 </html>
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
-        .card { background: white; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 15px; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
-        .card-img img { width: 100%; height: auto; border-radius: 2px; }
-        .card-tags { font-family: var(--font-mono); font-size: 0.7rem; color: var(--neon-green); margin-top: 10px; text-transform: uppercase; letter-spacing: 1px; }
