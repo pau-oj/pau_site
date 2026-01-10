@@ -13,7 +13,7 @@
 
     <style>
         /* =========================================
-           1. VARIABLES & RESET (TU CÓDIGO ORIGINAL)
+           1. VARIABLES & RESET
            ========================================= */
         :root {
             --bg-paramo: #f4f5f7;
@@ -41,7 +41,7 @@
         ul { list-style: none; padding: 0; }
 
         /* =========================================
-           2. AMBIENTE (Fondo, Cursor)
+           2. AMBIENTE (Fondo, Cursor, Canvas)
            ========================================= */
         .noise {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -49,15 +49,15 @@
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
         }
 
-        .liquid-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; pointer-events: none; }
+        .liquid-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; overflow: hidden; pointer-events: none; }
         .orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.5; transition: transform 0.8s cubic-bezier(0.1, 0.7, 1.0, 0.1); }
         .orb-1 { width: 70vw; height: 70vw; top: -20%; left: -20%; background: #fff; }
         .orb-2 { width: 60vw; height: 60vw; bottom: -20%; right: -20%; background: #dcdcdc; }
 
-        /* NUEVO: CANVAS P5 PARA PARTÍCULAS (Z-INDEX BAJO PARA NO TAPAR NADA) */
+        /* Canvas para partículas sutiles (Detrás de todo el contenido interactivo) */
         #defaultCanvas0 {
             position: fixed; top: 0; left: 0; 
-            z-index: 15; /* Detrás de las flores (20) pero delante del fondo */
+            z-index: 0; 
             pointer-events: none;
         }
 
@@ -94,14 +94,14 @@
         .data-row { margin-bottom: 8px; }
 
         /* =========================================
-           4. HERO SECTION (TU DISEÑO ORIGINAL)
+           4. HERO SECTION
            ========================================= */
         .hero-section { height: 100vh; position: relative; overflow: hidden; display: flex; align-items: center; padding-left: 5vw; }
         .hero-left { z-index: 10; pointer-events: none; max-width: 50vw; text-align: left; }
         .hero-title { font-size: 8vw; line-height: 0.85; margin: 0; font-weight: 300; color: #111; letter-spacing: -0.02em; }
         .hero-subtitle { font-family: var(--font-mono); font-size: 0.9rem; margin-top: 30px; line-height: 1.5; max-width: 400px; border-left: 2px solid var(--terracotta); padding-left: 20px; opacity: 0.8; }
 
-        /* Flower Clusters */
+        /* TUS CLUSTERS ORIGINALES (SVGs) */
         .flower-cluster { position: absolute; width: 350px; height: 350px; display: flex; align-items: center; justify-content: center; cursor: none; z-index: 20; }
         #cluster-1 { top: 15%; right: 20%; color: #4a5d23; }
         #cluster-2 { top: 50%; right: 5%; color: var(--terracotta); }
@@ -119,14 +119,13 @@
         .flower:nth-child(3) { animation-delay: 2.5s; }
 
         .flower-cluster:hover .hidden-concept { opacity: 1; transform: scale(1); }
-        /* Animaciones originales de expansión */
         .flower-cluster:hover .f1 { transform: translate(-140px, -100px) rotate(-60deg) scale(0.6); }
         .flower-cluster:hover .f2 { transform: translate(140px, -80px) rotate(45deg) scale(0.8); }
         .flower-cluster:hover .f3 { transform: translate(-90px, 140px) rotate(-30deg) scale(0.7); }
         .flower-cluster:hover .f4 { transform: translate(120px, 100px) rotate(30deg) scale(0.6); }
         .flower-cluster:hover .f5 { transform: translate(0px, -160px) rotate(90deg) scale(0.5); }
 
-        /* NUEVO: INDICADOR DE SCROLL ANIMADO */
+        /* SCROLL INDICATOR (Booster UX) */
         .scroll-indicator {
             position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
             text-align: center; z-index: 20; opacity: 0.7;
@@ -134,7 +133,6 @@
         }
         .scroll-indicator span { display: block; font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 2px; margin-bottom: 5px; }
         .arrow-down { font-size: 1.2rem; }
-
         @keyframes bounce {
             0%, 20%, 50%, 80%, 100% {transform: translateX(-50%) translateY(0);}
             40% {transform: translateX(-50%) translateY(-10px);}
@@ -147,12 +145,12 @@
         .page { display: none; opacity: 0; transition: opacity 0.5s; }
         .page.active { display: block; opacity: 1; }
 
-        .concept-section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 0 15vw; border-bottom: 1px solid rgba(0,0,0,0.05); position: relative; z-index: 25; }
+        .concept-section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 0 15vw; border-bottom: 1px solid rgba(0,0,0,0.05); position: relative; z-index: 10; }
         .research-statement { font-size: 5vw; font-weight: 300; line-height: 1; margin-bottom: 40px; }
         .concept-details { display: grid; grid-template-columns: 100px 1fr; gap: 40px; font-family: var(--font-mono); font-size: 0.9rem; line-height: 1.6; border-top: 1px solid currentColor; padding-top: 30px; }
 
         /* =========================================
-           6. PROJECTS PAGE
+           6. PROJECTS PAGE (CORREGIDO: SIN FONDO BLANCO)
            ========================================= */
         #projects-page { padding: 150px 5vw; min-height: 100vh; }
 
@@ -168,15 +166,24 @@
 
         .filter-description { font-family: var(--font-mono); font-size: 0.75rem; color: var(--terracotta); text-align: right; max-width: 400px; opacity: 0.8; border-left: 1px solid #ddd; padding-left: 20px; }
 
-        /* Grid Correction (Arreglo el cierre del media query que faltaba en tu original) */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 60px; margin-top: 50px; }
         
-        .card { cursor: pointer; display: block; animation: fadeEffect 0.5s; background: white; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 15px; transition: transform 0.3s, box-shadow 0.3s; }
+        /* CORRECCIÓN: ELIMINADO EL FONDO BLANCO Y SOMBRAS */
+        .card { 
+            cursor: pointer; 
+            display: block; 
+            animation: fadeEffect 0.5s; 
+            background: transparent; /* Antes white */
+            box-shadow: none; /* Antes con sombra */
+            padding: 0; /* Antes 15px */
+            transition: transform 0.3s; 
+        }
         @keyframes fadeEffect { from {opacity: 0; transform: translateY(20px);} to {opacity: 1; transform: translateY(0);} }
 
-        .card-img { height: 350px; background: #ccc; margin-bottom: 20px; border-radius: 4px; overflow: hidden; transition: 0.5s; }
+        .card-img { height: 350px; background: #ccc; margin-bottom: 20px; border-radius: 2px; overflow: hidden; transition: 0.5s; }
         .card-img img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: 0.5s; border-radius: 2px; }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
+        
+        .card:hover { transform: translateY(-5px); }
         .card:hover .card-img { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; transform: translateY(-10px); }
         .card:hover img { filter: grayscale(0%); transform: scale(1.1); }
         
@@ -363,7 +370,6 @@
                     <button class="filter-btn" onclick="filterSelection('tangible', 'TANGIBLE FRICTION: Prototyping resistance in public space.')">TANGIBLE FRICTION</button>
                     <button class="filter-btn" onclick="filterSelection('body', 'BODY NARRATIVES: Visual essays on identity and performance.')">BODY NARRATIVES</button>
                     <button class="filter-btn" onclick="filterSelection('systems', 'LIVING SYSTEMS: Code, biology, and digital ecologies.')">LIVING SYSTEMS</button>
-                    <button class="filter-btn" onclick="alert('Sketches section coming soon.')" style="opacity:0.5;">[ LAB / SKETCHES ]</button>
                 </div>
                 <div class="filter-description">
                     <span id="desc-text">[ ARCHIVE OVERVIEW: Chronological display of all inquiries. ]</span>
@@ -480,7 +486,12 @@
                                 By removing a clay brick from its static context and dragging it through the streets, the object transforms into a <strong>"stylus"</strong>—a sensitive indicator tracing the topography and registering the frequencies of the city's surface.
                             </p>
                             <p>
-                                Grounded in <em>Pluriversal Thinking</em> and <em>Object-Oriented Inquiry (OOI)</em>, this performance actively interrogates the "smooth" narratives of urban renewal. The brick, tethered like a pet, became a "dialogue artifact", provoking spontaneous interactions and uncovering silenced industrial histories.
+                                Grounded in <em>Pluriversal Thinking</em> and <em>Object-Oriented Inquiry (OOI)</em>, this performance actively interrogates the "smooth" narratives of urban renewal. The brick, tethered like a pet, became a "dialogue artifact", provoking spontaneous interactions (<em>mamadera de gallo</em>) and uncovering the silenced industrial history of the <em>Las Aguas</em> neighborhood.
+                            </p>
+                            
+                            <h4 style="margin-top:30px; font-size: 0.9rem; letter-spacing: 1px; color:var(--terracotta);">// SOCIOPOLITICAL CONTEXT</h4>
+                            <p>
+                                The origin of this inquiry is rooted in the recent social unrest in Colombia (the "Paro" or national strike). As I watched my country fracture under the weight of systemic inequality, the "white cube" of the art gallery felt suffocating. This project moves the inquiry to the street, where the friction is real. The brick is not just matter; it is a witness to the "invisible codes" of class stratification.
                             </p>
                         </div>
                         <div class="image-block">
@@ -495,26 +506,62 @@
                 <section class="proj-section technical">
                     <h3>01. DECONSTRUCTING THE INTERFACE</h3>
                     <p style="margin-bottom: 30px; max-width: 800px;">
-                        The transformation from debris to device involved drilling the ceramic body to embed a <strong>lavalier microphone</strong> deep within its core. This allowed the object to record the internal resonance of the friction.
+                        The transformation from debris to device involved drilling the ceramic body to embed a <strong>lavalier microphone</strong> deep within its core. This allowed the object to record the internal resonance of the friction, translating physical texture into a sonic record of inequality.
                     </p>
+                    
                     <div class="tech-specs-grid">
                         <div class="spec-item">
                             <span class="tech-label">INPUT</span>
-                            <p><strong>Lavalier Microphone</strong><br>Embedded for internal acoustic resonance.</p>
+                            <p><strong>Lavalier Microphone</strong><br>Inserted into the center of the brick to capture internal acoustics (Piezo-electric resonance).</p>
                         </div>
                         <div class="spec-item">
                             <span class="tech-label">FABRICATION</span>
-                            <p><strong>Masonry Drilling</strong><br>Modified vernacular clay brick.</p>
+                            <p><strong>Masonry Drilling</strong><br>Modified vernacular clay brick from the Sabana de Bogotá.</p>
                         </div>
                         <div class="spec-item">
                             <span class="tech-label">INTERFACE</span>
-                            <p><strong>Natural Cotton Harness</strong><br>Hand-braided tether.</p>
+                            <p><strong>Natural Cotton Harness</strong><br>100% Colombian braided cotton thread (Beige).</p>
+                        </div>
+                        <div class="spec-item">
+                            <span class="tech-label">OUTPUT</span>
+                            <p><strong>Sonic Topography</strong><br>A raw .wav recording of the city's surfaces.</p>
                         </div>
                     </div>
                     <div class="full-width-media">
                         <img src="https://via.placeholder.com/1200x600/333/fff?text=INSERT+DRILLING+PROCESS+PHOTO" alt="Fabrication Process" class="proj-img">
                         <span class="caption">Fig 2. Preparing the artifact: Drilling the brick to accommodate the sensor.</span>
                     </div>
+                </section>
+
+                <section class="proj-section">
+                    <h3>02. RUPTURE & REPAIR</h3>
+                    <div class="proj-grid-2">
+                        <div class="image-block">
+                            <img src="https://via.placeholder.com/800x1000/cc4422/fff?text=PHOTO+BROKEN+BRICK+REPAIR" alt="Repaired Brick" class="proj-img">
+                            <span class="caption">Fig 3. The brick split mid-performance and was repaired with duct tape.</span>
+                        </div>
+                        <div class="text-block">
+                            <p class="lead-text">"The brick wears down, breaks, and is patched."</p>
+                            <p>
+                                Midway through the walk, the interface failed. The brick split under the physical stress of the city. Instead of replacing the object, we engaged in a <strong>ritual of repair</strong> using duct tape. 
+                            </p>
+                            <p>
+                                This moment of rupture became central to the inquiry. The repaired brick ceased to be just a sensor and became a carrier of wounds—mirroring the human resilience ("recursividad") required to navigate the hostile architecture of Bogotá. It transformed the walk into a pedagogy of care and memory.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="proj-section">
+                    <h3>03. FIELD DOCUMENTATION</h3>
+                    <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; background: #000; margin-top:20px;">
+                        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" 
+                                src="https://www.youtube.com/embed/ulWG0LUPL2g?si=OGy7KYCRPdztIiI9" 
+                                title="Ladrilludo Documentation" frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen></iframe>
+                    </div>
+                    <span class="caption">Watch the full interaction: "Walking with Ladrilludo".</span>
                 </section>
 
                 <section class="credits-section">
@@ -530,7 +577,8 @@
                             <li><strong>Natalia Avila:</strong> Co-Researcher</li>
                         </ul>
                         <p class="citation-note" style="margin-top:20px;">
-                            *Selected for publication as a book chapter in <em>"Worlding Education Differently"</em> (Eds. Osler & Sinner), expected 2027.
+                            *Selected for publication as a book chapter in <em>"Worlding Education Differently"</em> (Eds. Osler & Sinner), expected 2027.<br>
+                            *Developed during the "Walking Global Dialogues" Residency.
                         </p>
                     </div>
                 </section>
@@ -540,90 +588,60 @@
     </div>
 
     <script>
-        // --- CÓDIGO GENERATIVO P5.JS (CAPA SUTIL DE FONDO) ---
-        // Este código agrega partículas (Polen/Data) que flotan detrás de tus flores
-        // No reemplaza nada, solo "ambienta" para mostrar skills de código.
-        
         let particles = [];
         let canvas;
 
         function setup() {
             canvas = createCanvas(windowWidth, windowHeight);
-            canvas.id('defaultCanvas0'); // Se va al fondo con z-index 15
-            
-            // Crear 50 partículas
-            for(let i=0; i<50; i++){
-                particles.push(new Particle());
-            }
+            canvas.id('defaultCanvas0'); 
+            for(let i=0; i<60; i++){ particles.push(new Particle()); }
         }
 
         function draw() {
-            clear(); // Fondo transparente
-            
-            // Solo dibujar en el Home para rendimiento
+            clear();
             if(document.getElementById('home-page').classList.contains('active')){
-                for(let p of particles){
-                    p.update();
-                    p.display();
-                }
+                for(let p of particles){ p.update(); p.display(); }
             }
         }
 
-        function windowResized() {
-            resizeCanvas(windowWidth, windowHeight);
-        }
+        function windowResized() { resizeCanvas(windowWidth, windowHeight); }
 
         class Particle {
             constructor(){
                 this.x = random(width);
                 this.y = random(height);
-                this.size = random(2, 5);
-                this.speedX = random(-0.5, 0.5);
-                this.speedY = random(-0.5, 0.5);
+                this.size = random(1, 4);
+                this.speedX = random(-0.3, 0.3);
+                this.speedY = random(-0.3, 0.3);
                 this.alpha = random(50, 150);
             }
-
             update(){
                 this.x += this.speedX;
                 this.y += this.speedY;
-
-                // Interacción con el mouse (Sutil)
                 let d = dist(this.x, this.y, mouseX, mouseY);
                 if (d < 100) {
-                    this.x += (this.x - mouseX) * 0.02;
-                    this.y += (this.y - mouseY) * 0.02;
+                    this.x += (this.x - mouseX) * 0.01;
+                    this.y += (this.y - mouseY) * 0.01;
                 }
-
-                // Bordes infinitos
                 if (this.x < 0) this.x = width;
                 if (this.x > width) this.x = 0;
                 if (this.y < 0) this.y = height;
                 if (this.y > height) this.y = 0;
             }
-
             display(){
                 noStroke();
-                // Color cambia según la zona (Páramo vs Magdalena)
-                // Usamos la variable de CSS para leer el color actual del body si fuera posible, 
-                // pero por simplicidad usaremos un gris que se ve bien en todo.
                 fill(80, this.alpha); 
                 ellipse(this.x, this.y, this.size);
             }
         }
 
-        // --- TUS FUNCIONES ORIGINALES (MANTENIDAS) ---
         function nav(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id + '-page').classList.add('active');
             window.scrollTo(0,0);
-            
             if(id === 'home') {
                 document.body.classList.add('show-altimeter');
                 document.body.style.backgroundColor = "var(--bg-paramo)";
-                document.body.style.color = "#111";
-            } else if (id === 'about') {
-                document.body.classList.remove('show-altimeter');
-                document.body.style.backgroundColor = "#f4f5f7";
                 document.body.style.color = "#111";
             } else { 
                 document.body.classList.remove('show-altimeter'); 
@@ -635,7 +653,6 @@
         function openModal(title, color) { document.getElementById('modal').classList.add('open'); }
         function closeModal() { document.getElementById('modal').classList.remove('open'); }
 
-        // Filtros
         filterSelection("all", "ARCHIVE OVERVIEW: Chronological display of all inquiries.")
         function filterSelection(c, desc) {
             var x, i;
@@ -655,7 +672,7 @@
         function w3AddClass(element, name) { var i, arr1, arr2; arr1 = element.className.split(" "); arr2 = name.split(" "); for (i = 0; i < arr2.length; i++) { if (arr1.indexOf(arr2[i]) == -1) {element.className += " " + arr2[i];} } }
         function w3RemoveClass(element, name) { var i, arr1, arr2; arr1 = element.className.split(" "); arr2 = name.split(" "); for (i = 0; i < arr2.length; i++) { while (arr1.indexOf(arr2[i]) > -1) { arr1.splice(arr1.indexOf(arr2[i]), 1); } } element.className = arr1.join(" "); }
 
-        // Scroll Logic Original
+        // Scroll
         const body = document.body;
         const orb1 = document.querySelector('.orb-1');
         const orb2 = document.querySelector('.orb-2');
@@ -664,12 +681,10 @@
             const scrollPct = window.scrollY / (document.body.scrollHeight - window.innerHeight);
             const alt = Math.round(3200 - (scrollPct * 3150));
             document.getElementById('alt-val').innerText = alt;
-
-            // Ocultar indicador de scroll si bajamos
+            
+            // Indicator opacity
             const indicator = document.querySelector('.scroll-indicator');
-            if(indicator) {
-                indicator.style.opacity = scrollPct > 0.1 ? 0 : 0.7;
-            }
+            if(indicator) indicator.style.opacity = scrollPct > 0.1 ? 0 : 0.7;
 
             if (scrollPct < 0.25) { 
                 body.style.backgroundColor = "var(--bg-paramo)"; 
@@ -694,7 +709,6 @@
             }
         });
 
-        // Cursor Logic Original
         const cursor = document.getElementById('cursor');
         document.addEventListener('mousemove', e => {
             const x = e.clientX / window.innerWidth;
@@ -711,10 +725,4 @@
     </script>
 </body>
 </html>
-        .btn-download {
-            display: inline-block; margin-top: 30px; padding: 12px 25px;
-            border: 2px solid var(--terracotta); background: transparent;
-            color: var(--terracotta); font-family: var(--font-mono);
-            text-decoration: none; font-size: 0.9rem; font-weight: bold;
-            transition: all 0.3s ease;
-        }
+        .proj-meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 30px; margin-bottom: 30px; }
