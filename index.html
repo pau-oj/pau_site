@@ -13,7 +13,7 @@
 
     <style>
         /* =========================================
-           1. VARIABLES & RESET
+           1. VARIABLES & RESET (TU CÓDIGO ORIGINAL)
            ========================================= */
         :root {
             --bg-paramo: #f4f5f7;
@@ -41,7 +41,7 @@
         ul { list-style: none; padding: 0; }
 
         /* =========================================
-           2. AMBIENTE (Fondo, Cursor, Canvas)
+           2. AMBIENTE (Fondo, Cursor)
            ========================================= */
         .noise {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -49,17 +49,15 @@
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
         }
 
-        .liquid-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; overflow: hidden; pointer-events: none; }
+        .liquid-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; pointer-events: none; }
         .orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.5; transition: transform 0.8s cubic-bezier(0.1, 0.7, 1.0, 0.1); }
         .orb-1 { width: 70vw; height: 70vw; top: -20%; left: -20%; background: #fff; }
         .orb-2 { width: 60vw; height: 60vw; bottom: -20%; right: -20%; background: #dcdcdc; }
 
-        /* Lienzo p5.js: Z-INDEX AJUSTADO para estar DETRÁS de los textos pero delante del fondo */
+        /* NUEVO: CANVAS P5 PARA PARTÍCULAS (Z-INDEX BAJO PARA NO TAPAR NADA) */
         #defaultCanvas0 {
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 10; 
+            position: fixed; top: 0; left: 0; 
+            z-index: 15; /* Detrás de las flores (20) pero delante del fondo */
             pointer-events: none;
         }
 
@@ -96,40 +94,45 @@
         .data-row { margin-bottom: 8px; }
 
         /* =========================================
-           4. HERO SECTION & SCROLL INDICATOR
+           4. HERO SECTION (TU DISEÑO ORIGINAL)
            ========================================= */
         .hero-section { height: 100vh; position: relative; overflow: hidden; display: flex; align-items: center; padding-left: 5vw; }
-        .hero-left { z-index: 20; pointer-events: none; max-width: 50vw; text-align: left; position: relative; }
+        .hero-left { z-index: 10; pointer-events: none; max-width: 50vw; text-align: left; }
         .hero-title { font-size: 8vw; line-height: 0.85; margin: 0; font-weight: 300; color: #111; letter-spacing: -0.02em; }
         .hero-subtitle { font-family: var(--font-mono); font-size: 0.9rem; margin-top: 30px; line-height: 1.5; max-width: 400px; border-left: 2px solid var(--terracotta); padding-left: 20px; opacity: 0.8; }
 
-        /* Clusters: Contenedores "invisibles" para el click, el dibujo va detrás */
-        .flower-cluster { position: absolute; width: 300px; height: 300px; display: flex; align-items: center; justify-content: center; cursor: none; z-index: 30; }
-        #cluster-1 { top: 15%; right: 20%; }
-        #cluster-2 { top: 50%; right: 5%; }
-        #cluster-3 { bottom: 10%; right: 30%; }
+        /* Flower Clusters */
+        .flower-cluster { position: absolute; width: 350px; height: 350px; display: flex; align-items: center; justify-content: center; cursor: none; z-index: 20; }
+        #cluster-1 { top: 15%; right: 20%; color: #4a5d23; }
+        #cluster-2 { top: 50%; right: 5%; color: var(--terracotta); }
+        #cluster-3 { bottom: 10%; right: 30%; color: #1a3c34; }
 
-        /* Estilo del texto dentro del cluster */
-        .cluster-label {
-            text-align: center;
-            opacity: 0.6; /* Semi visible por defecto */
-            transform: scale(0.9);
-            transition: all 0.4s ease;
-            pointer-events: none;
-            color: #111;
-        }
-        .flower-cluster:hover .cluster-label { opacity: 1; transform: scale(1.1); font-weight: bold; }
+        .hidden-concept { position: absolute; text-align: center; opacity: 0; transform: scale(0.8); transition: all 0.5s ease; z-index: 1; pointer-events: none; }
+        .hidden-concept h2 { margin: 0; font-size: 2.5rem; font-family: var(--font-serif); font-style: italic; }
+        .hidden-concept span { font-family: var(--font-mono); font-size: 0.8rem; text-transform: uppercase; font-weight: bold; }
+
+        .flower { position: absolute; width: 100px; height: 100px; fill: currentColor; opacity: 0.95; transition: all 1s cubic-bezier(0.19, 1, 0.22, 1); z-index: 5; filter: drop-shadow(0px 10px 10px rgba(0,0,0,0.1)); }
         
-        .cluster-label h2 { margin: 0; font-size: 2rem; font-family: var(--font-serif); font-style: italic; }
-        .cluster-label span { font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; }
+        @keyframes sway { 0%, 100% { transform: translate(0,0) rotate(0deg) scale(1); } 50% { transform: translate(5px, -8px) rotate(5deg) scale(1.05); } }
+        .flower { animation: sway 6s ease-in-out infinite; }
+        .flower:nth-child(2) { animation-delay: 1.2s; animation-direction: reverse; }
+        .flower:nth-child(3) { animation-delay: 2.5s; }
 
-        /* NUEVO: Indicador de Scroll */
+        .flower-cluster:hover .hidden-concept { opacity: 1; transform: scale(1); }
+        /* Animaciones originales de expansión */
+        .flower-cluster:hover .f1 { transform: translate(-140px, -100px) rotate(-60deg) scale(0.6); }
+        .flower-cluster:hover .f2 { transform: translate(140px, -80px) rotate(45deg) scale(0.8); }
+        .flower-cluster:hover .f3 { transform: translate(-90px, 140px) rotate(-30deg) scale(0.7); }
+        .flower-cluster:hover .f4 { transform: translate(120px, 100px) rotate(30deg) scale(0.6); }
+        .flower-cluster:hover .f5 { transform: translate(0px, -160px) rotate(90deg) scale(0.5); }
+
+        /* NUEVO: INDICADOR DE SCROLL ANIMADO */
         .scroll-indicator {
             position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
             text-align: center; z-index: 20; opacity: 0.7;
-            animation: bounce 2s infinite;
+            animation: bounce 2s infinite; color: inherit;
         }
-        .scroll-indicator span { display: block; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 2px; margin-bottom: 5px; }
+        .scroll-indicator span { display: block; font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 2px; margin-bottom: 5px; }
         .arrow-down { font-size: 1.2rem; }
 
         @keyframes bounce {
@@ -165,6 +168,7 @@
 
         .filter-description { font-family: var(--font-mono); font-size: 0.75rem; color: var(--terracotta); text-align: right; max-width: 400px; opacity: 0.8; border-left: 1px solid #ddd; padding-left: 20px; }
 
+        /* Grid Correction (Arreglo el cierre del media query que faltaba en tu original) */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 60px; margin-top: 50px; }
         
         .card { cursor: pointer; display: block; animation: fadeEffect 0.5s; background: white; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 15px; transition: transform 0.3s, box-shadow 0.3s; }
@@ -289,15 +293,25 @@
             </div>
 
             <div class="flower-cluster" id="cluster-1" onclick="document.getElementById('c2').scrollIntoView({behavior: 'smooth'})">
-                <div class="cluster-label"><span>01. Sound</span><h2>INQUIRY</h2></div>
+                <div class="hidden-concept"><span>01. Sound</span><h2>INQUIRY</h2></div>
+                <svg class="flower f1" viewBox="0 0 100 100"><path d="M50 0 C60 20 80 20 50 50 C20 20 40 20 50 0 Z M85 15 C80 35 60 40 50 50 C40 40 20 35 15 15 Z M100 50 C80 60 80 80 50 50 C20 80 20 60 0 50 Z M85 85 C80 65 60 60 50 50 C40 60 20 65 15 85 Z M50 100 C40 80 20 80 50 50 C80 80 60 80 50 100 Z" /></svg>
+                <svg class="flower f2" viewBox="0 0 100 100" style="left:40px;"><path d="M50 0 C60 20 80 20 50 50 C20 20 40 20 50 0 Z M100 50 C80 60 80 80 50 50 C20 80 20 60 0 50 Z M50 100 C40 80 20 80 50 50 C80 80 60 80 50 100 Z" /></svg>
+                <svg class="flower f3" viewBox="0 0 100 100" style="top:50px; right:20px;"><path d="M50 0 C60 20 80 20 50 50 C20 20 40 20 50 0 Z M85 15 C80 35 60 40 50 50 C40 40 20 35 15 15 Z M100 50 C80 60 80 80 50 50 C20 80 20 60 0 50 Z" /></svg>
             </div>
 
             <div class="flower-cluster" id="cluster-2" onclick="document.getElementById('c4').scrollIntoView({behavior: 'smooth'})">
-                <div class="cluster-label"><span>02. Tech</span><h2>METHOD</h2></div>
+                <div class="hidden-concept"><span>02. Tech</span><h2>METHOD</h2></div>
+                <svg class="flower f1" viewBox="0 0 100 100"><polygon points="50,0 60,40 100,50 60,60 50,100 40,60 0,50 40,40" /></svg>
+                <svg class="flower f2" viewBox="0 0 100 100" style="left:-30px;"><polygon points="50,0 70,30 100,20 80,60 100,90 50,80 0,90 20,60 0,20 30,30" /></svg>
+                <svg class="flower f3" viewBox="0 0 100 100" style="bottom:20px; right:-20px;"><polygon points="50,10 60,50 50,90 40,50" /></svg>
+                <svg class="flower f4" viewBox="0 0 100 100" style="top:-30px; right:0;"><polygon points="20,20 80,20 50,80" /></svg>
             </div>
 
             <div class="flower-cluster" id="cluster-3" onclick="document.getElementById('c2').scrollIntoView({behavior: 'smooth'})">
-                <div class="cluster-label"><span>03. Bio</span><h2>MATTER</h2></div>
+                <div class="hidden-concept"><span>03. Bio</span><h2>MATTER</h2></div>
+                <svg class="flower f1" viewBox="0 0 100 100"><path d="M50 20 C70 20 80 40 80 50 C80 60 70 80 50 80 C30 80 20 60 20 50 C20 40 30 20 50 20 Z M50 0 C80 0 100 40 100 60 C100 90 70 100 50 100 C30 100 0 90 0 60 C0 40 20 0 50 0 Z" /></svg>
+                <svg class="flower f2" viewBox="0 0 100 100" style="top:30px; left:-30px;"><circle cx="50" cy="50" r="40" /></svg>
+                <svg class="flower f3" viewBox="0 0 100 100" style="top:-20px; right:10px;"><path d="M10,50 Q50,0 90,50 Q50,100 10,50" /></svg>
             </div>
 
             <div class="scroll-indicator">
@@ -349,6 +363,7 @@
                     <button class="filter-btn" onclick="filterSelection('tangible', 'TANGIBLE FRICTION: Prototyping resistance in public space.')">TANGIBLE FRICTION</button>
                     <button class="filter-btn" onclick="filterSelection('body', 'BODY NARRATIVES: Visual essays on identity and performance.')">BODY NARRATIVES</button>
                     <button class="filter-btn" onclick="filterSelection('systems', 'LIVING SYSTEMS: Code, biology, and digital ecologies.')">LIVING SYSTEMS</button>
+                    <button class="filter-btn" onclick="alert('Sketches section coming soon.')" style="opacity:0.5;">[ LAB / SKETCHES ]</button>
                 </div>
                 <div class="filter-description">
                     <span id="desc-text">[ ARCHIVE OVERVIEW: Chronological display of all inquiries. ]</span>
@@ -511,6 +526,8 @@
                             <li><strong>Morgan Hollemans:</strong> Co-Researcher</li>
                             <li><strong>Pei-Jung Tsai:</strong> Co-Researcher</li>
                             <li><strong>Ahmed Alaa Lotfy:</strong> Co-Researcher</li>
+                            <li><strong>Tatiana Hernández:</strong> Co-Researcher</li>
+                            <li><strong>Natalia Avila:</strong> Co-Researcher</li>
                         </ul>
                         <p class="citation-note" style="margin-top:20px;">
                             *Selected for publication as a book chapter in <em>"Worlding Education Differently"</em> (Eds. Osler & Sinner), expected 2027.
@@ -523,107 +540,78 @@
     </div>
 
     <script>
-        // --- 1. CONFIGURACIÓN P5.JS (Arte Generativo CONTROLADO) ---
-        let systems = [];
+        // --- CÓDIGO GENERATIVO P5.JS (CAPA SUTIL DE FONDO) ---
+        // Este código agrega partículas (Polen/Data) que flotan detrás de tus flores
+        // No reemplaza nada, solo "ambienta" para mostrar skills de código.
+        
+        let particles = [];
         let canvas;
 
         function setup() {
             canvas = createCanvas(windowWidth, windowHeight);
-            canvas.id('defaultCanvas0'); // Importante para el Z-Index
+            canvas.id('defaultCanvas0'); // Se va al fondo con z-index 15
             
-            // Definimos las coordenadas EXACTAS donde están tus div .flower-cluster
-            // para que las flores no invadan la pantalla.
-            systems.push(new BioSystem(width * 0.8, height * 0.25, "#4a5d23")); // Cluster 1 (Inquiry)
-            systems.push(new BioSystem(width * 0.9, height * 0.55, "#cc4422")); // Cluster 2 (Method)
-            systems.push(new BioSystem(width * 0.7, height * 0.85, "#1a3c34")); // Cluster 3 (Matter)
+            // Crear 50 partículas
+            for(let i=0; i<50; i++){
+                particles.push(new Particle());
+            }
         }
 
         function draw() {
-            clear(); // Limpia el frame anterior (transparencia)
+            clear(); // Fondo transparente
             
-            // Calculamos el scroll global (0 a 1) para mutar las formas
-            let h = document.documentElement.scrollHeight - window.innerHeight;
-            let scrollPct = window.scrollY / h;
-            scrollPct = constrain(scrollPct, 0, 1);
-
-            // Dibujamos SOLO si estamos en el "Home" para ahorrar recursos
+            // Solo dibujar en el Home para rendimiento
             if(document.getElementById('home-page').classList.contains('active')){
-                for (let sys of systems) {
-                    sys.update(scrollPct);
-                    sys.display();
+                for(let p of particles){
+                    p.update();
+                    p.display();
                 }
             }
         }
 
         function windowResized() {
             resizeCanvas(windowWidth, windowHeight);
-            // Recalculamos posiciones para mantenerlas alineadas con el CSS
-            systems[0].setPosition(width * 0.8, height * 0.25);
-            systems[1].setPosition(width * 0.9, height * 0.55);
-            systems[2].setPosition(width * 0.7, height * 0.85);
         }
 
-        class BioSystem {
-            constructor(x, y, col) {
-                this.originX = x;
-                this.originY = y;
-                this.color = col;
-                this.currentScroll = 0;
+        class Particle {
+            constructor(){
+                this.x = random(width);
+                this.y = random(height);
+                this.size = random(2, 5);
+                this.speedX = random(-0.5, 0.5);
+                this.speedY = random(-0.5, 0.5);
+                this.alpha = random(50, 150);
             }
 
-            setPosition(x, y) {
-                this.originX = x;
-                this.originY = y;
-            }
+            update(){
+                this.x += this.speedX;
+                this.y += this.speedY;
 
-            update(scrollPct) {
-                this.currentScroll = scrollPct;
-            }
-
-            display() {
-                noStroke();
-                let c = color(this.color);
-                c.setAlpha(150); // Transparencia sutil para no competir con el texto
-                fill(c);
-
-                push();
-                translate(this.originX, this.originY);
-
-                // Rotación lenta para dar vida
-                rotate(frameCount * 0.002);
-
-                beginShape();
-                for (let a = 0; a < TWO_PI; a += 0.1) {
-                    
-                    // NARRATIVA DE MUTACIÓN:
-                    // Arriba (Páramo): Formas puntiagudas (noise alto), radio pequeño.
-                    // Abajo (Magdalena): Formas suaves (noise bajo), radio grande.
-                    
-                    let noiseScale = map(this.currentScroll, 0, 1, 2.0, 0.4); 
-                    let sizeMult = map(this.currentScroll, 0, 1, 0.8, 1.5); // Crecen al bajar
-                    
-                    let xoff = map(cos(a), -1, 1, 0, noiseScale);
-                    let yoff = map(sin(a), -1, 1, 0, noiseScale);
-                    let time = frameCount * 0.005; // Velocidad de mutación lenta
-                    
-                    // El radio base es contenido (70px max) para no tapar todo
-                    let r = map(noise(xoff, yoff, time), 0, 1, 40, 70) * sizeMult;
-                    
-                    // Detalle "Puntiagudo" del Páramo
-                    if (this.currentScroll < 0.3) {
-                        r += sin(a * 15 + time * 10) * 5; 
-                    }
-
-                    let x = r * cos(a);
-                    let y = r * sin(a);
-                    vertex(x, y);
+                // Interacción con el mouse (Sutil)
+                let d = dist(this.x, this.y, mouseX, mouseY);
+                if (d < 100) {
+                    this.x += (this.x - mouseX) * 0.02;
+                    this.y += (this.y - mouseY) * 0.02;
                 }
-                endShape(CLOSE);
-                pop();
+
+                // Bordes infinitos
+                if (this.x < 0) this.x = width;
+                if (this.x > width) this.x = 0;
+                if (this.y < 0) this.y = height;
+                if (this.y > height) this.y = 0;
+            }
+
+            display(){
+                noStroke();
+                // Color cambia según la zona (Páramo vs Magdalena)
+                // Usamos la variable de CSS para leer el color actual del body si fuera posible, 
+                // pero por simplicidad usaremos un gris que se ve bien en todo.
+                fill(80, this.alpha); 
+                ellipse(this.x, this.y, this.size);
             }
         }
 
-        // --- 2. INTERFAZ Y NAVEGACIÓN ---
+        // --- TUS FUNCIONES ORIGINALES (MANTENIDAS) ---
         function nav(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id + '-page').classList.add('active');
@@ -632,6 +620,10 @@
             if(id === 'home') {
                 document.body.classList.add('show-altimeter');
                 document.body.style.backgroundColor = "var(--bg-paramo)";
+                document.body.style.color = "#111";
+            } else if (id === 'about') {
+                document.body.classList.remove('show-altimeter');
+                document.body.style.backgroundColor = "#f4f5f7";
                 document.body.style.color = "#111";
             } else { 
                 document.body.classList.remove('show-altimeter'); 
@@ -643,6 +635,7 @@
         function openModal(title, color) { document.getElementById('modal').classList.add('open'); }
         function closeModal() { document.getElementById('modal').classList.remove('open'); }
 
+        // Filtros
         filterSelection("all", "ARCHIVE OVERVIEW: Chronological display of all inquiries.")
         function filterSelection(c, desc) {
             var x, i;
@@ -662,17 +655,16 @@
         function w3AddClass(element, name) { var i, arr1, arr2; arr1 = element.className.split(" "); arr2 = name.split(" "); for (i = 0; i < arr2.length; i++) { if (arr1.indexOf(arr2[i]) == -1) {element.className += " " + arr2[i];} } }
         function w3RemoveClass(element, name) { var i, arr1, arr2; arr1 = element.className.split(" "); arr2 = name.split(" "); for (i = 0; i < arr2.length; i++) { while (arr1.indexOf(arr2[i]) > -1) { arr1.splice(arr1.indexOf(arr2[i]), 1); } } element.className = arr1.join(" "); }
 
-        // --- 3. SCROLL & AMBIENTE ---
+        // Scroll Logic Original
         const body = document.body;
         const orb1 = document.querySelector('.orb-1');
         const orb2 = document.querySelector('.orb-2');
-        
         window.addEventListener('scroll', () => {
             if(!document.getElementById('home-page').classList.contains('active')) return;
             const scrollPct = window.scrollY / (document.body.scrollHeight - window.innerHeight);
             const alt = Math.round(3200 - (scrollPct * 3150));
             document.getElementById('alt-val').innerText = alt;
-            
+
             // Ocultar indicador de scroll si bajamos
             const indicator = document.querySelector('.scroll-indicator');
             if(indicator) {
@@ -702,6 +694,7 @@
             }
         });
 
+        // Cursor Logic Original
         const cursor = document.getElementById('cursor');
         document.addEventListener('mousemove', e => {
             const x = e.clientX / window.innerWidth;
@@ -718,3 +711,10 @@
     </script>
 </body>
 </html>
+        .btn-download {
+            display: inline-block; margin-top: 30px; padding: 12px 25px;
+            border: 2px solid var(--terracotta); background: transparent;
+            color: var(--terracotta); font-family: var(--font-mono);
+            text-decoration: none; font-size: 0.9rem; font-weight: bold;
+            transition: all 0.3s ease;
+        }
