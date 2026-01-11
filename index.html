@@ -169,29 +169,42 @@
         .card p { font-family: var(--font-mono); font-size: 0.8rem; color: #555; margin-top: 5px; }
 
         /* =========================================
-           7. ABOUT PAGE & CV
+           7. ABOUT PAGE & CV (REESTRUCTURADO)
            ========================================= */
         #about-page { padding: 150px 5vw; min-height: 100vh; background: var(--bg-paramo) !important; color: #111 !important; }
         
         .about-container { max-width: 1400px; margin: 0 auto; }
         .about-layout { display: grid; grid-template-columns: 30% 65%; gap: 5%; align-items: start; margin-top: 50px; }
+        
+        /* Columna Izquierda (Bio & Inquiries) */
         .bio-text { font-size: 1.4rem; line-height: 1.4; font-weight: 300; margin-bottom: 30px;}
         .bio-highlight { color: var(--terracotta); font-style: italic; }
+        .philosophy-box { margin-top: 30px; padding: 25px; border: 1px solid #111; background: rgba(255,255,255,0.5); }
+        .philosophy-box p { font-size: 0.85rem; margin-bottom: 15px; line-height: 1.6; }
         
-        .cv-section { margin-bottom: 50px; }
-        .cv-header { font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 2px; color: var(--terracotta); border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom: 30px; text-transform: uppercase;}
-        .cv-item { display: grid; grid-template-columns: 100px 1fr; gap: 20px; margin-bottom: 30px; page-break-inside: avoid; }
-        .cv-date { font-family: var(--font-mono); font-size: 0.8rem; opacity: 0.7; padding-top: 5px; }
-        .cv-role { font-family: var(--font-serif); font-size: 1.2rem; font-weight: 600; margin-bottom: 5px; line-height: 1.2;}
-        .cv-place { font-family: var(--font-mono); font-size: 0.85rem; text-transform: uppercase; margin-bottom: 8px; color: #555; }
-        .cv-desc { font-family: var(--font-serif); font-size: 1rem; line-height: 1.4; color: #333; }
-        .cv-desc ul { list-style: circle; padding-left: 20px; margin-top: 5px; }
-        .cv-desc li { margin-bottom: 5px; font-size: 0.95rem; }
+        /* CV STYLES */
+        .cv-section { margin-bottom: 60px; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 40px; }
+        .cv-section:last-child { border: none; }
+        
+        .cv-header { font-family: var(--font-mono); font-size: 0.9rem; letter-spacing: 2px; color: var(--terracotta); margin-bottom: 30px; text-transform: uppercase; font-weight: bold;}
+        
+        .cv-item { display: grid; grid-template-columns: 120px 1fr; gap: 20px; margin-bottom: 30px; }
+        .cv-date { font-family: var(--font-mono); font-size: 0.75rem; opacity: 0.7; padding-top: 6px; }
+        .cv-role { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 600; margin-bottom: 5px; line-height: 1.1;}
+        .cv-place { font-family: var(--font-mono); font-size: 0.8rem; text-transform: uppercase; margin-bottom: 10px; color: #555; letter-spacing: 0.5px; }
+        .cv-desc { font-family: var(--font-serif); font-size: 1rem; line-height: 1.5; color: #333; }
+        .cv-desc ul { list-style: circle; padding-left: 18px; margin-top: 8px; }
+        .cv-desc li { margin-bottom: 6px; font-size: 0.95rem; }
+
+        /* CONTACT FOOTER */
+        .contact-footer { margin-top: 80px; padding-top: 40px; border-top: 2px solid #111; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        .contact-info a { text-decoration: underline; transition: 0.3s; }
+        .contact-info a:hover { color: var(--terracotta); }
 
         .btn-download { display: inline-block; padding: 15px 30px; border: 1px solid #111; font-family: var(--font-mono); font-size: 0.8rem; text-transform: uppercase; margin-top: 20px; transition: all 0.3s; background: transparent; }
         .btn-download:hover { background: var(--terracotta); border-color: var(--terracotta); color: white; }
         
-        @media (max-width: 900px) { .about-layout { grid-template-columns: 1fr; gap: 60px; } .cv-item { grid-template-columns: 1fr; } }
+        @media (max-width: 900px) { .about-layout { grid-template-columns: 1fr; gap: 60px; } .cv-item { grid-template-columns: 1fr; } .contact-footer { grid-template-columns: 1fr; } }
 
         /* =========================================
            8. MODAL (STYLES & CONTENT)
@@ -207,7 +220,7 @@
 
         .modal-content { padding: 100px 10vw; max-width: 1400px; margin: 0 auto; color: #111; }
 
-        .project-detail-container { font-family: var(--font-mono); color: #333; animation: fadeIn 1s ease; display: none; /* Ocultos por defecto */ }
+        .project-detail-container { font-family: var(--font-mono); color: #333; animation: fadeIn 1s ease; display: none; }
         
         .proj-header { margin-bottom: 60px; border-bottom: 2px solid var(--terracotta); padding-bottom: 40px; }
         .proj-meta-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
@@ -338,7 +351,7 @@
 
         <div class="grid">
             <div class="card filter-item tangible" onclick="openModal('proj-ladrilludo')">
-                <div class="card-img"><img src="https://images.unsplash.com/photo-1591543620767-58268571c994?q=80&w=800&auto=format&fit=crop" alt="Ladrilludo"></div>
+                <div class="card-img"><img src="https://lh3.googleusercontent.com/d/15ctw3JumkdkC_rz_OvtUnU6wPHsc38fE" alt="Ladrilludo"></div>
                 <div class="card-tags">[ PUBLIC INQUIRY ]</div>
                 <h3>Ladrilludo</h3>
                 <p>Walking-with a brick in Bogotá</p>
@@ -380,31 +393,59 @@
         <div class="about-container">
             <h1 style="font-size:4vw; font-weight:300; margin:0 0 60px 0;">Trajectory & Thought</h1>
             <div class="about-layout">
+                
                 <div class="bio-column">
                     <p class="bio-text">
-                        I define myself as a critical technologist navigating the tension between <span class="bio-highlight">high-fidelity engineering and the low-fidelity reality of the Global South.</span>
+                        Visual artist and designer focused on creating immersive visual experiences that integrate art, technology, and design.
+                    </p>
+                    <p class="bio-text">
+                        I define myself as a critical technologist navigating the tension between <span class="bio-highlight">high-fidelity engineering and the low-fidelity reality of the Global South.</span> My work does not seek to "solve" problems through accelerationism, but to stay with the trouble—using code, circuits, and biology to visualize the invisible frictions of territory.
                     </p>
                     <div class="philosophy-box">
                         <h4 style="font-size: 0.9rem; letter-spacing: 2px; margin-bottom: 20px;">CORE INQUIRIES</h4>
-                        <p><strong>01. Pluriversal Tech:</strong> How can we design technologies that embrace multiple worlds instead of imposing a universal standard?</p>
+                        <p><strong>01. Pluriversal Tech:</strong> How can we design technologies that embrace multiple worlds?</p>
                         <p><strong>02. Material Agency:</strong> Moving beyond "using" tools to "collaborating" with matter (OOI).</p>
                         <p><strong>03. Public Pedagogy:</strong> The street as a classroom; the artifact as a teacher.</p>
                     </div>
-                    
-                    <div style="margin-top: 40px; border-top: 1px solid #ccc; padding-top: 20px;">
-                        <h4 style="font-size: 0.8rem; letter-spacing: 2px; color: var(--terracotta); margin-bottom: 15px;">CONTACT & SOCIAL</h4>
-                        <p style="font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.8;">
-                            Bogotá, Colombia<br>
-                            mariapaulaojedagomez@gmail.com<br>
-                            <a href="https://www.linkedin.com/in/paula-ojeda-962331361/" target="_blank" style="text-decoration: underline;">LinkedIn</a> / 
-                            <a href="https://www.behance.net/PauOjedaG" target="_blank" style="text-decoration: underline;">Behance</a>
-                        </p>
-                    </div>
+                    <a href="#" class="btn-download">Download Full CV [PDF]</a>
                 </div>
 
                 <div class="cv-column">
+                    
                     <div class="cv-section">
-                        <div class="cv-header">PROFESSIONAL EXPERIENCE</div>
+                        <div class="cv-header">INTERNATIONAL RESIDENCIES & RESEARCH</div>
+                        <div class="cv-item">
+                            <div class="cv-date">2025</div>
+                            <div>
+                                <div class="cv-role">Walking Global Dialogues Residency</div>
+                                <div class="cv-place">Participant (International)</div>
+                                <div class="cv-desc">Global dialogue program with Concordia University (Canada), UBC, and Helwan University (Egypt). Focus on walking as a research method.</div>
+                            </div>
+                        </div>
+                        <div class="cv-item">
+                            <div class="cv-date">2023 - 2025</div>
+                            <div>
+                                <div class="cv-role">Pentaprisma Residency</div>
+                                <div class="cv-place">Coordinator & Member</div>
+                                <div class="cv-desc">Led the analog color photography residency project at Universidad de los Andes.</div>
+                            </div>
+                        </div>
+                         <div class="cv-item">
+                            <div class="cv-date">Active Groups</div>
+                            <div>
+                                <div class="cv-role">Research Affiliations</div>
+                                <div class="cv-desc">
+                                    <ul>
+                                        <li><strong>Visual Computing Group (Jan 2025-Pres):</strong> Code-focused research; Image Festival participant.</li>
+                                        <li><strong>Senda Research Group (Jan 2024-Pres):</strong> Experimental creative computing.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cv-section">
+                        <div class="cv-header">PROFESSIONAL PRACTICE</div>
                         <div class="cv-item">
                             <div class="cv-date">Mar 2025 - Pres</div>
                             <div>
@@ -418,15 +459,65 @@
                             <div>
                                 <div class="cv-role">Photography Lab Monitor</div>
                                 <div class="cv-place">Universidad de los Andes</div>
-                                <div class="cv-desc">Management of professional equipment (DSLR/Mirrorless). Responsible for continuous and strobist lighting setups and technical support.</div>
+                                <div class="cv-desc">Management of professional equipment. Responsible for continuous and strobist lighting setups.</div>
                             </div>
                         </div>
                         <div class="cv-item">
                             <div class="cv-date">2025 (Various)</div>
                             <div>
-                                <div class="cv-role">Academic Assistantships</div>
-                                <div class="cv-place">Universidad de los Andes</div>
-                                <div class="cv-desc">Data Science Coordination, Event Photography, Food Styling & Lighting.</div>
+                                <div class="cv-role">Teaching & Design Assistant</div>
+                                <div class="cv-place">Universidad de los Andes / Cinemateca</div>
+                                <div class="cv-desc">
+                                    <ul>
+                                        <li><strong>Data Science Coordination:</strong> Assistant Designer (Aug-Sep 2025).</li>
+                                        <li><strong>Cinemateca de Bogotá:</strong> Workshop Facilitator "Magical Animation" (Mar-Apr 2025).</li>
+                                        <li><strong>Food Styling & Event Photography:</strong> Teaching Assistant.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cv-section">
+                        <div class="cv-header">LEADERSHIP & SERVICE</div>
+                        <div class="cv-item">
+                            <div class="cv-date">2024 - 2025</div>
+                            <div>
+                                <div class="cv-role">Student Council Representative</div>
+                                <div class="cv-place">Consejo Estudiantil Uniandino</div>
+                                <div class="cv-desc">
+                                    <ul>
+                                        <li><strong>Secretary General (Jan 2025 - Pres):</strong> Strategic planning and institutional communication.</li>
+                                        <li><strong>Faculty Representative (Arts & Humanities):</strong> Elected position.</li>
+                                        <li><strong>Department Representative (Art Dept):</strong> 2024.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cv-item">
+                            <div class="cv-date">2025</div>
+                            <div>
+                                <div class="cv-role">Marketing Team</div>
+                                <div class="cv-place">WIB (Women in Business)</div>
+                                <div class="cv-desc">Specializing in art strategy and design for a women's foundation.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cv-section">
+                        <div class="cv-header">SELECTED EXHIBITIONS</div>
+                        <div class="cv-item">
+                            <div class="cv-date">2022 - 2025</div>
+                            <div>
+                                <div class="cv-desc">
+                                    <ul>
+                                        <li><strong>"Soledad" (May 2025):</strong> Performative activation.</li>
+                                        <li><strong>Experimental Humanities Grant (Mar 2025):</strong> Winner's exhibition.</li>
+                                        <li><strong>"Ecos" (Nov 2024):</strong> Site-specific installation.</li>
+                                        <li><strong>"18 Uvas en un Viñal" (May 2024):</strong> Interáreas collective exhibition.</li>
+                                        <li><strong>"Ficciones a Color" (Dec 2022):</strong> Valenzuela Klenner Gallery.</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -438,6 +529,7 @@
                             <div>
                                 <div class="cv-role">Master's in Design</div>
                                 <div class="cv-place">Universidad de los Andes</div>
+                                <div class="cv-desc">Focus on Critical Interfaces & Bio-Design.</div>
                             </div>
                         </div>
                         <div class="cv-item">
@@ -445,53 +537,45 @@
                             <div>
                                 <div class="cv-role">B.A. in Visual Arts</div>
                                 <div class="cv-place">Universidad de los Andes</div>
-                                <div class="cv-desc">Emphasis in electronic media and time-based arts. Minors in Visual Computing & Photography.</div>
+                                <div class="cv-desc">Emphasis in electronic media. Minors: Visual Computing, Photography, Creative Design.</div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="cv-section">
-                        <div class="cv-header">RESEARCH & LEADERSHIP</div>
+                     <div class="cv-section">
+                        <div class="cv-header">TECHNICAL TOOLKIT</div>
                         <div class="cv-item">
-                            <div class="cv-date">2025 - Pres</div>
-                            <div>
-                                <div class="cv-role">Secretary General</div>
-                                <div class="cv-place">Student Council (Uniandino)</div>
-                            </div>
+                            <div class="cv-date">Software</div>
+                            <div class="cv-desc">TouchDesigner, Python, HTML/CSS/JS, Adobe Creative Suite (Expert).</div>
                         </div>
                         <div class="cv-item">
-                            <div class="cv-date">Groups</div>
-                            <div>
-                                <div class="cv-role">Research Memberships</div>
-                                <div class="cv-desc">
-                                    <ul>
-                                        <li><strong>Visual Computing Group (2025):</strong> Image Festival participant.</li>
-                                        <li><strong>Senda Research Group (2024):</strong> Experimental creative computing.</li>
-                                        <li><strong>Pentaprisma Collective (2023):</strong> Analog photography residency coordinator.</li>
-                                    </ul>
-                                </div>
-                            </div>
+                            <div class="cv-date">Hardware</div>
+                            <div class="cv-desc">Analog/Digital Photography, Darkroom, Studio Lighting, Physical Computing.</div>
                         </div>
                     </div>
-
-                    <div class="cv-section">
-                        <div class="cv-header">SELECTED EXHIBITIONS</div>
-                        <div class="cv-item">
-                            <div class="cv-date">2024 - 2025</div>
-                            <div>
-                                <div class="cv-desc">
-                                    <ul>
-                                        <li><strong>"Soledad" (May 2025):</strong> Performative activation on loneliness.</li>
-                                        <li><strong>Experimental Humanities Grant (Mar 2025):</strong> Winner's exhibition.</li>
-                                        <li><strong>"Ecos" (Nov 2024):</strong> Site-specific installation.</li>
-                                        <li><strong>"Ficciones a Color" (Dec 2022):</strong> Valenzuela Klenner Gallery.</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                
+                </div> </div>
+            
+            <div class="contact-footer">
+                <div class="contact-info">
+                    <h4 style="font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 2px; color: var(--terracotta); margin-bottom: 20px;">CONTACT</h4>
+                    <p style="font-family: var(--font-serif); font-size: 1.1rem; line-height: 1.6;">
+                        Paula Ojeda<br>
+                        Bogotá, Colombia<br>
+                        mariapaulaojedagomez@gmail.com<br>
+                        +57 305 446 8590
+                    </p>
+                </div>
+                <div class="social-links" style="text-align: right;">
+                    <h4 style="font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 2px; color: var(--terracotta); margin-bottom: 20px;">CONNECT</h4>
+                    <p style="font-family: var(--font-mono); font-size: 0.9rem;">
+                        <a href="https://www.linkedin.com/in/paula-ojeda-962331361/" target="_blank">LinkedIn ↗</a><br><br>
+                        <a href="https://www.behance.net/PauOjedaG" target="_blank">Behance ↗</a><br><br>
+                        <a href="https://www.instagram.com/bubblegum_pau" target="_blank">Instagram ↗</a>
+                    </p>
                 </div>
             </div>
+
         </div>
     </div>
 
@@ -501,6 +585,10 @@
             
             <div id="proj-ladrilludo" class="project-detail-container">
                 <header class="proj-header">
+                    <div style="width:100%; height: 60vh; overflow:hidden; margin-bottom: 40px; border-radius: 2px;">
+                        <img src="https://lh3.googleusercontent.com/d/15ctw3JumkdkC_rz_OvtUnU6wPHsc38fE" style="width:100%; height:100%; object-fit:cover;" alt="Ladrilludo Header">
+                    </div>
+
                     <div class="proj-meta-grid">
                         <div><span class="meta-label">PUBLICATION (EXP. 2027)</span><span class="meta-value">Chapter in "Worlding Education Differently"</span></div>
                         <div><span class="meta-label">CONTEXT</span><span class="meta-value">Walking Global Dialogues Residency</span></div>
@@ -512,31 +600,61 @@
                         <a href="https://docs.google.com/document/d/17dKbyyroR0N3V8CRuY6XiJ6v5otDF8Hmk7aJtmvI8u8/edit?usp=sharing" target="_blank" class="btn-download" style="margin-top:0;">📄 READ FULL RESEARCH PAPER</a>
                     </div>
                 </header>
+                
                 <section class="proj-section">
                     <div class="proj-grid-text-img">
                         <div class="text-block">
                             <p class="lead-text">Ladrilludo reimagines a ubiquitous building material as an "itinerant, sensing object". By removing a clay brick from its static context and dragging it through the streets, the object transforms into a <strong>"stylus"</strong>—a sensitive indicator tracing the topography and registering the frequencies of the city's surface.</p>
-                            <p>Grounded in <em>Pluriversal Thinking</em> and <em>Object-Oriented Inquiry (OOI)</em>, this performance actively interrogates the "smooth" narratives of urban renewal. The brick, tethered like a pet, became a "dialogue artifact", provoking spontaneous interactions (<em>mamadera de gallo</em>) and uncovering the silenced industrial history of the <em>Las Aguas</em> neighborhood.</p>
+                            <p>Grounded in <em>Pluriversal Thinking</em> and <em>Object-Oriented Inquiry (OOI)</em>, this performance actively interrogates the "smooth" narratives of urban renewal.</p>
                         </div>
                         <div class="image-block">
-                            <img src="https://via.placeholder.com/1200x800" alt="Ladrilludo on Cobblestone" class="proj-img">
+                            <img src="https://lh3.googleusercontent.com/d/1fcNFhC3K6E-0N_I4iS1ZOqOvDJ_jQrBX" alt="Ladrilludo Context" class="proj-img">
                             <span class="caption">Fig 1. The brick as an itinerant participant on the cobbled streets of Bogotá.</span>
                         </div>
                     </div>
                 </section>
+                
                 <hr class="proj-divider">
+                
                 <section class="proj-section technical">
                     <h3>01. DECONSTRUCTING THE INTERFACE</h3>
-                    <p style="margin-bottom: 30px; max-width: 800px;">The transformation from debris to device involved drilling the ceramic body to embed a <strong>lavalier microphone</strong> deep within its core. This allowed the object to record the internal resonance of the friction.</p>
+                    <p style="margin-bottom: 30px; max-width: 800px;">The transformation from debris to device involved drilling the ceramic body to embed a <strong>lavalier microphone</strong> deep within its core.</p>
+                    
                     <div class="tech-specs-grid">
                         <div class="spec-item"><span class="tech-label">INPUT</span><p><strong>Lavalier Microphone</strong><br>Piezo-electric resonance capture.</p></div>
                         <div class="spec-item"><span class="tech-label">FABRICATION</span><p><strong>Masonry Drilling</strong><br>Modified vernacular clay brick.</p></div>
                         <div class="spec-item"><span class="tech-label">OUTPUT</span><p><strong>Sonic Topography</strong><br>Raw .wav recording.</p></div>
                     </div>
-                    <div class="full-width-media">
-                        <img src="https://via.placeholder.com/1200x600/333/fff?text=INSERT+DRILLING+PROCESS+PHOTO" alt="Fabrication Process" class="proj-img">
+
+                    <div class="proj-grid-2" style="margin-top: 40px;">
+                        <div class="image-block"><img src="https://lh3.googleusercontent.com/d/1FfIDnsCbS-C_8vzubgNbLz4nIa2UiG5I" class="proj-img" alt="Process 1"></div>
+                        <div class="image-block"><img src="https://lh3.googleusercontent.com/d/1EVqovtZLfOQXPf_9e329ntnvV-9e3WYy" class="proj-img" alt="Process 2"></div>
                     </div>
                 </section>
+
+                <section class="proj-section">
+                    <h3>02. RUPTURE & REPAIR</h3>
+                    <div class="proj-grid-2">
+                        <div class="image-block">
+                            <img src="https://lh3.googleusercontent.com/d/1ELInddYtfN_kUgEulCybron6jJAlIuH3" alt="Repaired Brick" class="proj-img">
+                            <span class="caption">Fig 3. The brick split mid-performance and was repaired with duct tape.</span>
+                        </div>
+                        <div class="text-block">
+                            <p class="lead-text">"The brick wears down, breaks, and is patched."</p>
+                            <p>Midway through the walk, the interface failed. The brick split under the physical stress of the city. Instead of replacing the object, we engaged in a <strong>ritual of repair</strong> using duct tape. This moment of rupture became central to the inquiry.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="proj-section">
+                    <h3>03. FIELD DOCUMENTATION</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                         <img src="https://lh3.googleusercontent.com/d/14gH_tyocWBeZpI2QPT7WJyAWy32Ku3ee" class="proj-img">
+                         <img src="https://lh3.googleusercontent.com/d/1mo-aLOdjsRvgiDUsaWHw4XzGtQhuczwd" class="proj-img">
+                         <img src="https://lh3.googleusercontent.com/d/1V10Z6-494Sgnq0oIT_dg4slgpEboM93H" class="proj-img">
+                    </div>
+                </section>
+
                 <section class="credits-section">
                     <div class="credits-box">
                         <h4>RESEARCH TEAM & ROLES</h4>
@@ -551,18 +669,9 @@
             <div id="proj-huesped" class="project-detail-container">
                 <header class="proj-header">
                     <div class="proj-meta-grid">
-                        <div>
-                            <span class="meta-label">COURSE / CONTEXT [cite: 301]</span>
-                            <span class="meta-value">Arte y Ciencias (2024-2)</span>
-                        </div>
-                        <div>
-                            <span class="meta-label">MATERIALITY [cite: 238]</span>
-                            <span class="meta-value">Thermosensitive Pigment / Electronics</span>
-                        </div>
-                        <div>
-                            <span class="meta-label">TYPOLOGY [cite: 237]</span>
-                            <span class="meta-value">Living Sculpture / Installation</span>
-                        </div>
+                        <div><span class="meta-label">COURSE / CONTEXT</span><span class="meta-value">Arte y Ciencias (2024-2)</span></div>
+                        <div><span class="meta-label">MATERIALITY</span><span class="meta-value">Thermosensitive Pigment / Electronics</span></div>
+                        <div><span class="meta-label">TYPOLOGY</span><span class="meta-value">Living Sculpture / Installation</span></div>
                     </div>
                     <h1 class="proj-title">Huésped Errante</h1>
                     <h2 class="proj-subtitle">Thermodynamic visualization of obsession as a viral agent.</h2>
@@ -571,19 +680,11 @@
                 <section class="proj-section">
                     <div class="proj-grid-text-img">
                         <div class="text-block">
-                            <p class="lead-text">
-                                "Obsession creeps in, ruminating silently, contaminating every corner of the being." [cite: 235]
-                            </p>
-                            <p>
-                                <em>Huésped Errante</em> is a living sculpture that investigates the physical manifestation of obsessive thought patterns. Using principles of thermodynamics and chemistry, the piece creates a visual metaphor for a "virus" or "parasite"[cite: 237].
-                            </p>
-                            <p>
-                                Through a controlled heating system, invisible drawings emerge and decay on a surface of granular pigment, simulating the erratic and invasive nature of intrusive thoughts. The artwork breathes in cycles, revealing a hidden layer of "infection" before fading back into dormancy.
-                            </p>
+                            <p class="lead-text">"Obsession creeps in, ruminating silently, contaminating every corner of the being."</p>
+                            <p><em>Huésped Errante</em> is a living sculpture that investigates the physical manifestation of obsessive thought patterns. Using principles of thermodynamics and chemistry, the piece creates a visual metaphor for a "virus" or "parasite".</p>
                         </div>
                         <div class="image-block">
-                            <img src="https://via.placeholder.com/800x1000/333/fff?text=HUESPED+MAIN+PHOTO" alt="Huesped Installation" class="proj-img">
-                            <span class="caption">Fig 1. The surface of the sculpture activated by heat.</span>
+                            <img src="https://images.unsplash.com/photo-1530906622080-12e0e5a59603?q=80&w=800&auto=format&fit=crop" alt="Huesped Installation" class="proj-img">
                         </div>
                     </div>
                 </section>
@@ -592,79 +693,40 @@
 
                 <section class="proj-section technical">
                     <h3>01. THERMODYNAMIC MECHANISM</h3>
-                    <p style="margin-bottom: 30px; max-width: 800px;">
-                        The core of the installation relies on <strong>Leukocyte dye pigments</strong>[cite: 261]. Unlike standard thermochromic inks that become transparent, this specific granular pigment was engineered to shift from gray to white  when its crystalline networks are altered by temperature[cite: 256].
-                    </p>
-                    
+                    <p style="margin-bottom: 30px; max-width: 800px;">The core of the installation relies on <strong>Leukocyte dye pigments</strong>. Unlike standard thermochromic inks that become transparent, this specific granular pigment was engineered to shift from gray to white.</p>
                     <div class="tech-specs-grid">
-                        <div class="spec-item">
-                            <span class="tech-label">ACTUATOR [cite: 271]</span>
-                            <p><strong>110V Resistors</strong><br>Generating controlled heat beneath the aluminum surface.</p>
-                        </div>
-                        <div class="spec-item">
-                            <span class="tech-label">CONTROL [cite: 275]</span>
-                            <p><strong>Arduino + Relays</strong><br>Binary switching system regulating the heating cycles.</p>
-                        </div>
-                        <div class="spec-item">
-                            <span class="tech-label">MATERIAL [cite: 261]</span>
-                            <p><strong>Leucodye Pigment</strong><br>Granular application. Transition point: Gray -> White.</p>
-                        </div>
-                        <div class="spec-item">
-                            <span class="tech-label">CYCLE </span>
-                            <p><strong>Respiratory Loop</strong><br>3 minutes active (Heat) / 3 minutes passive (Cooling).</p>
-                        </div>
-                    </div>
-
-                    <div class="full-width-media">
-                        <img src="https://via.placeholder.com/1200x600/222/fff?text=CIRCUIT+AND+WIRING" alt="Internal Mechanism" class="proj-img">
-                        <span class="caption">Fig 2. The resistance system: Heating elements wired to the relay control board.</span>
-                    </div>
-                </section>
-
-                <section class="proj-section">
-                    <h3>02. MUTATION & DECAY</h3>
-                    <div class="proj-grid-2">
-                        <div class="image-block">
-                            <img src="https://via.placeholder.com/800x800/555/fff?text=PIGMENT+CLOSEUP" alt="Pigment Reaction" class="proj-img">
-                            <span class="caption">Fig 3. Granular pigment reacting to the thermal stimulus.</span>
-                        </div>
-                        <div class="text-block">
-                            <p class="lead-text">"From gray to white: An erasure of the self."</p>
-                            <p>
-                                The technical challenge lay in the behavior of the solvent within the dye. At low temperatures, the dense solvent allows the dye to reflect color. When heated, the solvent loses density, separating the color from the acid [cite: 262-265]. 
-                            </p>
-                            <p>
-                                This chemical reaction was not just functional but conceptual: it mirrors how obsession "burns" through the psyche, creating voids and white noise where clarity once existed.
-                            </p>
-                        </div>
+                        <div class="spec-item"><span class="tech-label">ACTUATOR</span><p><strong>110V Resistors</strong><br>Generating controlled heat.</p></div>
+                        <div class="spec-item"><span class="tech-label">CONTROL</span><p><strong>Arduino + Relays</strong><br>Binary switching system.</p></div>
+                        <div class="spec-item"><span class="tech-label">MATERIAL</span><p><strong>Leucodye Pigment</strong><br>Granular application. Gray -> White.</p></div>
                     </div>
                 </section>
 
                 <section class="credits-section">
                     <div class="credits-box">
-                        <h4>PROJECT TEAM [cite: 302-305]</h4>
+                        <h4>PROJECT TEAM</h4>
                         <ul>
                             <li><strong>Paula Ojeda:</strong> Co-Author / Electronics & Prototyping</li>
-                            <li><strong>Natalia Salamanca:</strong> Co-Author</li>
-                            <li><strong>Carolina Rodriguez:</strong> Co-Author</li>
-                            <li><strong>Melany Aponte:</strong> Co-Author</li>
+                            <li><strong>Natalia Salamanca, Carolina Rodriguez, Melany Aponte:</strong> Co-Authors</li>
                         </ul>
-                        <p class="citation-note" style="margin-top:20px;">
-                            *Developed for the "Art and Science" course, Universidad de los Andes (2024-2).
-                        </p>
                     </div>
                 </section>
             </div>
 
-            <div id="proj-soledad" class="project-detail-container"><h1>Work in Progress...</h1></div>
-            <div id="proj-identity" class="project-detail-container"><h1>Work in Progress...</h1></div>
+            <div id="proj-soledad" class="project-detail-container">
+                <header class="proj-header"><h1 class="proj-title">La Soledad Suena</h1></header>
+                <section class="proj-section"><p>Work in progress documentation...</p></section>
+            </div>
+
+             <div id="proj-identity" class="project-detail-container">
+                <header class="proj-header"><h1 class="proj-title">Identity Archives</h1></header>
+                <section class="proj-section"><p>Work in progress documentation...</p></section>
+            </div>
 
         </div>
     </div>
 
     <script>
     // --- LÓGICA UI & NAVEGACIÓN ---
-    
     function nav(id) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.getElementById(id + '-page').classList.add('active');
@@ -681,17 +743,10 @@
         }
     }
 
-    // --- LÓGICA DEL MODAL DINÁMICO (ACTUALIZADA) ---
+    // --- LÓGICA DEL MODAL DINÁMICO ---
     function openModal(projectId) { 
-        // 1. Abrir modal
         document.getElementById('modal').classList.add('open'); 
-        
-        // 2. Ocultar todos los contenidos de proyecto
-        document.querySelectorAll('.project-detail-container').forEach(el => {
-            el.style.display = 'none';
-        });
-
-        // 3. Mostrar SOLO el proyecto seleccionado
+        document.querySelectorAll('.project-detail-container').forEach(el => { el.style.display = 'none'; });
         const target = document.getElementById(projectId);
         if(target) {
             target.style.display = 'block';
@@ -701,7 +756,7 @@
 
     function closeModal() { document.getElementById('modal').classList.remove('open'); }
 
-    // Filtros de Proyectos
+    // Filtros
     function filterSelection(c, desc) {
         var x = document.getElementsByClassName("filter-item");
         if (c == "all") c = "";
@@ -728,24 +783,18 @@
         document.getElementById('alt-val').innerText = alt;
         
         if (scrollPct < 0.25) { 
-            body.style.backgroundColor = "var(--bg-paramo)"; 
-            body.style.color = "#111"; 
-            orb1.style.background = "#fff"; 
-            orb2.style.background = "#e0e0e0"; 
+            body.style.backgroundColor = "var(--bg-paramo)"; body.style.color = "#111"; 
+            orb1.style.background = "#fff"; orb2.style.background = "#e0e0e0"; 
             document.getElementById('zone-val').innerText = "PÁRAMO"; 
         } 
         else if (scrollPct >= 0.25 && scrollPct < 0.6) { 
-            body.style.backgroundColor = "var(--bg-bogota)"; 
-            body.style.color = "#000"; 
-            orb1.style.background = "var(--neon-green)"; 
-            orb2.style.background = "#555"; 
+            body.style.backgroundColor = "var(--bg-bogota)"; body.style.color = "#000"; 
+            orb1.style.background = "var(--neon-green)"; orb2.style.background = "#555"; 
             document.getElementById('zone-val').innerText = "BOGOTÁ"; 
         } 
         else { 
-            body.style.backgroundColor = "var(--bg-barranca)"; 
-            body.style.color = "#fff"; 
-            orb1.style.background = "#ff5e00"; 
-            orb2.style.background = "#1a3c34"; 
+            body.style.backgroundColor = "var(--bg-barranca)"; body.style.color = "#fff"; 
+            orb1.style.background = "#ff5e00"; orb2.style.background = "#1a3c34"; 
             document.getElementById('zone-val').innerText = "MAGDALENA"; 
         }
     });
@@ -827,9 +876,7 @@
             }
         }
         
-        isHovered() {
-            return dist(mouseX, mouseY, this.pos.x, this.pos.y) < this.r + 20;
-        }
+        isHovered() { return dist(mouseX, mouseY, this.pos.x, this.pos.y) < this.r + 20; }
 
         interact() {
             let d = dist(mouseX, mouseY, this.pos.x, this.pos.y);
@@ -873,3 +920,4 @@
     </script>
 </body>
 </html>
+              
