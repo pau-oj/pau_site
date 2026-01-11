@@ -31,7 +31,7 @@
             font-family: var(--font-serif);
             color: #111;
             background-color: var(--bg-paramo);
-            overflow-x: hidden; /* Evita scroll horizontal */
+            overflow-x: hidden;
             transition: background-color 1.5s cubic-bezier(0.25, 1, 0.5, 1), color 1s ease;
         }
 
@@ -71,9 +71,9 @@
             font-family: var(--font-mono); font-size: 0.75rem;
             z-index: 100; mix-blend-mode: difference; color: white;
             text-transform: uppercase; letter-spacing: 1px;
-            pointer-events: none; /* Dejar pasar clicks en áreas vacías */
+            pointer-events: none; 
         }
-        .top-bar * { pointer-events: auto; } /* Reactivar clicks en enlaces */
+        .top-bar * { pointer-events: auto; } 
 
         .nav-links a { margin-left: 20px; border-bottom: 1px solid transparent; transition: 0.3s; }
         .nav-links a:hover { border-color: currentColor; }
@@ -95,7 +95,6 @@
         .hero-title { font-size: 8vw; line-height: 0.85; margin: 0; font-weight: 300; color: #111; letter-spacing: -0.02em; }
         .hero-subtitle { font-family: var(--font-mono); font-size: 0.9rem; margin-top: 30px; line-height: 1.5; max-width: 400px; border-left: 2px solid var(--terracotta); padding-left: 20px; opacity: 0.8; }
 
-        /* Scroll Indicator */
         .scroll-indicator {
             position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
             text-align: center; z-index: 20; opacity: 0.7; cursor: pointer;
@@ -138,12 +137,11 @@
 
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 60px; margin-top: 50px; }
         
-        /* TARJETAS - Z-INDEX ALTO PARA CLICKS */
         .card { 
             cursor: pointer; 
             display: block; 
             position: relative;
-            z-index: 10; /* Asegura que esté por encima de cualquier fondo */
+            z-index: 10;
             animation: fadeEffect 0.5s; 
             background: transparent;
             box-shadow: none;
@@ -178,9 +176,7 @@
         
         .cv-section { margin-bottom: 60px; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 40px; }
         .cv-section:last-child { border: none; }
-        
         .cv-header { font-family: var(--font-mono); font-size: 0.9rem; letter-spacing: 2px; color: var(--terracotta); margin-bottom: 30px; text-transform: uppercase; font-weight: bold;}
-        
         .cv-item { display: grid; grid-template-columns: 120px 1fr; gap: 20px; margin-bottom: 30px; }
         .cv-date { font-family: var(--font-mono); font-size: 0.75rem; opacity: 0.7; padding-top: 6px; }
         .cv-role { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 600; margin-bottom: 5px; line-height: 1.1;}
@@ -357,7 +353,7 @@
             </div>
             
             <div class="card filter-item systems" onclick="openModal('proj-soledad')">
-                <div class="card-img"><img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=800&auto=format&fit=crop" alt="Soledad"></div>
+                <div class="card-img"><img src="image_f841e4.jpg" alt="Soledad"></div>
                 <div class="card-tags">[ IMMERSIVE DATA ]</div>
                 <h3>La Soledad Suena</h3>
                 <p>Translating silence into sound</p>
@@ -597,7 +593,12 @@
                     <div class="proj-grid-text-img">
                         <div class="text-block">
                             <p class="lead-text">Ladrilludo reimagines a ubiquitous building material as an "itinerant, sensing object". By removing a clay brick from its static context and dragging it through the streets, the object transforms into a <strong>"stylus"</strong>—a sensitive indicator tracing the topography and registering the frequencies of the city's surface.</p>
-                            <p>Grounded in <em>Pluriversal Thinking</em> and <em>Object-Oriented Inquiry (OOI)</em>, this performance actively interrogates the "smooth" narratives of urban renewal.</p>
+                            <p>Grounded in <em>Pluriversal Thinking</em> and <em>Object-Oriented Inquiry (OOI)</em>, this performance actively interrogates the "smooth" narratives of urban renewal. The brick, tethered like a pet, became a "dialogue artifact", provoking spontaneous interactions (<em>mamadera de gallo</em>) and uncovering the silenced industrial history of the <em>Las Aguas</em> neighborhood.</p>
+                            
+                            <h4 style="margin-top:30px; font-size: 0.9rem; letter-spacing: 1px; color:var(--terracotta);">// SOCIOPOLITICAL CONTEXT</h4>
+                            <p>
+                                The origin of this inquiry is rooted in the recent social unrest in Colombia (the "Paro" or national strike). As I watched my country fracture under the weight of systemic inequality, the "white cube" of the art gallery felt suffocating. This project moves the inquiry to the street, where the friction is real. The brick is not just matter; it is a witness to the "invisible codes" of class stratification.
+                            </p>
                         </div>
                         <div class="image-block">
                             <img src="https://lh3.googleusercontent.com/d/1fcNFhC3K6E-0N_I4iS1ZOqOvDJ_jQrBX" alt="Ladrilludo Context" class="proj-img">
@@ -681,6 +682,7 @@
                         <div class="text-block">
                             <p class="lead-text">"Obsession creeps in, ruminating silently, contaminating every corner of the being."</p>
                             <p><em>Huésped Errante</em> is a living sculpture that investigates the physical manifestation of obsessive thought patterns. Using principles of thermodynamics and chemistry, the piece creates a visual metaphor for a "virus" or "parasite".</p>
+                            <p>Through a controlled heating system, invisible drawings emerge and decay on a surface of granular pigment, simulating the erratic and invasive nature of intrusive thoughts. The artwork breathes in cycles, revealing a hidden layer of "infection" before fading back into dormancy.</p>
                         </div>
                         <div class="image-block">
                             <img src="https://images.unsplash.com/photo-1530906622080-12e0e5a59603?q=80&w=800&auto=format&fit=crop" alt="Huesped Installation" class="proj-img">
@@ -699,6 +701,14 @@
                         <div class="spec-item"><span class="tech-label">MATERIAL</span><p><strong>Leucodye Pigment</strong><br>Granular application. Gray -> White.</p></div>
                     </div>
                 </section>
+                
+                <section class="proj-section">
+                    <h3>02. ACTIVATION RECORD</h3>
+                    <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; background: #000; margin-top:20px;">
+                        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" width="560" height="315" src="https://www.youtube.com/embed/r6FxHO6_pq8?si=GQWICK7qE7vHzcM_" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <span class="caption">Time-lapse of the thermal activation cycle.</span>
+                </section>
 
                 <section class="credits-section">
                     <div class="credits-box">
@@ -712,9 +722,81 @@
             </div>
 
             <div id="proj-soledad" class="project-detail-container">
-                <header class="proj-header"><h1 class="proj-title">La Soledad Suena</h1></header>
-                <section class="proj-section"><p>Work in progress documentation...</p></section>
+                <header class="proj-header">
+                    <div class="proj-meta-grid">
+                        <div><span class="meta-label">TYPOLOGY</span><span class="meta-value">Immersive Audiovisual Installation</span></div>
+                        <div><span class="meta-label">CONCEPT</span><span class="meta-value">Acoustic Materialization of Intimacy</span></div>
+                        <div><span class="meta-label">YEAR</span><span class="meta-value">2025</span></div>
+                    </div>
+                    <h1 class="proj-title">La Soledad Suena</h1>
+                    <h2 class="proj-subtitle">Exploring loneliness not as absence, but as a persistent hum.</h2>
+                </header>
+
+                <section class="proj-section">
+                    <div class="proj-grid-text-img">
+                        <div class="text-block">
+                            <p class="lead-text">
+                                "La soledad suena a mis suspiros y a mis lágrimas cayendo... Así suena la soledad cuando te vas de casa."
+                            </p>
+                            <p>
+                                <em>La Soledad Suena</em> is an immersive installation that takes the homonymous poem by Daniela Reyes as its conceptual starting point. The project challenges the perception of loneliness as a void, reinterpreting it as a dense sonic and emotional state.
+                            </p>
+                            <p>
+                                Through a fusion of analog elements, projection mapping, and sound design, the home—symbolic and everyday—becomes a stage where the invisible takes shape. The viewer is invited to inhabit the silence, discovering that it is actually filled with the friction of clothes, the hum of the fridge, and the voice inside one's head.
+                            </p>
+                        </div>
+                        <div class="image-block">
+                            <img src="image_f8450a.jpg" alt="Installation View" class="proj-img">
+                            <span class="caption">Fig 1. Visitors interacting with the immersive space.</span>
+                        </div>
+                    </div>
+                </section>
+
+                <hr class="proj-divider">
+
+                <section class="proj-section technical">
+                    <h3>01. IMMERSIVE DOCUMENTATION</h3>
+                    <p style="margin-bottom: 30px; max-width: 800px;">
+                        The installation uses light and sound to construct an atmosphere of intimacy. Below are video documentations of the experience.
+                    </p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                        <div style="position: relative; padding-bottom: 56.25%; height: 0;">
+                            <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" src="https://www.youtube.com/embed/ZB_d_u2X0H8?si=UPaRwEIKczXerySP" title="Video 1" frameborder="0" allowfullscreen></iframe>
+                        </div>
+                        <div style="position: relative; padding-bottom: 56.25%; height: 0;">
+                            <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" src="https://www.youtube.com/embed/Jkfzf48_umk?si=mRUbXv33mMSHeEqU" title="Video 2" frameborder="0" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="proj-section">
+                    <div class="proj-grid-2">
+                        <div class="image-block">
+                            <img src="image_f848ca.jpg" alt="Close up" class="proj-img">
+                        </div>
+                        <div class="text-block">
+                            <p class="lead-text">"The invisible takes on shape, rhythm, and vibration."</p>
+                            <p>
+                                Presented at Universidad de los Andes (May 2025) as part of the School of Architecture and Design (ARQDIS) showcase. The piece invites reflection on loneliness as part of the human condition—not through absolute silence, but through its persistent hum.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="credits-section">
+                    <div class="credits-box">
+                        <h4>INTERDISCIPLINARY TEAM</h4>
+                        <ul>
+                            <li><strong>Paula Ojeda & Ian Sebastian:</strong> Art (Universidad de los Andes)</li>
+                            <li><strong>Mariana Diaz:</strong> Design (Universidad de los Andes)</li>
+                            <li><strong>Lorena Reyes:</strong> Industrial Design (UNAM)</li>
+                            <li><strong>Daniela Reyes:</strong> Graphic Design (Universidad Nacional de Colombia)</li>
+                        </ul>
+                    </div>
+                </section>
             </div>
+
              <div id="proj-identity" class="project-detail-container">
                 <header class="proj-header"><h1 class="proj-title">Identity Archives</h1></header>
                 <section class="proj-section"><p>Work in progress documentation...</p></section>
@@ -756,6 +838,8 @@
         document.getElementById('modal').classList.remove('open'); 
         // Pausar videos al cerrar
         document.querySelectorAll('video').forEach(vid => vid.pause());
+        // Pausar iframes de youtube (trick)
+        document.querySelectorAll('iframe').forEach(v => { v.src = v.src });
     }
 
     // Filtros
