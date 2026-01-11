@@ -54,11 +54,11 @@
         .orb-1 { width: 70vw; height: 70vw; top: -20%; left: -20%; background: #fff; }
         .orb-2 { width: 60vw; height: 60vw; bottom: -20%; right: -20%; background: #dcdcdc; }
 
-        /* Canvas p5.js */
+        /* Canvas p5.js - Z-INDEX CORREGIDO PARA INTERACCIÓN */
         canvas {
             position: fixed; top: 0; left: 0; 
-            z-index: 15; /* Importante: Encima del fondo, debajo del texto */
-            pointer-events: auto; /* Permite click en las flores */
+            z-index: 5; /* Encima del fondo, pero debajo del texto importante */
+            pointer-events: auto; /* CRUCIAL: Permite que el mouse interactúe con el canvas */
         }
 
         #cursor {
@@ -80,7 +80,10 @@
             font-family: var(--font-mono); font-size: 0.75rem;
             z-index: 100; mix-blend-mode: difference; color: white;
             text-transform: uppercase; letter-spacing: 1px;
+            pointer-events: none; /* Dejar pasar clicks en áreas vacías */
         }
+        .top-bar * { pointer-events: auto; } /* Reactivar clicks en enlaces */
+
         .nav-links a { margin-left: 20px; border-bottom: 1px solid transparent; transition: 0.3s; }
         .nav-links a:hover { border-color: currentColor; }
 
@@ -96,7 +99,9 @@
         /* =========================================
            4. HERO SECTION
            ========================================= */
+        /* CRUCIAL: pointer-events: none permite hacer click en el canvas debajo */
         .hero-section { height: 100vh; position: relative; overflow: hidden; display: flex; align-items: center; padding-left: 5vw; z-index: 20; pointer-events: none; }
+        
         .hero-left { z-index: 25; pointer-events: auto; max-width: 50vw; text-align: left; }
         .hero-title { font-size: 8vw; line-height: 0.85; margin: 0; font-weight: 300; color: #111; letter-spacing: -0.02em; }
         .hero-subtitle { font-family: var(--font-mono); font-size: 0.9rem; margin-top: 30px; line-height: 1.5; max-width: 400px; border-left: 2px solid var(--terracotta); padding-left: 20px; opacity: 0.8; }
@@ -121,9 +126,9 @@
         .page { display: none; opacity: 0; transition: opacity 0.5s; }
         .page.active { display: block; opacity: 1; }
 
-        .concept-section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 0 15vw; border-bottom: 1px solid rgba(0,0,0,0.05); position: relative; z-index: 10; }
-        .research-statement { font-size: 5vw; font-weight: 300; line-height: 1; margin-bottom: 40px; }
-        .concept-details { display: grid; grid-template-columns: 100px 1fr; gap: 40px; font-family: var(--font-mono); font-size: 0.9rem; line-height: 1.6; border-top: 1px solid currentColor; padding-top: 30px; }
+        .concept-section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 0 15vw; border-bottom: 1px solid rgba(0,0,0,0.05); position: relative; z-index: 10; pointer-events: none; }
+        .concept-details { pointer-events: auto; display: grid; grid-template-columns: 100px 1fr; gap: 40px; font-family: var(--font-mono); font-size: 0.9rem; line-height: 1.6; border-top: 1px solid currentColor; padding-top: 30px; }
+        .research-statement { pointer-events: auto; font-size: 5vw; font-weight: 300; line-height: 1; margin-bottom: 40px; }
 
         /* =========================================
            6. PROJECTS PAGE
@@ -167,26 +172,31 @@
         .card p { font-family: var(--font-mono); font-size: 0.8rem; color: #555; margin-top: 5px; }
 
         /* =========================================
-           7. ABOUT PAGE
+           7. ABOUT PAGE (REDISEÑADA PARA CV COMPLETO)
            ========================================= */
         #about-page { padding: 150px 5vw; min-height: 100vh; background: var(--bg-paramo) !important; color: #111 !important; }
         
         .about-container { max-width: 1400px; margin: 0 auto; }
-        .about-layout { display: grid; grid-template-columns: 35% 60%; gap: 5%; align-items: start; margin-top: 50px; }
-        .bio-text { font-size: 1.6rem; line-height: 1.4; font-weight: 300; }
+        .about-layout { display: grid; grid-template-columns: 30% 65%; gap: 5%; align-items: start; margin-top: 50px; }
+        .bio-text { font-size: 1.4rem; line-height: 1.4; font-weight: 300; margin-bottom: 30px;}
         .bio-highlight { color: var(--terracotta); font-style: italic; }
-        .bio-manifesto { margin-top: 40px; font-family: var(--font-mono); font-size: 0.85rem; border-left: 2px solid var(--neon-green); padding-left: 20px; color: #555; }
+        
+        /* CV STYLES */
+        .cv-section { margin-bottom: 50px; }
+        .cv-header { font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 2px; color: var(--terracotta); border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom: 30px; text-transform: uppercase;}
+        
+        .cv-item { display: grid; grid-template-columns: 100px 1fr; gap: 20px; margin-bottom: 30px; page-break-inside: avoid; }
+        .cv-date { font-family: var(--font-mono); font-size: 0.8rem; opacity: 0.7; padding-top: 5px; }
+        .cv-role { font-family: var(--font-serif); font-size: 1.2rem; font-weight: 600; margin-bottom: 5px; line-height: 1.2;}
+        .cv-place { font-family: var(--font-mono); font-size: 0.85rem; text-transform: uppercase; margin-bottom: 8px; color: #555; }
+        .cv-desc { font-family: var(--font-serif); font-size: 1rem; line-height: 1.4; color: #333; }
+        .cv-desc ul { list-style: circle; padding-left: 20px; margin-top: 5px; }
+        .cv-desc li { margin-bottom: 5px; font-size: 0.95rem; }
 
-        .philosophy-box { margin-top: 50px; padding: 30px; border: 1px solid #111; background: rgba(255,255,255,0.5); }
-        .philosophy-box p { font-size: 0.85rem; margin-bottom: 15px; line-height: 1.6; }
-
-        .cv-header { font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 2px; color: var(--terracotta); border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom: 20px; }
-        .cv-item { display: grid; grid-template-columns: 120px 1fr; gap: 20px; margin-bottom: 25px; }
-        .cv-role { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 600; }
-        .btn-download { display: inline-block; padding: 15px 30px; border: 1px solid #111; font-family: var(--font-mono); font-size: 0.8rem; text-transform: uppercase; margin-top: 40px; transition: all 0.3s; }
+        .btn-download { display: inline-block; padding: 15px 30px; border: 1px solid #111; font-family: var(--font-mono); font-size: 0.8rem; text-transform: uppercase; margin-top: 20px; transition: all 0.3s; background: transparent; }
         .btn-download:hover { background: var(--terracotta); border-color: var(--terracotta); color: white; }
         
-        @media (max-width: 900px) { .about-layout { grid-template-columns: 1fr; gap: 60px; } }
+        @media (max-width: 900px) { .about-layout { grid-template-columns: 1fr; gap: 60px; } .cv-item { grid-template-columns: 1fr; } .cv-date { margin-bottom: 5px; color: var(--terracotta); } }
 
         /* =========================================
            8. MODAL (STYLES & CONTENT)
@@ -278,8 +288,7 @@
                 <span>EXPLORE THE TRANSECT</span>
                 <div class="arrow-down">↓</div>
             </div>
-            
-            </section>
+        </section>
 
         <section class="concept-section" id="c2">
             <h1 class="research-statement">The Silent Archive.</h1>
@@ -376,38 +385,163 @@
                     <p class="bio-text">
                         I define myself as a critical technologist navigating the tension between <span class="bio-highlight">high-fidelity engineering and the low-fidelity reality of the Global South.</span>
                     </p>
-                    <p class="bio-text">
-                        My work does not seek to "solve" problems through accelerationism, but to stay with the trouble—using code, circuits, and biology to visualize the invisible frictions of territory, identity, and social inequality.
-                    </p>
                     <div class="philosophy-box">
                         <h4 style="font-size: 0.9rem; letter-spacing: 2px; margin-bottom: 20px;">CORE INQUIRIES</h4>
                         <p><strong>01. Pluriversal Tech:</strong> How can we design technologies that embrace multiple worlds instead of imposing a universal standard?</p>
                         <p><strong>02. Material Agency:</strong> Moving beyond "using" tools to "collaborating" with matter (OOI).</p>
                         <p><strong>03. Public Pedagogy:</strong> The street as a classroom; the artifact as a teacher.</p>
                     </div>
-                    <a href="#" class="btn-download">Download Full CV [PDF]</a>
+                    
+                    <div style="margin-top: 40px; border-top: 1px solid #ccc; padding-top: 20px;">
+                        <h4 style="font-size: 0.8rem; letter-spacing: 2px; color: var(--terracotta); margin-bottom: 15px;">CONTACT & SOCIAL</h4>
+                        <p style="font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.8;">
+                            Bogotá, Colombia<br>
+                            mariapaulaojedagomez@gmail.com<br>
+                            <a href="https://www.linkedin.com/in/paula-ojeda-962331361/" target="_blank" style="text-decoration: underline;">LinkedIn</a> / 
+                            <a href="https://www.behance.net/PauOjedaG" target="_blank" style="text-decoration: underline;">Behance</a>
+                        </p>
+                    </div>
                 </div>
 
                 <div class="cv-column">
+                    
                     <div class="cv-section">
-                        <div class="cv-header">EDUCATION</div>
+                        [cite_start]<div class="cv-header">PROFESSIONAL EXPERIENCE [cite: 175]</div>
+                        
                         <div class="cv-item">
-                            <div class="cv-date">2026 (Exp)</div>
+                            <div class="cv-date">Mar 2025 - Pres</div>
                             <div>
-                                <div class="cv-role">Master in Design & Applied Arts</div>
-                                <div class="cv-place">Universidad de los Andes</div>
-                                <div class="cv-desc">Focus on Critical Interfaces & Bio-Design.</div>
+                                [cite_start]<div class="cv-role">Technology & Innovation Director [cite: 176]</div>
+                                <div class="cv-place">Sintopía Lab, Bogotá</div>
+                                <div class="cv-desc">
+                                    Co-founder of a startup focused on art, design, and technology. [cite_start]Leading development of interactive modules for corporate clients[cite: 176, 177].
+                                </div>
                             </div>
                         </div>
+
                         <div class="cv-item">
-                            <div class="cv-date">2022</div>
+                            <div class="cv-date">Aug 2022 - Pres</div>
                             <div>
-                                <div class="cv-role">B.A. in Visual Arts</div>
+                                [cite_start]<div class="cv-role">Photography Lab Monitor [cite: 178]</div>
                                 <div class="cv-place">Universidad de los Andes</div>
-                                <div class="cv-desc">Minors: Visual Computation & Design Creation.</div>
+                                <div class="cv-desc">
+                                    Management of professional equipment (DSLR/Mirrorless). [cite_start]Responsible for continuous and strobist lighting setups and technical support[cite: 178, 179].
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="cv-item">
+                            <div class="cv-date">2025 (Various)</div>
+                            <div>
+                                [cite_start]<div class="cv-role">Academic Assistantships [cite: 181, 182, 183]</div>
+                                <div class="cv-place">Universidad de los Andes</div>
+                                <div class="cv-desc">
+                                    <ul>
+                                        [cite_start]<li><strong>Data Science Coordination (Aug-Sep):</strong> Assistant Designer bridging complex data concepts with visual communication[cite: 183].</li>
+                                        [cite_start]<li><strong>Event Photography (Aug-Sep):</strong> Teaching Assistant[cite: 182].</li>
+                                        [cite_start]<li><strong>Food Styling & Lighting (Jun-Aug):</strong> Teaching Assistant[cite: 181].</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="cv-item">
+                            <div class="cv-date">Mar-Apr 2025</div>
+                            <div>
+                                [cite_start]<div class="cv-role">Workshop Facilitator [cite: 184]</div>
+                                <div class="cv-place">Cinemateca de Bogotá</div>
+                                [cite_start]<div class="cv-desc">Facilitated "Magical Animation" lab exploring mixed media and visual effects[cite: 184].</div>
                             </div>
                         </div>
                     </div>
+
+                    <div class="cv-section">
+                        [cite_start]<div class="cv-header">EDUCATION [cite: 186]</div>
+                        <div class="cv-item">
+                            <div class="cv-date">2025 - 2027</div>
+                            <div>
+                                [cite_start]<div class="cv-role">Master's in Design [cite: 187]</div>
+                                <div class="cv-place">Universidad de los Andes</div>
+                            </div>
+                        </div>
+                        <div class="cv-item">
+                            <div class="cv-date">2022 - 2025</div>
+                            <div>
+                                [cite_start]<div class="cv-role">B.A. in Visual Arts [cite: 188]</div>
+                                <div class="cv-place">Universidad de los Andes</div>
+                                [cite_start]<div class="cv-desc">Emphasis in electronic media and time-based arts[cite: 188].</div>
+                            </div>
+                        </div>
+                        <div class="cv-item">
+                            <div class="cv-date">Minors</div>
+                            <div>
+                                <div class="cv-role">Interdisciplinary Studies</div>
+                                <div class="cv-desc">
+                                    <ul>
+                                        [cite_start]<li><strong>Visual Computing (2022-2025):</strong> Bridging Systems Engineering, Design, and Art[cite: 189].</li>
+                                        [cite_start]<li><strong>Photography (2023-2025):</strong> Technical and experimental focus[cite: 190, 191].</li>
+                                        [cite_start]<li><strong>Creative Design (2025):</strong> Focus on interactive creation[cite: 192].</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cv-section">
+                        [cite_start]<div class="cv-header">RESEARCH & LEADERSHIP [cite: 193]</div>
+                        <div class="cv-item">
+                            <div class="cv-date">2025 - Pres</div>
+                            <div>
+                                [cite_start]<div class="cv-role">Secretary General [cite: 194]</div>
+                                <div class="cv-place">Student Council (Uniandino)</div>
+                                [cite_start]<div class="cv-desc">Previously Faculty Representative (Arts & Humanities) and Department Representative[cite: 195, 196].</div>
+                            </div>
+                        </div>
+                        <div class="cv-item">
+                            <div class="cv-date">Groups</div>
+                            <div>
+                                <div class="cv-role">Active Research Memberships</div>
+                                <div class="cv-desc">
+                                    <ul>
+                                        <li><strong>Visual Computing Group (Jan 2025-Pres):</strong> Code-focused research; [cite_start]Image Festival participant[cite: 197, 198].</li>
+                                        [cite_start]<li><strong>Senda Research Group (Jan 2024-Pres):</strong> Experimental creative computing[cite: 199].</li>
+                                        [cite_start]<li><strong>Pentaprisma Collective (Nov 2023-Pres):</strong> Analog photography residency coordinator[cite: 201, 203].</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cv-section">
+                        [cite_start]<div class="cv-header">SELECTED EXHIBITIONS [cite: 220]</div>
+                        <div class="cv-item">
+                            <div class="cv-date">2024 - 2025</div>
+                            <div>
+                                <div class="cv-desc">
+                                    <ul>
+                                        [cite_start]<li><strong>"Soledad" (May 2025):</strong> Performative activation on loneliness[cite: 221].</li>
+                                        [cite_start]<li><strong>Experimental Humanities Grant (Mar 2025):</strong> Winner's exhibition[cite: 227].</li>
+                                        [cite_start]<li><strong>"Ecos" (Nov 2024):</strong> Site-specific installation at "Volver a los Andes"[cite: 225].</li>
+                                        [cite_start]<li><strong>"18 Uvas en un Viñal" (May 2024):</strong> Interáreas collective exhibition[cite: 222].</li>
+                                        [cite_start]<li><strong>"Ficciones a Color" (Dec 2022):</strong> Valenzuela Klenner Gallery[cite: 224].</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cv-section">
+                        [cite_start]<div class="cv-header">TECHNICAL TOOLKIT [cite: 209]</div>
+                        <div class="cv-item">
+                            <div class="cv-date">Software</div>
+                            [cite_start]<div class="cv-desc">TouchDesigner, Python, HTML/CSS/JS, Adobe Creative Suite (Expert)[cite: 210].</div>
+                        </div>
+                        <div class="cv-item">
+                            <div class="cv-date">Hardware</div>
+                            [cite_start]<div class="cv-desc">Analog/Digital Photography, Darkroom, Studio Lighting, Physical Computing[cite: 210, 211].</div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -551,7 +685,7 @@
     </div>
 
     <script>
-    // --- LÓGICA UI & NAVEGACIÓN (Restaurada) ---
+    // --- LÓGICA UI & NAVEGACIÓN ---
     
     function nav(id) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -585,10 +719,9 @@
         if(event) event.target.classList.add("active");
         if(desc) { document.getElementById("desc-text").innerText = "[ " + desc + " ]"; }
     }
-    // Inicializar filtro
     filterSelection("all", "ARCHIVE OVERVIEW: Chronological display of all inquiries.");
 
-    // Scroll & Altimeter Logic
+    // Scroll & Altimeter
     const body = document.body;
     const orb1 = document.querySelector('.orb-1');
     const orb2 = document.querySelector('.orb-2');
@@ -622,7 +755,7 @@
         }
     });
 
-    // Cursor Logic
+    // Cursor
     const cursor = document.getElementById('cursor');
     document.addEventListener('mousemove', e => {
         const x = e.clientX / window.innerWidth;
@@ -633,38 +766,36 @@
         orb2.style.transform = `translate(${x * 40}px, ${y * 40}px)`;
     });
     
-    // Add hover effect listeners dynamically
-    document.querySelectorAll('a, .card, button, .close-btn').forEach(el => {
+    document.querySelectorAll('a, .card, button, .close-btn, .project-detail-container, .cv-item').forEach(el => {
         el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
         el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
     });
 
 
-    // --- LÓGICA P5.JS GENERATIVA (Flores) ---
+    // --- P5.JS GENERATIVO ---
     
     let flowers = [];
     let canvas;
 
     function setup() {
-        // Canvas ocupa toda la pantalla pero con z-index controlado
+        // Z-Index estratégico: 5 (Encima del fondo -2, pero debajo de la nav 100 y textos 25)
+        // El CSS canvas { pointer-events: auto } es la clave.
         canvas = createCanvas(windowWidth, windowHeight);
         
-        // Inicializamos las Flores para coincidir con las secciones de texto
-        // Cluster 1 (Inquiry - Arriba derecha)
+        // Cluster 1 (Inquiry)
         flowers.push(new BioFlower(width * 0.8, height * 0.2, 60, '#4a5d23', 'c2')); 
-        // Cluster 2 (Context - Centro derecha/abajo)
+        // Cluster 2 (Context)
         flowers.push(new BioFlower(width * 0.85, height * 0.6, 80, '#cc4422', 'c3')); 
-        // Cluster 3 (Method - Abajo)
+        // Cluster 3 (Method)
         flowers.push(new BioFlower(width * 0.6, height * 0.85, 70, '#1a3c34', 'c4')); 
         
-        // Flor pequeña decorativa
+        // Decorativa
         flowers.push(new BioFlower(width * 0.15, height * 0.8, 30, '#d4e035', null)); 
     }
 
     function draw() {
-        clear(); // Limpia el canvas
+        clear(); 
         
-        // Solo renderizar si estamos en HOME
         if(document.getElementById('home-page').classList.contains('active')){
             for (let f of flowers) {
                 f.update();
@@ -675,7 +806,6 @@
     }
 
     function mousePressed() {
-        // Permitir click en flores para navegar
         if(document.getElementById('home-page').classList.contains('active')){
             for (let f of flowers) {
                 if (f.isHovered() && f.targetId) {
@@ -687,14 +817,12 @@
 
     function windowResized() {
         resizeCanvas(windowWidth, windowHeight);
-        // Recalcular posiciones responsive
         flowers[0].pos.set(width * 0.8, height * 0.2);
         flowers[1].pos.set(width * 0.85, height * 0.6);
         flowers[2].pos.set(width * 0.6, height * 0.85);
         flowers[3].pos.set(width * 0.15, height * 0.8);
     }
 
-    // Clase Flor
     class BioFlower {
         constructor(x, y, r, col, targetId) {
             this.pos = createVector(x, y);
@@ -702,15 +830,14 @@
             this.col = color(col);
             this.noiseOffset = random(1000); 
             this.agitation = 0;
-            this.targetId = targetId; // ID de la sección a la que scrollea
+            this.targetId = targetId; 
         }
 
         update() {
             let d = dist(mouseX, mouseY, this.pos.x, this.pos.y);
-            if (d < 200) {
+            if (d < 250) { // Radio de detección aumentado
                 this.agitation = lerp(this.agitation, 2.0, 0.05); 
-                // Cambiar cursor si es interactivo
-                if(this.targetId && d < this.r) cursor.classList.add('hovered');
+                if(this.targetId && d < this.r + 20) cursor.classList.add('hovered');
             } else {
                 this.agitation = lerp(this.agitation, 0.2, 0.02);
             }
@@ -722,17 +849,17 @@
 
         interact() {
             let d = dist(mouseX, mouseY, this.pos.x, this.pos.y);
-            if (d < 200) {
+            if (d < 250) {
                 stroke(this.col);
                 strokeWeight(1);
-                let alphaVal = map(d, 0, 200, 255, 0);
+                let alphaVal = map(d, 0, 250, 255, 0);
                 this.col.setAlpha(alphaVal);
                 stroke(this.col);
                 line(this.pos.x, this.pos.y, mouseX, mouseY);
                 
                 noStroke();
                 fill(50);
-                textSize(8);
+                textSize(10); // Texto más grande para legibilidad
                 text("DATA_IN: " + floor(d), this.pos.x + 10, this.pos.y);
                 
                 if(this.targetId) {
