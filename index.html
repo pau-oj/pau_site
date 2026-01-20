@@ -442,6 +442,24 @@
                 <p>A 16-meter monument to urban waste.</p>
             </div>
 
+            <div class="card filter-item systems" onclick="openModal('proj-nature')">
+                <div class="card-img">
+                    <img src="RUTA_DE_TU_IMAGEN.jpg" alt="Synthetic Ecosystems">
+                </div>
+                <div class="card-tags">[ BIO-MIMICRY ]</div>
+                <h3>Synthetic Ecosystems</h3>
+                <p>Teaching code to behave like nature.</p>
+            </div>
+
+            <div class="card filter-item lab" style="border: 1px dashed #999;" onclick="openModal('proj-lab')">
+                <div class="card-img" style="background: #e0e0e0; display: flex; align-items: center; justify-content: center;">
+                    <span style="font-family: var(--font-mono); font-size: 3rem; color: #555;">{...}</span>
+                </div>
+                <div class="card-tags">[ GENERATIVE STUDIES ]</div>
+                <h3>The Laboratory</h3>
+                <p>TouchDesigner, AR, & Hardware sketches.</p>
+            </div>
+
     <div id="about-page" class="page">
         <div class="about-container">
             <h1 style="font-size:4vw; font-weight:300; margin:0 0 60px 0;">Trajectory & Thought</h1>
@@ -1121,6 +1139,100 @@ ricardo Chaves</li>
                             <li><strong>Carolina Rodriguez:</strong> Fabrication Strategy.</li>
                             <li><strong>Melany Aponte:</strong> Concept Development.</li>
                         </ul>
+                    </div>
+                </section>
+            </div>
+
+            <div id="proj-lab" class="project-detail-container">
+                <header class="proj-header">
+                    <h1 class="proj-title">The Laboratory</h1>
+                    <h2 class="proj-subtitle">Daily prototypes, code sketches, and failures. The raw output of the research process.</h2>
+                </header>
+
+                <section class="proj-section">
+                    <div class="video-container" style="margin-bottom: 30px;">
+                        <iframe src="https://www.youtube.com/embed/INSERTA_TU_REEL_AQUI" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                    <h3>01. COMPUTATIONAL SKETCHES</h3>
+                    <p>
+                        A collection of rapid prototypes developed in <strong>TouchDesigner</strong> and <strong>p5.js</strong>. These studies explore generative visuals, noise algorithms, and real-time data processing.
+                    </p>
+                </section>
+
+                <hr class="proj-divider">
+
+                <section class="proj-section">
+                    <h3>02. EXPERIMENTAL LUTHERIE</h3>
+                    <div class="proj-grid-2">
+                         <div class="video-container" style="margin-top:0;">
+                            <iframe src="https://www.youtube.com/embed/2ByDn_RO3VQ" frameborder="0" allowfullscreen></iframe>
+                        </div>
+                        <div class="text-block">
+                            <p class="lead-text">"Sound Art Performance"</p>
+                            <p>
+                                An exploration of material acoustics. We constructed custom instruments to interpret sonic data physically, translating a digital composition back into analog vibration.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <hr class="proj-divider">
+                
+                <section class="proj-section">
+                     <h3>03. EXTENDED REALITY (AR)</h3>
+                     <p>Early investigations into AR markers and 3D character animation.</p>
+                     </section>
+            </div>
+
+            <div id="proj-nature" class="project-detail-container">
+                <header class="proj-header">
+                    <div class="video-container" style="margin-bottom: 40px;">
+                        <iframe src="https://www.youtube.com/embed/INSERTA_TU_ID_AQUI" title="Artificial Nature" frameborder="0" allowfullscreen></iframe>
+                    </div>
+
+                    <div class="proj-meta-grid">
+                        <div><span class="meta-label">TYPOLOGY</span><span class="meta-value">Interactive Installation</span></div>
+                        <div><span class="meta-label">SYSTEM</span><span class="meta-value">Bio-Sensing / Real-time Data</span></div>
+                        <div><span class="meta-label">THEME</span><span class="meta-value">Synthetic Empathy</span></div>
+                    </div>
+                    <h1 class="proj-title">Synthetic Ecosystems</h1>
+                    <h2 class="proj-subtitle">Can code feel? A tri-partite installation exploring artificial responsiveness.</h2>
+                </header>
+
+                <section class="proj-section">
+                    <div class="proj-grid-text-img">
+                        <div class="text-block">
+                            <p class="lead-text">
+                                "Nature reacts to presence. Can we teach machines to do the same?"
+                            </p>
+                            <p>
+                                <em>Synthetic Ecosystems</em> (formerly Artificial Nature) constructs a dialogue between the organic and the digital. The installation is composed of three interconnected systems acting as a single organism.
+                            </p>
+                            <p>
+                                Unlike static sculptures, these objects possess a nervous system. "Flowers" programmed with emotional logic react to human proximity, while LED "butterflies" pulse in real-time rhythms based on algorithmic flutter patterns. It is an inquiry into <strong>programmable behavior</strong> within physical matter.
+                            </p>
+                        </div>
+                        <div class="image-block">
+                            <div style="background:#ddd; height:300px; display:flex; align-items:center; justify-content:center; color:#555;">
+                                [ INSERT IMAGE: FLOWERS / LEDS ]
+                            </div>
+                            <span class="caption">Fig 1. Electronic flora reacting to human stimulus.</span>
+                        </div>
+                    </div>
+                </section>
+
+                <hr class="proj-divider">
+
+                <section class="proj-section technical">
+                    <h3>01. ANATOMY OF THE MACHINE</h3>
+                    <p style="margin-bottom: 30px; max-width: 800px;">
+                        The system relies on a distributed network of microcontrollers handling distinct biological behaviors.
+                    </p>
+                    
+                    <div class="tech-specs-grid">
+                        <div class="spec-item"><span class="tech-label">VISUALS</span><p><strong>LED Lepidoptera</strong><br>Light hoses mimicking biological flutter rates.</p></div>
+                        <div class="spec-item"><span class="tech-label">AUDIO</span><p><strong>Algorithmic Fauna</strong><br>Animal calls generated via code synthesis.</p></div>
+                        <div class="spec-item"><span class="tech-label">INTERACTION</span><p><strong>Proximity Sensors</strong><br>Triggering "emotional" state changes.</p></div>
                     </div>
                 </section>
             </div>
