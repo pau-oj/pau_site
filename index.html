@@ -686,24 +686,35 @@
 
             <div id="proj-huesped" class="project-detail-container">
                 <header class="proj-header">
+                    <div class="video-container" style="margin-bottom: 40px;">
+                         <iframe src="https://www.youtube.com/embed/r6FxHO6_pq8?si=GQWICK7qE7vHzcM_" title="Huesped Errante Documentation" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+
                     <div class="proj-meta-grid">
-                        <div><span class="meta-label">COURSE / CONTEXT</span><span class="meta-value">Arte y Ciencias (2024-2)</span></div>
-                        <div><span class="meta-label">MATERIALITY</span><span class="meta-value">Thermosensitive Pigment / Electronics</span></div>
-                        <div><span class="meta-label">TYPOLOGY</span><span class="meta-value">Living Sculpture / Installation</span></div>
+                        <div><span class="meta-label">COURSE</span><span class="meta-value">Arte y Ciencias (Bio-Design)</span></div>
+                        <div><span class="meta-label">MATERIAL SYSTEM</span><span class="meta-value">Resistive Heating / Leuco Dyes</span></div>
+                        <div><span class="meta-label">TYPOLOGY</span><span class="meta-value">Thermodynamic Simulation</span></div>
                     </div>
                     <h1 class="proj-title">Huésped Errante</h1>
-                    <h2 class="proj-subtitle">Thermodynamic visualization of obsession as a viral agent.</h2>
+                    <h2 class="proj-subtitle">Programmable decay: A thermodynamic visualization of obsession as a viral agent.</h2>
                 </header>
 
                 <section class="proj-section">
                     <div class="proj-grid-text-img">
                         <div class="text-block">
-                            <p class="lead-text">"Obsession creeps in, ruminating silently, contaminating every corner of the being."</p>
-                            <p><em>Huésped Errante</em> is a living sculpture that investigates the physical manifestation of obsessive thought patterns. Using principles of thermodynamics and chemistry, the piece creates a visual metaphor for a "virus" or "parasite".</p>
-                            <p>Through a controlled heating system, invisible drawings emerge and decay on a surface of granular pigment, simulating the erratic and invasive nature of intrusive thoughts. The artwork breathes in cycles, revealing a hidden layer of "infection" before fading back into dormancy.</p>
+                            <p class="lead-text">
+                                "Obsession creeps in, ruminating silently, contaminating every corner of the being until it cools and fades."
+                            </p>
+                            <p>
+                                <em>Huésped Errante</em> (Wandering Guest) is a living sculpture that investigates the physical manifestation of intrusive thoughts. Moving beyond digital screens, I sought to create an interface that behaves like an organism.
+                            </p>
+                            <p>
+                                Using the principles of thermodynamics, the piece features a chemically responsive skin that "breathes" in cycles of heat and cold. [cite_start]It visualizes the behavior of a parasite: it remains dormant and invisible until a trigger (heat) causes it to manifest, bleaching the surface in mutating biological patterns before fading back into the subconscious grey[cite: 69].
+                            </p>
                         </div>
                         <div class="image-block">
-                            <img src="https://images.unsplash.com/photo-1530906622080-12e0e5a59603?q=80&w=800&auto=format&fit=crop" alt="Huesped Installation" class="proj-img">
+                            <img src="https://images.unsplash.com/photo-1530906622080-12e0e5a59603?q=80&w=800&auto=format&fit=crop" alt="Leuco Dye Reaction" class="proj-img">
+                            <span class="caption">Fig 1. The granular surface reacting to the resistive heating circuit underneath.</span>
                         </div>
                     </div>
                 </section>
@@ -711,29 +722,44 @@
                 <hr class="proj-divider">
 
                 <section class="proj-section technical">
-                    <h3>01. THERMODYNAMIC MECHANISM</h3>
-                    <p style="margin-bottom: 30px; max-width: 800px;">The core of the installation relies on <strong>Leukocyte dye pigments</strong>. Unlike standard thermochromic inks that become transparent, this specific granular pigment was engineered to shift from gray to white.</p>
+                    <h3>01. ENGINEERING MATERIAL BEHAVIOR</h3>
+                    <p style="margin-bottom: 30px; max-width: 800px;">
+                        The challenge was not just changing color, but controlling the <strong>hysteresis</strong>—the lag between the heating input and the cooling output. This required a custom circuit design that could push 110V through nichrome resistors without incinerating the delicate pigment layer.
+                    </p>
+                    
                     <div class="tech-specs-grid">
-                        <div class="spec-item"><span class="tech-label">ACTUATOR</span><p><strong>110V Resistors</strong><br>Generating controlled heat.</p></div>
-                        <div class="spec-item"><span class="tech-label">CONTROL</span><p><strong>Arduino + Relays</strong><br>Binary switching system.</p></div>
-                        <div class="spec-item"><span class="tech-label">MATERIAL</span><p><strong>Leucodye Pigment</strong><br>Granular application. Gray -> White.</p></div>
+                        <div class="spec-item"><span class="tech-label">CHEMISTRY</span><p><strong>Leuco Dye Pigment</strong><br>Custom mix engineered to shift Gray → White at 31°C.</p></div>
+                        <div class="spec-item"><span class="tech-label">CIRCUITRY</span><p><strong>Resistive Heating</strong><br>110V Nichrome wire array controlled via Relays.</p></div>
+                        <div class="spec-item"><span class="tech-label">LOGIC</span><p><strong>Arduino Automation</strong><br>PWM algorithms simulating organic "breathing" rates.</p></div>
                     </div>
-                </section>
-                
-                <section class="proj-section">
-                    <h3>02. ACTIVATION RECORD</h3>
-                    <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; background: #000; margin-top:20px;">
-                        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" width="560" height="315" src="https://www.youtube.com/embed/r6FxHO6_pq8?si=GQWICK7qE7vHzcM_" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+                    <div class="proj-grid-2" style="margin-top: 60px; align-items: start;">
+                        <div class="text-block">
+                            <h3 style="border:none; padding:0; margin-bottom:15px;">02. The Protocol of Decay</h3>
+                            <p>
+                                Unlike a digital pixel which turns on and off instantly, this material has memory. The heat dissipates slowly, meaning the "image" lingers like a ghost.
+                            </p>
+                            <p>
+                                I programmed the Arduino not as a linear loop, but as a stochastic system that mimics viral replication. The resistors activate in sequences that appear random but follow a logic of "infection," heating adjacent zones to create a spreading effect that looks organic rather than mechanical.
+                            </p>
+                        </div>
+                        <div class="image-block">
+                             <div style="background:#ddd; height:250px; display:flex; align-items:center; justify-content:center; color:#555; font-family:var(--font-mono); font-size:0.8rem;">
+                                 [ INSERT CIRCUIT / BACK-END PHOTO ]
+                             </div>
+                             <span class="caption">Fig 2. The hidden high-voltage array that drives the thermal reaction.</span>
+                        </div>
                     </div>
-                    <span class="caption">Time-lapse of the thermal activation cycle.</span>
                 </section>
 
                 <section class="credits-section">
                     <div class="credits-box">
-                        <h4>PROJECT TEAM</h4>
+                        <h4>RESEARCH & FABRICATION TEAM</h4>
                         <ul>
-                            <li><strong>Paula Ojeda:</strong> Co-Author / Electronics & Prototyping</li>
-                            <li><strong>Natalia Salamanca, Carolina Rodriguez, Melany Aponte:</strong> Co-Authors</li>
+                            <li><strong>Paula Ojeda:</strong> Electronics Design, Prototyping, Code.</li>
+                            <li><strong>Natalia Salamanca:</strong> Material Research.</li>
+                            <li><strong>Carolina Rodriguez:</strong> Fabrication Strategy.</li>
+                            <li><strong>Melany Aponte:</strong> Concept Development.</li>
                         </ul>
                     </div>
                 </section>
