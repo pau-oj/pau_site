@@ -245,7 +245,7 @@
         }
 
         /* =========================================
-           NUEVO: JARDÍN GENERATIVO (FLORA)
+           2.0 FLORA GENERATIVA (MEJORADA)
            ========================================= */
         .flora-container {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -254,51 +254,43 @@
 
         .flora {
             position: absolute;
-            opacity: 0.6;
-            animation: floatFlora 8s ease-in-out infinite;
-            transition: fill 1.5s ease, transform 1s ease, filter 1.5s ease;
+            opacity: 0.8;
+            /* Mezcla con el fondo para efecto "tinta" o "papel" */
+            mix-blend-mode: multiply; 
+            animation: floatFlora 12s ease-in-out infinite;
+            transition: fill 1s ease, transform 1s ease, filter 1s ease;
         }
 
         @keyframes floatFlora {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-15px) rotate(5deg); }
+            0% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(10px, -20px) rotate(5deg); }
+            66% { transform: translate(-10px, 10px) rotate(-5deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
         }
 
-        /* Estilos reactivos por zona (se activan con el Scroll) */
+        /* ESTILOS POR ZONA */
+        /* Páramo: Verde Neón, desenfoque sutil (Efecto Neblina) */
         body[data-zone="paramo"] .flora { 
             fill: var(--neon-green); 
-            filter: drop-shadow(0 0 8px rgba(212, 224, 53, 0.6)); 
+            filter: blur(2px);
+            mix-blend-mode: difference; /* Invertir colores para que resalte en blanco */
         }
+        
+        /* Bogotá: Terracota sólido (Efecto Papel Recortado / Ladrillo) */
         body[data-zone="bogota"] .flora { 
             fill: var(--terracotta); 
-            opacity: 0.5; 
-            filter: none; 
+            opacity: 0.6; 
+            filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.2)); /* Sombra dura estilo collage */
+            mix-blend-mode: normal;
         }
+        
+        /* Magdalena: Naranja Intenso (Efecto Calor/Glitch) */
         body[data-zone="magdalena"] .flora { 
             fill: #ff5e00; 
-            filter: blur(1px); 
-            opacity: 0.8; 
+            filter: blur(8px); /* Calor extremo */
+            opacity: 0.9;
+            mix-blend-mode: screen;
         }
-
-        .video-container iframe, 
-        .video-container video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        .credits-section { background: #f0f0f0; padding: 40px; border-left: 4px solid #111; }
-        .credits-box h4 { margin: 0 0 20px 0; font-size: 0.8rem; letter-spacing: 2px; }
-        .credits-box ul { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; list-style: none; font-size: 0.8rem; }
-        .citation-note { margin-top: 20px; font-size: 0.7rem; opacity: 0.6; }
-
-        @media (max-width: 768px) {
-            .proj-grid-text-img, .proj-grid-2, .tech-specs-grid, .proj-meta-grid { grid-template-columns: 1fr; gap: 20px; }
-            .proj-title { font-size: 3rem; }
-        }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
     </style>
 </head>
@@ -1457,33 +1449,43 @@ ricardo Chaves</li>
 
     <script>
 
-        // --- NUEVO: FUNCIÓN FLORA GENERATIVA ---
+      // --- FLORA 2.0: FORMAS SÓLIDAS & PIXELES ---
     function initFlora() {
         const container = document.getElementById('flora-container');
-        const flowerCount = 8; // Número de flores flotando
+        // Aumenté un poco el número para llenar más el espacio visual
+        const flowerCount = 10; 
 
-        // Formas inspiradas en tus referencias (Flat & Organic)
         const shapes = [
-            // Forma 1: Orgánica/Curva
-            '<path d="M25,0 C35,0 45,10 45,25 C45,40 35,50 25,50 C15,50 5,40 5,25 C5,10 15,0 25,0 Z M25,15 C30,15 35,20 35,25 C35,30 30,35 25,35 C20,35 15,30 15,25 C15,20 20,15 25,15 Z" />',
-            // Forma 2: Abstracta/Tallo
-            '<path d="M10,50 Q25,0 40,50 T70,50 T100,50" stroke="currentColor" stroke-width="3" fill="none" /> <circle cx="10" cy="40" r="8" /> <circle cx="40" cy="30" r="10" /> <circle cx="70" cy="45" r="6" />',
-            // Forma 3: Hoja ancha
-            '<path d="M50,50 Q80,0 50,0 Q20,0 50,50 Z M50,50 Q100,80 100,50 Q100,20 50,50 Z M50,50 Q20,100 50,100 Q80,100 50,50 Z M50,50 Q0,20 0,50 Q0,80 50,50 Z" />'
+            // 1. La "Mancha Orgánica" (Estilo Matisse / Paper-cut)
+            `<path d="M46.5,14.6c-4.8-8.5-16.9-8.5-21.7,0c-3.6-1.8-7.9-0.5-9.8,3.1c-6.1-3.5-13.6,0.9-13.6,7.9 c-3.9,1-6.2,5.2-5.2,9.1c-6.8,2.7-6.8,12.5,0,15.2c-1,3.9,1.3,8.1,5.2,9.1c0,7,7.5,11.4,13.6,7.9c1.9,3.6,6.3,4.9,9.8,3.1 c4.8,8.5,16.9,8.5,21.7,0c3.6,1.8,7.9,0.5,9.8-3.1c6.1,3.5,13.6-0.9,13.6-7.9c3.9-1,6.2-5.2,5.2-9.1c6.8-2.7,6.8-12.5,0-15.2 c1-3.9-1.3-8.1-5.2-9.1c0-7-7.5-11.4-13.6-7.9C74.4,15.1,70,13.8,66.5,15.6L46.5,14.6z" />`,
+            
+            // 2. La "Flor Digital" (Cuadrados/Pixeles, referencia ASCII)
+            `<path d="M30,10 h20 v20 h20 v20 h-20 v20 h-20 v-20 h-20 v-20 h20 z M40,40 h20 v20 h-20 z" />`,
+            
+            // 3. La "Estrella Spiky" (Referencia Frailejón/Páramo)
+            `<path d="M50,0 L62,35 L98,35 L68,55 L79,90 L50,70 L21,90 L32,55 L2,35 L38,35 Z" />`
         ];
 
         for (let i = 0; i < flowerCount; i++) {
             const el = document.createElement('div');
             el.classList.add('flora');
-            // Posición y tamaño aleatorios
+            
+            // Posición aleatoria
             el.style.left = Math.random() * 90 + 'vw';
             el.style.top = Math.random() * 90 + 'vh';
-            el.style.transform = `scale(${Math.random() * 1.5 + 0.5})`;
-            el.style.animationDelay = Math.random() * 5 + 's'; // Desfase para naturalidad
             
-            // Insertar SVG aleatorio
+            // Tamaños más grandes para que se noten las formas
+            const scale = Math.random() * 2.0 + 0.8; 
+            el.style.transform = `scale(${scale})`;
+            
+            // Velocidad diferente para cada una
+            el.style.animationDuration = (Math.random() * 10 + 10) + 's';
+
+            // Insertar SVG Sólido
             const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
-            el.innerHTML = `<svg viewBox="0 0 100 100" width="100" height="100" style="overflow:visible;">${randomShape}</svg>`;
+            // Importante: fill="currentColor" permite que el CSS controle el color
+            el.innerHTML = `<svg viewBox="0 0 100 100" width="80" height="80" style="overflow:visible;" fill="currentColor">${randomShape}</svg>`;
+            
             container.appendChild(el);
         }
     }
@@ -1583,7 +1585,7 @@ ricardo Chaves</li>
             orb1.style.background = "#ff5e00"; orb2.style.background = "#1a3c34"; 
         }
     });
-    
+
     // Cursor
     const cursor = document.getElementById('cursor');
     document.addEventListener('mousemove', e => {
