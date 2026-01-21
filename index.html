@@ -244,6 +244,42 @@
             margin-top: 20px;
         }
 
+        /* =========================================
+           NUEVO: JARDÍN GENERATIVO (FLORA)
+           ========================================= */
+        .flora-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; pointer-events: none; overflow: hidden;
+        }
+
+        .flora {
+            position: absolute;
+            opacity: 0.6;
+            animation: floatFlora 8s ease-in-out infinite;
+            transition: fill 1.5s ease, transform 1s ease, filter 1.5s ease;
+        }
+
+        @keyframes floatFlora {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
+
+        /* Estilos reactivos por zona (se activan con el Scroll) */
+        body[data-zone="paramo"] .flora { 
+            fill: var(--neon-green); 
+            filter: drop-shadow(0 0 8px rgba(212, 224, 53, 0.6)); 
+        }
+        body[data-zone="bogota"] .flora { 
+            fill: var(--terracotta); 
+            opacity: 0.5; 
+            filter: none; 
+        }
+        body[data-zone="magdalena"] .flora { 
+            fill: #ff5e00; 
+            filter: blur(1px); 
+            opacity: 0.8; 
+        }
+
         .video-container iframe, 
         .video-container video {
             position: absolute;
@@ -266,6 +302,9 @@
 
     </style>
 </head>
+
+
+
 <body class="show-altimeter">
 
     <div class="noise"></div>
@@ -276,8 +315,10 @@
         <div class="orb orb-2"></div>
     </div>
 
+    <div id="flora-container" class="flora-container"></div>
+
     <div class="top-bar">
-        <div class="researcher-id">Paula Ojeda<br><span style="opacity:0.6;">Critical Matter / MIT 2026</span></div>
+        <div class="researcher-id">Paula Ojeda<br><span style="opacity:0.6;">Artist / Designer</span></div>
         <div class="nav-links">
             <a href="#" onclick="nav('home')">Transect</a>
             <a href="#" onclick="nav('projects')">Works</a>
@@ -1415,6 +1456,41 @@ ricardo Chaves</li>
     </div>
 
     <script>
+
+        // --- NUEVO: FUNCIÓN FLORA GENERATIVA ---
+    function initFlora() {
+        const container = document.getElementById('flora-container');
+        const flowerCount = 8; // Número de flores flotando
+
+        // Formas inspiradas en tus referencias (Flat & Organic)
+        const shapes = [
+            // Forma 1: Orgánica/Curva
+            '<path d="M25,0 C35,0 45,10 45,25 C45,40 35,50 25,50 C15,50 5,40 5,25 C5,10 15,0 25,0 Z M25,15 C30,15 35,20 35,25 C35,30 30,35 25,35 C20,35 15,30 15,25 C15,20 20,15 25,15 Z" />',
+            // Forma 2: Abstracta/Tallo
+            '<path d="M10,50 Q25,0 40,50 T70,50 T100,50" stroke="currentColor" stroke-width="3" fill="none" /> <circle cx="10" cy="40" r="8" /> <circle cx="40" cy="30" r="10" /> <circle cx="70" cy="45" r="6" />',
+            // Forma 3: Hoja ancha
+            '<path d="M50,50 Q80,0 50,0 Q20,0 50,50 Z M50,50 Q100,80 100,50 Q100,20 50,50 Z M50,50 Q20,100 50,100 Q80,100 50,50 Z M50,50 Q0,20 0,50 Q0,80 50,50 Z" />'
+        ];
+
+        for (let i = 0; i < flowerCount; i++) {
+            const el = document.createElement('div');
+            el.classList.add('flora');
+            // Posición y tamaño aleatorios
+            el.style.left = Math.random() * 90 + 'vw';
+            el.style.top = Math.random() * 90 + 'vh';
+            el.style.transform = `scale(${Math.random() * 1.5 + 0.5})`;
+            el.style.animationDelay = Math.random() * 5 + 's'; // Desfase para naturalidad
+            
+            // Insertar SVG aleatorio
+            const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
+            el.innerHTML = `<svg viewBox="0 0 100 100" width="100" height="100" style="overflow:visible;">${randomShape}</svg>`;
+            container.appendChild(el);
+        }
+    }
+    // Ejecutar al inicio
+    initFlora();
+
+
     // --- LÓGICA UI & NAVEGACIÓN ---
     function nav(id) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -1473,27 +1549,41 @@ ricardo Chaves</li>
     
     window.addEventListener('scroll', () => {
         if(!document.getElementById('home-page').classList.contains('active')) return;
+        
+        // ... (tus cálculos de scrollPct y alt siguen igual) ...
         const scrollPct = window.scrollY / (document.body.scrollHeight - window.innerHeight);
         const alt = Math.round(3200 - (scrollPct * 3150));
         document.getElementById('alt-val').innerText = alt;
         
         if (scrollPct < 0.25) { 
+            // ZONA PÁRAMO
             body.style.backgroundColor = "var(--bg-paramo)"; body.style.color = "#111"; 
-            orb1.style.background = "#fff"; orb2.style.background = "#e0e0e0"; 
             document.getElementById('zone-val').innerText = "PÁRAMO"; 
+            
+            document.body.setAttribute('data-zone', 'paramo'); // <--- AGREGAR ESTA LÍNEA
+            
+            orb1.style.background = "#fff"; orb2.style.background = "#e0e0e0"; 
         } 
         else if (scrollPct >= 0.25 && scrollPct < 0.6) { 
+            // ZONA BOGOTÁ
             body.style.backgroundColor = "var(--bg-bogota)"; body.style.color = "#000"; 
-            orb1.style.background = "var(--neon-green)"; orb2.style.background = "#555"; 
             document.getElementById('zone-val').innerText = "BOGOTÁ"; 
+            
+            document.body.setAttribute('data-zone', 'bogota'); // <--- AGREGAR ESTA LÍNEA
+
+            orb1.style.background = "var(--neon-green)"; orb2.style.background = "#555"; 
         } 
         else { 
+            // ZONA MAGDALENA
             body.style.backgroundColor = "var(--bg-barranca)"; body.style.color = "#fff"; 
-            orb1.style.background = "#ff5e00"; orb2.style.background = "#1a3c34"; 
             document.getElementById('zone-val').innerText = "MAGDALENA"; 
+            
+            document.body.setAttribute('data-zone', 'magdalena'); // <--- AGREGAR ESTA LÍNEA
+
+            orb1.style.background = "#ff5e00"; orb2.style.background = "#1a3c34"; 
         }
     });
-
+    
     // Cursor
     const cursor = document.getElementById('cursor');
     document.addEventListener('mousemove', e => {
