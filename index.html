@@ -8,8 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    
-    <style>
+   <style>
         /* =========================================
            1. VARIABLES & RESET
            ========================================= */
@@ -39,19 +38,44 @@
         ul { list-style: none; padding: 0; }
 
         /* =========================================
-           2. AMBIENTE (Fondo, Cursor)
+           2. AMBIENTE (ATMÓSFERA TIPO RESEARCH LAB)
            ========================================= */
+        
+        /* 1. RUIDO DIGITAL FUERTE (Estilo Dithering/Grano) */
         .noise {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 50; opacity: 0.05;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            pointer-events: none; z-index: 50; 
+            opacity: 0.12; /* Ajuste para que se vea la textura */
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            mix-blend-mode: overlay;
         }
 
-        .liquid-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; overflow: hidden; pointer-events: none; }
-        .orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.5; transition: transform 0.8s cubic-bezier(0.1, 0.7, 1.0, 0.1); }
-        .orb-1 { width: 70vw; height: 70vw; top: -20%; left: -20%; background: #fff; }
-        .orb-2 { width: 60vw; height: 60vw; bottom: -20%; right: -20%; background: #dcdcdc; }
+        /* 2. FONDO FLUIDO */
+        .liquid-bg { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            z-index: -2; overflow: hidden; pointer-events: none; 
+        }
 
+        /* 3. AURAS GIGANTES (Estilo Saetbyeol) */
+        .orb { 
+            position: absolute; 
+            border-radius: 50%; 
+            filter: blur(100px); /* Desenfoque extremo para suavidad total */
+            opacity: 0.7; 
+            transition: background 1.5s ease, transform 0.2s ease-out; 
+            mix-blend-mode: multiply; /* Efecto acuarela/tinta */
+        }
+
+        /* Modo oscuro para Magdalena (hace que brillen) */
+        body.dark-mode .orb { 
+            mix-blend-mode: screen; 
+            opacity: 0.9; 
+        }
+
+        .orb-1 { width: 80vw; height: 80vw; top: -30%; left: -20%; background: rgba(212, 224, 53, 0.4); }
+        .orb-2 { width: 70vw; height: 70vw; bottom: -30%; right: -20%; background: #dcecfc; }
+
+        /* Cursor Personalizado */
         #cursor {
             position: fixed; top: 0; left: 0; width: 20px; height: 20px;
             pointer-events: none; z-index: 9999;
@@ -90,8 +114,18 @@
         /* =========================================
            4. HERO SECTION
            ========================================= */
-        .hero-section { height: 100vh; position: relative; overflow: hidden; display: flex; align-items: center; padding-left: 180px; z-index: 1; }
-        .hero-left { z-index: 2; max-width: 50vw; text-align: left; }
+        .hero-section { 
+            height: 100vh; 
+            position: relative; 
+            overflow: hidden; 
+            display: flex; 
+            align-items: center; 
+            /* CORRECCIÓN: Margen fijo para evitar choque con el altímetro */
+            padding-left: 180px; 
+            z-index: 1; 
+        }
+        
+        .hero-left { z-index: 2; max-width: 60vw; text-align: left; }
         .hero-title { font-size: 8vw; line-height: 0.85; margin: 0; font-weight: 300; color: #111; letter-spacing: -0.02em; }
         .hero-subtitle { font-family: var(--font-mono); font-size: 0.9rem; margin-top: 30px; line-height: 1.5; max-width: 400px; border-left: 2px solid var(--terracotta); padding-left: 20px; opacity: 0.8; }
 
@@ -244,51 +278,25 @@
             margin-top: 20px;
         }
 
-        /* =========================================
-           FLORA 2.0 (SÓLIDA Y ARTÍSTICA)
-           ========================================= */
-        .flora-container {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; pointer-events: none; overflow: hidden;
-        }
-
-        .flora {
+        .video-container iframe, 
+        .video-container video {
             position: absolute;
-            opacity: 0.9; /* Opacidad alta para que sean sólidas */
-            mix-blend-mode: multiply; /* Efecto tinta sobre el papel */
-            animation: floatFlora 15s ease-in-out infinite; /* Más lento y pesado */
-            transition: fill 1s ease, transform 1s ease, filter 1s ease;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
         }
 
-        @keyframes floatFlora {
-            0% { transform: translate(0, 0) rotate(0deg) scale(1); }
-            50% { transform: translate(20px, -40px) rotate(15deg) scale(1.1); }
-            100% { transform: translate(0, 0) rotate(0deg) scale(1); }
-        }
+        .credits-section { background: #f0f0f0; padding: 40px; border-left: 4px solid #111; }
+        .credits-box h4 { margin: 0 0 20px 0; font-size: 0.8rem; letter-spacing: 2px; }
+        .credits-box ul { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; list-style: none; font-size: 0.8rem; }
+        .citation-note { margin-top: 20px; font-size: 0.7rem; opacity: 0.6; }
 
-        /* ESTILOS POR ZONA */
-        
-        /* Páramo: Verde Neón - Efecto Digital/Invertido */
-        body[data-zone="paramo"] .flora { 
-            fill: var(--neon-green); 
-            filter: drop-shadow(0 0 10px rgba(212, 224, 53, 0.4));
-            mix-blend-mode: difference; 
+        @media (max-width: 768px) {
+            .proj-grid-text-img, .proj-grid-2, .tech-specs-grid, .proj-meta-grid { grid-template-columns: 1fr; gap: 20px; }
+            .proj-title { font-size: 3rem; }
         }
-        
-        /* Bogotá: Terracota - Efecto Papel Recortado (Matisse) */
-        body[data-zone="bogota"] .flora { 
-            fill: var(--terracotta); 
-            opacity: 0.8; 
-            filter: drop-shadow(5px 5px 0px rgba(0,0,0,0.1)); /* Sombra dura de recorte */
-            mix-blend-mode: normal;
-        }
-        
-        /* Magdalena: Naranja - Efecto Calor/Difuso */
-        body[data-zone="magdalena"] .flora { 
-            fill: #ff5e00; 
-            filter: blur(10px); /* Calor extremo que derrite la forma */
-            mix-blend-mode: hard-light;
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
     </style>
 </head>
